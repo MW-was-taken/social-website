@@ -1,0 +1,7 @@
+Options -Indexes
+<Files "functions.php">  
+  Require all denied
+</Files>
+<Files "config.php">  
+  Require all denied
+</Files>

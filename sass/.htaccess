@@ -1,0 +1,4 @@
+Options -Indexes
+<Files "style.scss">  
+  Require all denied
+</Files>
