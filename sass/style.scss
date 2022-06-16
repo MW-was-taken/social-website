@@ -1,8 +1,23 @@
 body {
-  background-color: #f5f5f5;
-  font-family: Arial, Helvetica, sans-serif;
+  // dark bg
+  background-color: #1a1a1a;
+  font-family: "Verdana";
   margin: 0;
   padding: 0;
+}
+input, textarea {
+  font-family: inherit;
+}
+h1, h2 {
+  color: #fff;
+}
+h3, h4, h5, h6 {
+  // gray text
+  color: #aaa;
+}
+label, p {
+  // gray text
+  color: #aaa;
 }
 nav {
   margin-bottom: 1em;
@@ -19,16 +34,13 @@ nav {
   overflow: hidden;
   .left {
     float: left;
-    padding: 5px;
     text-align: left;
   }
   .right {
     float: right;
-    padding: 5px;
     text-align: right;
   }
   a {
-    
     padding: 8px 16px;
     color: white;
     display: inline-block;
@@ -36,12 +48,6 @@ nav {
     font-size: large;
     &:hover {
       background: rgb(4, 4, 82);
-    }
-    .admin-notifications {
-      background: red;
-      display: inline-block;
-      padding: 2.5px 8px;
-      border-radius: 50%;
     }
   }
 }
@@ -57,27 +63,110 @@ h1, h2, h3, h4, h5, h6 {
 .input-group {
   display: flex;
   .inputs {
-    padding: 5px;
-    margin: 5px;
     display: block;
+    margin: 0 5px;
     input {
       display: block!important;
       width: 100%;
     }
   }
   .labels {
-    padding: 5px;
-    margin: 5px;
     display: block;
     label {
       margin: 2.5px;
+      margin-right: 15px;
       display: block!important;
     }
   }
 }
-button {
-  padding: 5px;
-  margin: 12px;
-  width: 8em;
+.alert {
+  background: rgb(4, 4, 82);
+  color: white;
+  padding: 5px 0;
+  border-radius: 5px;
+  margin-bottom: 5px!important;
+  text-align: center;
+  &.success {
+    background: rgb(4, 4, 82);
+  }
+  &.error {
+    background: rgb(210, 10, 10);
+  }
+  &.form-alert {
+    max-width: 20em;
+    margin: auto;
+  }
+}
+.card {
+  border: 1px solid rgb(44, 44, 44);
+  &.form-card {
+    max-width: 21.5em;
+    margin: 0 auto;
+  }
+  .card-header {
+    color: #fff;
+    background: rgb(1, 1, 113);
+    padding: 5px;
+  }
+  .card-body {
+    padding: 5px;
+    background: #2a2a2a;
+  }
+  &.users {
+    max-width: 40em;
+    margin: 0 auto;
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+.error {
+  background-color: rgb(210, 10, 10);
+}
+
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }
 

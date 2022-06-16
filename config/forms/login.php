@@ -9,10 +9,10 @@ if (isset($_POST["submit"])) {
     require_once '../config.php';
 
     if (EmptyInputLogin($username, $password) !== false) {
-        header("location: ../login?error=Please fill in all fields!");
+        header("location: ../../login?error=Please fill in all fields!");
         exit();
     }
     LoginUser($conn, $username, $password);
 } else {
-    header('location: ../signup?error=Access Denied!');
+    header('location: ../../signup?error=Access Denied!');
 }

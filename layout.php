@@ -28,15 +28,17 @@ include("config/config.php");
     <div class="navbar">
       <div class="container">
         <div class="left">
-        <a href="/dashboard">Home</a>
+        <?php
+        if (UserIsAuthenticated()) {
+          echo "<a href='/dashboard'>Dashboard</a>";
+        } else {
+          echo "<a href='/'>Home</a>";
+        }
+        ?>
         <a href="/forum">Forum</a>
         <a href="/messages">Messages</a>
-        <a href="/admin">
-          Admin
-          <div class="admin-notifications">
-            5
-          </div>
-        </a>
+        <a href="/users">Users</a>
+
         </div>
         <div class="right">
           <?php

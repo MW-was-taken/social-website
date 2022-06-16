@@ -1,4 +1,20 @@
 <?php
+// getters
+
+// prevents xss attacks and trims whitespace
+function PurifyInput($input) {
+    $input = trim($input);
+    $input = stripslashes($input);
+    $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+    return $input;
+}
+
+// TODO : 003 - find better use of getters or remove them
+function GetAuthentication()
+{
+    return @$_SESSION["UserAuthenticated"];
+}
+
 // page functions
 function AssignPageName($name) {
   if (isset($name) && !empty($name)) {
@@ -136,7 +152,7 @@ function CreateUser($conn, $username, $email, $password)
     $_SESSION["UserID"] = $UsernameExists["user_id"];
     $_SESSION["Username"] = $UsernameExists["user_name"];
     $_SESSION["UserEmail"] = $UsernameExists["user_email"];
-    header("location: ../dashboard/?note=Successfully signed up!");
+    header("location: ../../dashboard/?note=Successfully signed up!");
     exit();
 }
 
@@ -149,27 +165,22 @@ function EmptyInputLogin($username, $password)
     }
     return $result;
 }
-
+// ANCHOR login functions
 function LoginUser($conn, $Username, $Password)
 {
     $UsernameExists = UsernameExists($conn, $Username, $Username);
-
-    if ($UsernameExists === false) {
-        header("location: ../login/?error=Wrong username or password TEST!");
-    }
-
     $PasswordHashed = $UsernameExists["user_password"];
     $CheckPassword = password_verify($Password, $PasswordHashed);
 
     if ($CheckPassword === false) {
-        header("location: ../login/?error=Wrong password!");
+        header("location: ../../login/?error=Wrong username or password!");
     } else if ($CheckPassword === true) {
         session_start();
         $_SESSION["UserAuthenticated"] = "true";
         $_SESSION["UserID"] = $UsernameExists["user_id"];
         $_SESSION["Username"] = $UsernameExists["user_name"];
         $_SESSION["UserEmail"] = $UsernameExists["uesr_email"];
-        header("location: ../dashboard/?note=Successfully logged in!");
+        header("location: ../../dashboard/?note=Successfully logged in!");
         exit();
     }
 }
@@ -190,19 +201,17 @@ function UpdateUser($conn)
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
+
+// TODO : 002 - remove this function or find a better use
 function AuthenticationSetter() {
   @session_start();
-  if (isset($_SESSION["UserAuthenticated"])) {
-    if ($_SESSION["UserAuthenticated"] == "true") {
+  if (GetAuthentication() === true) {
+    if (GetAuthentication() == "true") {
       return;
     }
   } else {
     $_SESSION["UserAuthenticated"] = "false";
   }
-}
-function GetAuthentication()
-{
-    return @$_SESSION["UserAuthenticated"];
 }
 function UserIsAuthenticated()
 {
@@ -223,6 +232,75 @@ function RequireGuest() {
   if (UserIsAuthenticated() === true) {
     header("location: ../?error=You must be logged out to do this!");
     exit();
+  }
+}
+
+// status functions
+
+// TODO: 001 - check if user id is not null
+function UpdateStatus($conn, $status, $user_id) {
+  $sql = "UPDATE users SET user_status = ? WHERE user_id = ?";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../../dashboard/?error=Database Failed!");
+    exit();
+  }
+
+  mysqli_stmt_bind_param($stmt, "ss", $status, $user_id);
+  mysqli_stmt_execute($stmt);
+  mysqli_stmt_close($stmt);
+
+  header("location: ../../dashboard/?note=Status updated!");
+  exit();
+}
+
+function GetStatus($conn, $user_id) {
+  $sql = "SELECT user_status FROM users WHERE user_id = ?";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../../dashboard/?error=Database Failed!");
+    exit();
+  }
+
+  mysqli_stmt_bind_param($stmt, "s", $user_id);
+  mysqli_stmt_execute($stmt);
+  $Data = mysqli_stmt_get_result($stmt);
+
+  if ($row = mysqli_fetch_assoc($Data)) {
+    return PurifyInput($row["user_status"]);
+  } else {
+    return "";
+  }
+}
+
+function GetUsers() {
+  global $conn;
+  $sql = "SELECT * FROM users";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../../dashboard/?error=Database Failed!");
+    exit();
+  }
+
+  mysqli_stmt_execute($stmt);
+  $Data = mysqli_stmt_get_result($stmt);
+
+  $result = [];
+  while ($row = mysqli_fetch_assoc($Data)) {
+    $result[] = $row;
+  }
+  return $result;
+}
+
+function ListUsers() {
+  $users = GetUsers();
+  foreach ($users as $user) {
+    if (!empty($user['user_status'])) {
+      echo "<a href='profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
+      echo "<br>";
+      echo "<label>" . $user['user_status'] . "</label>";
+      echo "<br>";
+    }
   }
 }
 ?>
