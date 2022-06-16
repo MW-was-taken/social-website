@@ -28,13 +28,13 @@ nav {
 .header {
   padding: 5px;
   text-align: center;
-  background: #0d0da9;
+  background: rgb(13, 13, 169);
   font-size: larger;
   color: white;
 }
 
 .navbar {
-  background: #010171;
+  background: rgb(1, 1, 113);
   overflow: hidden;
 }
 .navbar .left {
@@ -53,7 +53,7 @@ nav {
   font-size: large;
 }
 .navbar a:hover {
-  background: #040452;
+  background: rgb(4, 4, 82);
 }
 
 .container {
@@ -63,6 +63,7 @@ nav {
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
+  padding: 0;
 }
 
 .input-group {
@@ -86,7 +87,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .alert {
-  background: #040452;
+  background: rgb(4, 4, 82);
   color: white;
   padding: 5px 0;
   border-radius: 5px;
@@ -94,10 +95,10 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 .alert.success {
-  background: #040452;
+  background: rgb(4, 4, 82);
 }
 .alert.error {
-  background: #d20a0a;
+  background: rgb(210, 10, 10);
 }
 .alert.form-alert {
   max-width: 20em;
@@ -105,7 +106,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card {
-  border: 1px solid #2c2c2c;
+  border: 1px solid rgb(44, 44, 44);
 }
 .card.form-card {
   max-width: 21.5em;
@@ -113,7 +114,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .card .card-header {
   color: #fff;
-  background: #010171;
+  background: rgb(1, 1, 113);
   padding: 5px;
 }
 .card .card-body {
@@ -130,40 +131,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .error {
-  background-color: #d20a0a;
+  background-color: rgb(210, 10, 10);
 }
 
 #snackbar {
-  visibility: hidden;
-  /* Hidden by default. Visible on click */
-  min-width: 250px;
-  /* Set a default minimum width */
-  margin-left: -125px;
-  /* Divide value of min-width by 2 */
-  background-color: #333;
-  /* Black background color */
-  color: #fff;
-  /* White text color */
-  text-align: center;
-  /* Centered text */
-  border-radius: 2px;
-  /* Rounded borders */
-  padding: 16px;
-  /* Padding */
-  position: fixed;
-  /* Sit on top of the screen */
-  z-index: 1;
-  /* Add a z-index if needed */
-  left: 50%;
-  /* Center the snackbar */
-  bottom: 30px;
-  /* 30px from the bottom */
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
 }
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 #snackbar.show {
-  visibility: visible;
-  /* Show the snackbar */
+  visibility: visible; /* Show the snackbar */
   /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
   However, delay the fade out process for 2.5 seconds */
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;

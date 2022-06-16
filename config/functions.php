@@ -296,11 +296,42 @@ function ListUsers() {
   $users = GetUsers();
   foreach ($users as $user) {
     if (!empty($user['user_status'])) {
-      echo "<a href='profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
+      echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
       echo "<br>";
       echo "<label>" . $user['user_status'] . "</label>";
       echo "<br>";
     }
   }
+}
+
+function HandleProfile($id) {
+  if ($id !== null && !empty($id)) {
+    $user = GetUserByID($id);
+    return $user;
+  }
+}
+
+function GetUserByID($id) {
+  global $conn;
+  $sql = "SELECT * FROM users WHERE user_id = ?";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../../dashboard/?error=Database Failed!");
+    exit();
+  }
+
+  mysqli_stmt_bind_param($stmt, "s", $id);
+  mysqli_stmt_execute($stmt);
+  $Data = mysqli_stmt_get_result($stmt);
+
+  if ($row = mysqli_fetch_assoc($Data)) {
+    return $row;
+  } else {
+    header("location: ../../users/?error=Invalid User!");
+  }
+}
+function HandleDate($date) {
+  $date_formatted = date("F j, Y", strtotime($date));
+  return $date_formatted;
 }
 ?>
