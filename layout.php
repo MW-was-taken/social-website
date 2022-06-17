@@ -17,6 +17,7 @@ include("config/config.php");
     ?>
   </title>
   <link rel="stylesheet" href="/css/style.css ">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
   <nav>
@@ -30,23 +31,27 @@ include("config/config.php");
         <div class="left">
         <?php
         if (UserIsAuthenticated()) {
-          echo "<a href='/dashboard'>Dashboard</a>";
+          echo "<a href='/dashboard'>Dashboard</a>\n";
         } else {
-          echo "<a href='/'>Home</a>";
+          echo "<a href='/'>Home</a>\n";
         }
         ?>
         <a href="/forum">Forum</a>
-        <a href="/messages">Messages</a>
+        <?php
+        if (UserIsAuthenticated()) {
+          echo "<a href='/messages'>Messages</a>\n";
+          echo "<a href='/profile?id=" . $_SESSION['UserID'] . "'>Profile</a>\n";
+        }
+        ?>
         <a href="/users">Users</a>
-
         </div>
         <div class="right">
           <?php
           if (isset($_SESSION['UserAuthenticated']) && $_SESSION['UserAuthenticated'] == true) {
-            echo("<a href='/logout'>Logout</a>");
+            echo("<a href='/logout'>Logout</a>\n");
           } else {
-            echo("<a href='/login'>Login</a>
-            <a href='/signup'>Sign Up</a>");
+            echo("<a href='/login'>Login</a>\n
+            <a href='/signup'>Sign Up</a>\n");
           }
           ?>
         </div>
