@@ -98,15 +98,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `user_created`, `user_status`, `user_bio`, `user_updated`, `user_email`) VALUES
-(2, 'asd', '$2y$10$aKeuQljYdJvhjE.lU1zkT./ieXLz2xmSVql.w3hsuGObFMP2PJ.Ri', '2022-06-14 21:47:00', 'woopdefucking doo', NULL, '0000-00-00 00:00:00', 'averyalexandercarroll08@gmail.com'),
-(3, 'asd2', '$2y$10$l2I6SYji2R/df5p77Fjpwe5.p1ZtMJle0NZiobz6PVAhs5/NH.DqG', '2022-06-14 21:52:07', 'Hi, I\'m new here!', NULL, '0000-00-00 00:00:00', 'averyalexandercarroll08@gmail.com'),
-(4, 'asd3', '$2y$10$Q/nzTcDIh/.NMgIhoaVkIuqqHAjWPr/j1dFtDOcy6aZWKA77LFzfW', '2022-06-14 21:52:58', 'Hi, I\'m new here!', NULL, '0000-00-00 00:00:00', 'averyalexandercarroll08@gmail.com');
-
---
 -- Indexes for dumped tables
 --
 
