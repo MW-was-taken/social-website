@@ -201,18 +201,6 @@ function UpdateUser($conn)
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
-
-// TODO : 002 - remove this function or find a better use
-function AuthenticationSetter() {
-  @session_start();
-  if (GetAuthentication() === true) {
-    if (GetAuthentication() == "true") {
-      return;
-    }
-  } else {
-    $_SESSION["UserAuthenticated"] = "false";
-  }
-}
 function UserIsAuthenticated()
 {
     $session = GetAuthentication();
@@ -230,7 +218,7 @@ function RequireAuthentication() {
 }
 function RequireGuest() {
   if (UserIsAuthenticated() === true) {
-    header("location: ../?error=You must be logged out to do this!");
+    header("location: ../../dashboard");
     exit();
   }
 }
@@ -300,6 +288,7 @@ function ListUsers() {
       echo "<br>";
       echo "<label>" . $user['user_status'] . "</label>";
       echo "<br>";
+      echo "<hr>";
     }
   }
 }
@@ -333,5 +322,49 @@ function GetUserByID($id) {
 function HandleDate($date) {
   $date_formatted = date("F j, Y", strtotime($date));
   return $date_formatted;
+}
+function HandleError($type) {
+  if (isset($type)) {
+    echo '<div class="toast-wrapper">
+    <div class="toast" id="toast">
+      <div class="container-1 error">
+        <i class="fa-solid fa-square-xmark"></i>
+      </div>
+      <div class="container-2">
+        <p>Error</p>
+        <p>' . $type . '</p>
+      </div>
+      <button class="close" onclick="closeToast()">
+        &times;
+      </button>
+    </div>
+  </div>';
+  echo '<script src="/js/toast.js"></script>
+  <script>
+  showToast();
+  </script>';
+  }
+}
+function HandleNote($type) {
+  if (isset($type)) {
+    echo '<div class="toast-wrapper">
+    <div class="toast" id="toast">
+      <div class="container-1">
+        <i class="fa-solid fa-square-xmark"></i>
+      </div>
+      <div class="container-2">
+        <p>Success</p>
+        <p>' . $type . '</p>
+      </div>
+      <button class="close" onclick="closeToast()">
+        &times;
+      </button>
+    </div>
+  </div>';
+  echo '<script src="/js/toast.js"></script>
+  <script>
+  showToast();
+  </script>';
+  }
 }
 ?>
