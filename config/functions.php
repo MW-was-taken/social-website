@@ -77,7 +77,7 @@ function EmptyInputSignup($username, $email, $password, $passwordRepeat)
 
 function InvalidUsername($username)
 {
-    if (!preg_match("/^[a-zA-Z0-9]*$/", $username)) {
+    if (!preg_match("/^[a-zA-Z0-9_]*$/", $username)) {
         $result = true;
     } else {
         $result = false;
@@ -277,6 +277,11 @@ function GetUsers() {
   while ($row = mysqli_fetch_assoc($Data)) {
     $result[] = $row;
   }
+  if ($result == null) {
+    echo "<label>No users found! Click <a href='/signup' class='link'>here</a> to signup today!</label>";
+  } else {
+    return $result;
+  }
   return $result;
 }
 
@@ -286,8 +291,11 @@ function ListUsers() {
     if (!empty($user['user_status'])) {
       echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
       echo "<br>";
-      echo "<label>" . $user['user_status'] . "</label>";
+      echo "<label>" . PurifyInput($user['user_status']) . "</label>";
       echo "<br>";
+      echo "<hr>";
+    } else {
+      echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
       echo "<hr>";
     }
   }
@@ -316,7 +324,7 @@ function GetUserByID($id) {
   if ($row = mysqli_fetch_assoc($Data)) {
     return $row;
   } else {
-    header("location: ../../users/?error=Invalid User!");
+    header("location: ../../users/?error=Invalid User! This usually means that the ID entered is not a valid user.");
   }
 }
 function HandleDate($date) {
@@ -366,5 +374,53 @@ function HandleNote($type) {
   showToast();
   </script>';
   }
+}
+
+function ViewMessages($user_id) {
+  global $conn;
+  $sql = "SELECT * FROM messages WHERE msg_receiver = ? ORDER BY msg_id DESC";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../../messages/?error=Database Failed!");
+    exit();
+  }
+
+  mysqli_stmt_bind_param($stmt, "s", $user_id);
+  mysqli_stmt_execute($stmt);
+
+  $Data = mysqli_stmt_get_result($stmt);
+  
+  if ($row = mysqli_fetch_assoc($Data)) {
+    return $row;
+  } else {
+    return null;
+  }
+}
+function ListMessages($result) {
+  if ($result !== null) {
+    foreach ($result as $message) {
+      echo "<a href='/messages/view?id=" . $message['msg_id'] . "'>" . $message['msg_title'] . "</a>";
+      echo "<br>";
+      echo "<a>" . GetUserByID($message['msg_sender']) . "</a>";
+      echo "<br>";
+      echo "<label>" . HandleDate($message['msg_created']) . "</label>";
+      echo "<hr>";
+    }
+  } else {
+    echo "<p>No Messages</p>";
+  }
+}
+function SendMessage($sender_id, $receiver_id, $title, $body) {
+  global $conn;
+  $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body) VALUES (?, ?, ?, ?)";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ../../messages/?error=Database Failed!");
+    exit();
+  }
+
+  mysqli_stmt_bind_param($stmt, "ssss", $sender_id, $receiver_id, $title, $body);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 }
 ?>

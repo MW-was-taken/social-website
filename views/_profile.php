@@ -14,11 +14,15 @@ if (isset($_GET['id'])) {
 </div>
 <div class="card-body">
   <?php 
-    echo "<label>Status: " . $User['user_status'] . "</label>";
+    echo "<label>Status: " . PurifyInput($User['user_status']) . "</label>";
     echo "<br>";
     echo "<label>Join Date: " . HandleDate($User['user_created']) . "</label>";
   ?>
   <br>
-  <a>Message User</a>
+  <?php 
+  if ($_GET['id'] != $_SESSION['UserID']) {
+    echo "<a href='../../messages/send?id=" . $User['user_id'] . "'>Message</a>";
+  }
+  ?>
 </div>
 </div>
