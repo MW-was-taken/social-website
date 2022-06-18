@@ -6,14 +6,29 @@
 
 body {
   background-color: #1a1a1a;
-  font-family: "Verdana";
+  font-family: "Montserrat";
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-input, textarea {
+input, textarea, button {
   font-family: inherit;
+}
+
+input {
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 10px;
+  font-size: 1.2rem;
+  font-weight: 300;
+  width: 100%;
+}
+input:focus {
+  outline: none;
 }
 
 h1, h2 {
@@ -53,11 +68,13 @@ nav {
   text-align: right;
 }
 .navbar a {
-  padding: 8px 16px;
+  padding: 8px 12px;
   color: white;
   display: inline-block;
   text-decoration: none;
   font-size: large;
+  margin: 7.5px;
+  border-radius: 5px;
 }
 .navbar a:hover {
   background: #040452;
@@ -71,26 +88,6 @@ nav {
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
-}
-
-.input-group {
-  display: flex;
-}
-.input-group .inputs {
-  display: block;
-  margin: 0 5px;
-}
-.input-group .inputs input {
-  display: block !important;
-  width: 100%;
-}
-.input-group .labels {
-  display: block;
-}
-.input-group .labels label {
-  margin: 2.5px;
-  margin-right: 15px;
-  display: block !important;
 }
 
 .alert {
@@ -112,12 +109,39 @@ h1, h2, h3, h4, h5, h6 {
   margin: auto;
 }
 
+button {
+  display: block;
+  padding: 14px 16px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 2px;
+  background: #040452;
+  color: white;
+  font-size: larger;
+  font-weight: 300;
+  transition: 200ms;
+}
+button:hover {
+  background: #0a0a78;
+  cursor: pointer;
+}
+
 .card {
   border: 1px solid #2c2c2c;
 }
-.card.form-card {
+.card.form-card.signup {
   max-width: 21.5em;
   margin: 0 auto;
+}
+.card.form-card.signup input {
+  display: block;
+}
+.card.form-card.signup label {
+  display: block;
+  font-size: larger;
+}
+.card.form-card.signup button {
+  width: 100%;
 }
 .card .card-header {
   color: #fff;
@@ -128,6 +152,18 @@ h1, h2, h3, h4, h5, h6 {
   padding: 5px;
   background: #2a2a2a;
 }
+.card .card-body label.status {
+  display: block;
+  font-size: larger;
+}
+.card .card-body .link {
+  color: #d4d4d4;
+  text-decoration: none;
+}
+.card .card-body .link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
 .card.users {
   max-width: 40em;
   margin: 0 auto;
@@ -137,84 +173,6 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
 }
 
-#snackbar {
-  visibility: hidden;
-  /* Hidden by default. Visible on click */
-  min-width: 250px;
-  /* Set a default minimum width */
-  margin-left: -125px;
-  /* Divide value of min-width by 2 */
-  background-color: #333;
-  /* Black background color */
-  color: #fff;
-  /* White text color */
-  text-align: center;
-  /* Centered text */
-  border-radius: 2px;
-  /* Rounded borders */
-  padding: 16px;
-  /* Padding */
-  position: fixed;
-  /* Sit on top of the screen */
-  z-index: 1;
-  /* Add a z-index if needed */
-  left: 50%;
-  /* Center the snackbar */
-  bottom: 30px;
-  /* 30px from the bottom */
-}
-
-/* Show the snackbar when clicking on a button (class added with JavaScript) */
-#snackbar.show {
-  visibility: visible;
-  /* Show the snackbar */
-  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-  However, delay the fade out process for 2.5 seconds */
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-/* Animations to fade the snackbar in and out */
-@-webkit-keyframes fadein {
-  from {
-    bottom: 0;
-    opacity: 0;
-  }
-  to {
-    bottom: 30px;
-    opacity: 1;
-  }
-}
-@keyframes fadein {
-  from {
-    bottom: 0;
-    opacity: 0;
-  }
-  to {
-    bottom: 30px;
-    opacity: 1;
-  }
-}
-@-webkit-keyframes fadeout {
-  from {
-    bottom: 30px;
-    opacity: 1;
-  }
-  to {
-    bottom: 0;
-    opacity: 0;
-  }
-}
-@keyframes fadeout {
-  from {
-    bottom: 30px;
-    opacity: 1;
-  }
-  to {
-    bottom: 0;
-    opacity: 0;
-  }
-}
 .toast-wrapper {
   width: 420px;
   padding: 30px 20px;
