@@ -18,7 +18,7 @@ if (isset($_POST["submit"])) {
         exit();
     }
     if (InvalidEmail($email) !== false) {
-        header("location: ../../signup?error=Email is invalid!");
+        header("location: ../../signup?error=Invalid email. This usually means that you entered your email address incorrectly or your email provider is on our blocked list to prevent spam.");
         exit();
     }
     if (InvalidPasswordMatch($password, $passwordRepeat) !== false) {
@@ -26,7 +26,7 @@ if (isset($_POST["submit"])) {
         exit();
     }
     if (UsernameExists($conn, $username) !== false) {
-        header("location: ../../signup?error=Username taken! Try a different name!");
+        header("location: ../../signup?error=The username you entered has already been registered by another user. Try another variation of your desired username or pick a new one altogether.");
         exit();
     }
 

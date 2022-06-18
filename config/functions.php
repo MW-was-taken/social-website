@@ -223,6 +223,15 @@ function RequireGuest() {
   }
 }
 
+function GetNumberOfUsers() {
+  global $conn;
+  $sql = "SELECT * FROM users";
+  $result = mysqli_query($conn, $sql);
+  $NumberOfUsers = mysqli_num_rows($result);
+  mysqli_close($conn);
+  return $NumberOfUsers;
+}
+
 // status functions
 
 // TODO: 001 - check if user id is not null
@@ -324,7 +333,7 @@ function GetUserByID($id) {
   if ($row = mysqli_fetch_assoc($Data)) {
     return $row;
   } else {
-    header("location: ../../users/?error=Invalid User! This usually means that the ID entered is not a valid user.");
+    header("location: ../../users/?error=Invalid User! This usually means that the ID entered is not a valid user." . $id);
   }
 }
 function HandleDate($date) {
@@ -334,7 +343,7 @@ function HandleDate($date) {
 function HandleError($type) {
   if (isset($type)) {
     echo '<div class="toast-wrapper">
-    <div class="toast" id="toast">
+    <div class="toast error" id="toast">
       <div class="container-1 error">
         <i class="fa-solid fa-square-xmark"></i>
       </div>
@@ -389,11 +398,15 @@ function ViewMessages($user_id) {
   mysqli_stmt_execute($stmt);
 
   $Data = mysqli_stmt_get_result($stmt);
-  
-  if ($row = mysqli_fetch_assoc($Data)) {
-    return $row;
+
+  $result = [];
+  while ($row = mysqli_fetch_assoc($Data)) {
+    $result[] = $row;
+  }
+  if ($result == null) {
+    echo "<label>No messages found!</label>";
   } else {
-    return null;
+    return $result;
   }
 }
 function ListMessages($result) {
@@ -401,8 +414,7 @@ function ListMessages($result) {
     foreach ($result as $message) {
       echo "<a href='/messages/view?id=" . $message['msg_id'] . "'>" . $message['msg_title'] . "</a>";
       echo "<br>";
-      echo "<a>" . GetUserByID($message['msg_sender']) . "</a>";
-      echo "<br>";
+      echo "<a href='/profile?id=" . $message['msg_sender'] . "'>" . GetUserByID($message['msg_sender'])['user_name'] . "</a><br>";
       echo "<label>" . HandleDate($message['msg_created']) . "</label>";
       echo "<hr>";
     }
@@ -422,5 +434,13 @@ function SendMessage($sender_id, $receiver_id, $title, $body) {
   mysqli_stmt_bind_param($stmt, "ssss", $sender_id, $receiver_id, $title, $body);
   mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
+
+  if ($result) {
+    HandleNote("Message Sent!");
+    header("location: ../../messages/");
+  } else {
+    HandleError("Message Failed to Send!");
+    header("location: ../../messages/");
+  }
 }
 ?>
