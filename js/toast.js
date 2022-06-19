@@ -4,7 +4,7 @@ function showToast() {
   document.getElementById("toast").style.transform = "translateX(0)";
   x = setTimeout(() => {
     document.getElementById("toast").style.transform = "translateX(400px)";
-  }, 4000);
+  }, 10000);
 }
 
 function closeToast() {

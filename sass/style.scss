@@ -15,7 +15,7 @@ input, textarea, button {
   font-family: inherit;
 }
 
-input {
+input, textarea {
   border: none;
   outline: none;
   border-radius: 2px;
@@ -28,6 +28,11 @@ input {
   &:focus {
     outline: none;
   }
+  margin-top: 5px;
+}
+textarea {
+  resize: none;
+  min-height: 100px;
 }
 
 h1, h2 {
@@ -136,6 +141,13 @@ button {
         width: 100%;
       }
     }
+    &.message {
+      max-width: 50em;
+      margin: 0 auto;
+      button {
+        width: 100%;
+      }
+    }
   }
   .card-header {
     color: #fff;
@@ -178,15 +190,17 @@ button {
   right: 0;
   .toast {
     width: 380px;
-    height: 80px;
     padding: 20px;
     background-color: #2a2a2a;
-    border-left: solid 8px rgb(13, 13, 169);
+    border-left: solid 8px #47d764;
     border-radius: 7px;
     display: grid;
     grid-template-columns: 1.2fr 6fr 0.5fr;
     transform: translate(400px);
     transition: 1s;
+    &.error {
+      border-left: solid 8px rgb(233, 13, 13);
+    }
     .container-1, .container-2{
       align-self: center;
     }

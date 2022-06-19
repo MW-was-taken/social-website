@@ -20,7 +20,7 @@ if (isset($_GET['id'])) {
   ?>
   <br>
   <?php 
-  if ($_GET['id'] != $_SESSION['UserID']) {
+  if ($_GET['id'] != @$_SESSION['UserID'] && UserIsAuthenticated()) {
     echo "<a href='../../messages/send?id=" . $User['user_id'] . "'>Message</a>";
   }
   ?>
