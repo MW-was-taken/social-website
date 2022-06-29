@@ -11,6 +11,10 @@ function PurifyInput($input) {
 function ToLineBreaks($text) {
     return nl2br($text);
 }
+function ToMarkdown($text) {
+  $text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
+  return $text;
+}
 
 // TODO : 003 - find better use of getters or remove them
 function GetAuthentication()
@@ -457,8 +461,9 @@ function ListMessages($result) {
 function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurified) {
   global $conn;
   $body_sanitized = PurifyInput($body_unpurified);
+  $body_markdown = ToMarkdown($body_sanitized);
   $title = PurifyInput($title_unpurified);
-  $body= ToLineBreaks($body_sanitized);
+  $body= ToLineBreaks($body_markdown);
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body) VALUES (?, ?, ?, ?)";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
