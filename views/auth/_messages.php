@@ -13,5 +13,6 @@ $messages = ViewMessages($UserID);
     <?php
       ListMessages($messages);
     ?>
+    <a href="/markdown">Markdown Tutorial</a>
   </div>
 </div>
