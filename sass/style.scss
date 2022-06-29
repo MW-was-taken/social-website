@@ -236,3 +236,14 @@ button {
 hr {
   border: 1px solid rgb(25, 25, 25);  
 }
+
+code {
+  font-family: monospace, Consolas, "courier new";
+  color: crimson;
+  background-color: #1a1a1a;
+  padding: 2px 5px;
+  display: inline-block;
+  border-radius: 2.5px; 
+  margin: 2px;
+  font-size: 105%;
+}

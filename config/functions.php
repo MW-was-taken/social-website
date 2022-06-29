@@ -13,6 +13,9 @@ function ToLineBreaks($text) {
 }
 function ToMarkdown($text) {
   $text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
+  $text = preg_replace("#\_([^_]+)\_#", '<i>$1</i>', $text);
+  $text = preg_replace("#\%([^%]+)\%#", '<strike>$1</strike>', $text);
+  $text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
   return $text;
 }
 
