@@ -8,6 +8,9 @@ function PurifyInput($input) {
     $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
     return $input;
 }
+function ToLineBreaks($text) {
+    return nl2br($text);
+}
 
 // TODO : 003 - find better use of getters or remove them
 function GetAuthentication()
@@ -155,7 +158,6 @@ function CreateUser($conn, $username, $email, $password)
     header("location: ../../dashboard/?note=Successfully signed up!");
     exit();
 }
-
 function EmptyInputLogin($username, $password)
 {
     if (empty($username) || empty($password)) {
@@ -164,6 +166,35 @@ function EmptyInputLogin($username, $password)
         $result = false;
     }
     return $result;
+}
+// Credit: https://stackoverflow.com/users/67332/glavi%c4%87
+function time_elapsed_string($datetime, $full = false) {
+  $now = new DateTime;
+  $ago = new DateTime($datetime);
+  $diff = $now->diff($ago);
+
+  $diff->w = floor($diff->d / 7);
+  $diff->d -= $diff->w * 7;
+
+  $string = array(
+      'y' => 'year',
+      'm' => 'month',
+      'w' => 'week',
+      'd' => 'day',
+      'h' => 'hour',
+      'i' => 'minute',
+      's' => 'second',
+  );
+  foreach ($string as $k => &$v) {
+      if ($diff->$k) {
+          $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+      } else {
+          unset($string[$k]);
+      }
+  }
+
+  if (!$full) $string = array_slice($string, 0, 1);
+  return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 // ANCHOR login functions
 function LoginUser($conn, $Username, $Password)
@@ -184,6 +215,7 @@ function LoginUser($conn, $Username, $Password)
         exit();
     }
 }
+
 // this function is run everytime the user clicks on a page.
 // this will be used to tell if the user is online or not.
 function UpdateUser($conn)
@@ -309,7 +341,6 @@ function ListUsers() {
     }
   }
 }
-
 function HandleProfile($id) {
   if ($id !== null && !empty($id)) {
     $user = GetUserByID($id);
@@ -335,6 +366,9 @@ function GetUserByID($id) {
   } else {
     header("location: ../../users/?error=Invalid User! This usually means that the ID entered is not a valid user." . $id);
   }
+}
+function GetProfileLink($user_id, $user_name) {
+  return "<a href='/profile?id=" . $user_id . "'>" . $user_name . "</a>";
 }
 function HandleDate($date) {
   $date_formatted = date("F j, Y", strtotime($date));
@@ -403,9 +437,7 @@ function ViewMessages($user_id) {
   while ($row = mysqli_fetch_assoc($Data)) {
     $result[] = $row;
   }
-  if ($result == null) {
-    echo "<label>No messages found!</label>";
-  } else {
+  if ($result != null) {
     return $result;
   }
 }
@@ -422,8 +454,11 @@ function ListMessages($result) {
     echo "<p>No Messages</p>";
   }
 }
-function SendMessage($sender_id, $receiver_id, $title, $body) {
+function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurified) {
   global $conn;
+  $body_sanitized = PurifyInput($body_unpurified);
+  $title = PurifyInput($title_unpurified);
+  $body= ToLineBreaks($body_sanitized);
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body) VALUES (?, ?, ?, ?)";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -443,4 +478,40 @@ function SendMessage($sender_id, $receiver_id, $title, $body) {
     header("location: ../../messages/");
   }
 }
-?>
+function ViewMessage($msg_id, $user_id) {
+    global $conn;
+    $sql = "SELECT * FROM messages WHERE msg_id = ? AND msg_receiver = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      header("location: ../../messages/?error=Database Failed!");
+      exit();
+    }
+  
+    mysqli_stmt_bind_param($stmt, "ss", $msg_id, $user_id);
+    mysqli_stmt_execute($stmt);
+  
+    $Data = mysqli_stmt_get_result($stmt);
+  
+    if ($row = mysqli_fetch_assoc($Data)) {
+      return $row;
+    } else {
+      header("location: ../../messages/?error=Invalid Message!");
+    }
+}
+
+function GetMessageTitle($message) {
+  return $message['msg_title'];
+}
+
+function GetMessageBody($message) {
+  return $message['msg_body'];
+}
+
+function GetMessageSender($message) {
+  return $message['msg_sender'];
+}
+
+function GetMessageDate($message) {
+  return time_elapsed_string($message['msg_created']);
+}
+

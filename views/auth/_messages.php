@@ -1,7 +1,7 @@
 <?php
 $UserID = $_SESSION['UserID'];
 $messages = ViewMessages($UserID);
-echo $UserID;
+
 
 ?>
 
