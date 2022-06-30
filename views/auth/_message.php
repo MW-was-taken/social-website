@@ -10,7 +10,6 @@ $Sender = GetUserByID($message['msg_sender']);
   </div>
   <div class="card-body">
     <p><?php echo GetMessageBody($message); ?></p>
-    <br>
     <hr>
     <p><?php echo GetProfileLink($Sender['user_id'], $Sender['user_name']); ?>, <?php echo GetMessageDate($message);?></p>
   </div>

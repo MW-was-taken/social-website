@@ -166,6 +166,12 @@ button {
   .card-body {
     padding: 5px;
     background: #2a2a2a;
+    color: $white;
+    &.message {
+      hr {
+        margin: 5px;
+      }
+    }
     label {
       &.status {
         display: block;

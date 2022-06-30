@@ -9,7 +9,7 @@ $messages = ViewMessages($UserID);
   <div class="card-header">
     Messages
   </div>
-  <div class="card-body">
+  <div class="card-body message">
     <?php
       ListMessages($messages);
     ?>
