@@ -58,7 +58,7 @@ nav {
   text-align: center;
   background: #0d0da9;
   font-size: larger;
-  color: white;
+  color: #fff;
 }
 
 .navbar {
@@ -75,7 +75,7 @@ nav {
 }
 .navbar a {
   padding: 8px 12px;
-  color: white;
+  color: #fff;
   display: inline-block;
   text-decoration: none;
   font-size: large;
@@ -98,7 +98,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .alert {
   background: #040452;
-  color: white;
+  color: #fff;
   padding: 5px 0;
   border-radius: 5px;
   margin-bottom: 5px !important;
@@ -108,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
   background: #040452;
 }
 .alert.error {
-  background: #d20a0a;
+  background: #f00;
 }
 .alert.form-alert {
   max-width: 20em;
@@ -122,7 +122,7 @@ button {
   border: none;
   border-radius: 2px;
   background: #040452;
-  color: white;
+  color: #fff;
   font-size: larger;
   font-weight: 300;
   transition: 200ms;
@@ -170,7 +170,7 @@ button:hover {
   font-size: larger;
 }
 .card .card-body .link {
-  color: #d4d4d4;
+  color: #aaa;
   text-decoration: none;
 }
 .card .card-body .link:hover {

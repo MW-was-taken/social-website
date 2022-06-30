@@ -1,3 +1,12 @@
+$dark: #1a1a1a;
+$white: #fff;
+$grey: #aaa;
+$blue: rgb(13, 13, 169);
+$dark-blue: rgb(1, 1, 113);
+$dark-blue-hover: rgb(4, 4, 82);
+$dark-blue-hover-hover: rgb(10, 10, 120);
+$red: #f00;
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,7 +14,7 @@
 }
 body {
   // dark bg
-  background-color: #1a1a1a;
+  background-color: $dark;
   font-family: "Montserrat";
   margin: 0;
   padding: 0;
@@ -19,8 +28,8 @@ input, textarea {
   border: none;
   outline: none;
   border-radius: 2px;
-  background-color: #1a1a1a;
-  color: #fff;
+  background-color: $dark;
+  color: $white;
   padding: 10px;
   font-size: 1.2rem;
   font-weight: 300;
@@ -36,15 +45,15 @@ textarea {
 }
 
 h1, h2 {
-  color: #fff;
+  color: $white;
 }
 h3, h4, h5, h6 {
   // gray text
-  color: #aaa;
+  color: $grey;
 }
 label, p {
   // gray text
-  color: #aaa;
+  color: $grey;
 }
 nav {
   margin-bottom: 1em;
@@ -52,12 +61,12 @@ nav {
 .header {
   padding: 5px;
   text-align: center;
-  background: rgb(13, 13, 169);
+  background: $blue;
   font-size: larger;
-  color: white;
+  color: $white;
 }
 .navbar {
-  background: rgb(1, 1, 113);
+  background: $dark-blue;
   overflow: hidden;
   .left {
     float: left;
@@ -69,12 +78,12 @@ nav {
   }
   a {
     padding: 8px 12px;
-    color: white;
+    color: $white;
     display: inline-block;
     text-decoration: none;
     font-size: large;
     &:hover {
-      background: rgb(4, 4, 82);
+      background: $dark-blue-hover;
     }
     margin: 7.5px;
     border-radius: 5px;
@@ -92,16 +101,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 .alert {
   background: rgb(4, 4, 82);
-  color: white;
+  color: $white;
   padding: 5px 0;
   border-radius: 5px;
   margin-bottom: 5px!important;
   text-align: center;
   &.success {
-    background: rgb(4, 4, 82);
+    background: $dark-blue-hover;
   }
   &.error {
-    background: rgb(210, 10, 10);
+    background: $red;
   }
   &.form-alert {
     max-width: 20em;
@@ -113,14 +122,14 @@ button {
   padding: 14px 16px;
   margin: 5px 0;
   border: none;
-  border-radius: 2px;
-  background: rgb(4, 4, 82);
-  color: white;
+  border-radius: 2px; 
+  background: $dark-blue-hover;
+  color: $white;
   font-size: larger;
   font-weight: 300;
   transition: 200ms;
   &:hover {
-    background: rgb(10, 10, 120);
+    background: $dark-blue-hover-hover;
     cursor: pointer;
   }
 }
@@ -150,7 +159,7 @@ button {
     }
   }
   .card-header {
-    color: #fff;
+    color: $white;
     background: rgb(1, 1, 113);
     padding: 5px;
   }
@@ -164,10 +173,10 @@ button {
       }
     }
     .link {
-      color: rgb(212, 212, 212);
+      color: $grey;
       text-decoration: none;
       &:hover {
-        color: #fff;
+        color: $white;
         text-decoration: underline;
       }
     }
@@ -176,7 +185,7 @@ button {
     max-width: 40em;
     margin: 0 auto;
     a {
-      color: #fff;
+      color: $white;
       text-decoration: none;
     }
   }
@@ -212,14 +221,14 @@ button {
       }
     }
     .container-2 p:first-child {
-      color: #fff;
+      color: $white;
       font-weight: 600;
       font-size: 16px;
     }
     .container-2 p:last-child {
       font-size: 12px;
       font-weight: 400;
-      color: #aaa;
+      color: $grey;
     }
     button {
       align-self: flex-start;
@@ -227,7 +236,7 @@ button {
       font-size: 25px;
       line-height: 0;
       border: none;
-      color: #aaa;
+      color: $grey;
       cursor: pointer;
     }
   }
@@ -241,7 +250,7 @@ hr {
 code {
   font-family: monospace, Consolas, "courier new";
   color: crimson;
-  background-color: #1a1a1a;
+  background-color: $dark;
   padding: 2px 5px;
   display: inline-block;
   border-radius: 2.5px; 
