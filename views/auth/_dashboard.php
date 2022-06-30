@@ -1,5 +1,4 @@
 <?php
-// get error from url
 HandleNote(@$_GET["note"]);
 ?>
 <div class="card users">
