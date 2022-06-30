@@ -164,6 +164,10 @@ button:hover {
 .card .card-body {
   padding: 5px;
   background: #2a2a2a;
+  color: #fff;
+}
+.card .card-body.message hr {
+  margin: 5px;
 }
 .card .card-body label.status {
   display: block;
