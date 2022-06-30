@@ -37,9 +37,9 @@ function AssignPageName($name) {
 function HandlePageName($name)
 {
   if (empty($name)) {
-    return "Elfo's Forum";
+    return "Brick-Town";
   }
-  return $name . " - " . "Elfo's Forum";
+  return $name . " - " . "Brick-Town";
 }
 
 // config functions

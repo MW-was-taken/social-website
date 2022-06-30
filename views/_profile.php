@@ -10,7 +10,14 @@ if (isset($_GET['id'])) {
 
 <div class="card users">
 <div class="card-header">
-  <?php echo $User['user_name']; echo "<label style='font-size: 200%'>&bullet;</label>"; ?>
+  <?php echo $User['user_name']; 
+      if(!IfIsOnline($User['user_updated'])) {
+        echo '<span class="status-dot users"></span>';
+      } else {
+        echo '<span class="status-dot users online"></span>';
+      }
+      ?>
+  
 </div>
 <div class="card-body">
   <?php 
