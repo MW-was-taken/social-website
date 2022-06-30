@@ -8,9 +8,11 @@ function PurifyInput($input) {
     $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
     return $input;
 }
+
 function ToLineBreaks($text) {
     return nl2br($text);
 }
+
 function ToMarkdown($text) {
   $text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
   $text = preg_replace("#\_([^_]+)\_#", '<i>$1</i>', $text);
@@ -201,7 +203,7 @@ function time_elapsed_string($datetime, $full = false) {
   }
 
   if (!$full) $string = array_slice($string, 0, 1);
-  return $string ? implode(', ', $string) . ' ago' : 'just now';
+  return $string ? implode(', ', $string) . ' ago' : 'Now';
 }
 // ANCHOR login functions
 function LoginUser($conn, $Username, $Password)
@@ -229,7 +231,7 @@ function UpdateUser($conn)
 {
     $User = $_SESSION["UserID"];
 
-    $sql = "UPDATE users SET user_updated = now() WHERE id = ?";
+    $sql = "UPDATE users SET user_updated = now() WHERE user_id = ?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         header("location: ?error=Database Failed!");
@@ -239,6 +241,27 @@ function UpdateUser($conn)
     mysqli_stmt_bind_param($stmt, "s", $User);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
+}
+function IfIsOnline($updated_at_timestamp)
+{
+    if ($updated_at_timestamp == null) {
+        return false;
+    }
+    $now = date_create(date('Y-m-d H:i:s'));
+    $updated = date_create($updated_at_timestamp);
+
+    $now_format = date_format($now, 'Y-m-d H:i:s');
+    $updated_format =  date_format($updated, 'Y-m-d H:i:s');
+
+    $test1 = strtotime($now_format);
+    $test2 = strtotime($updated_format);
+    $hour = abs($test1 - $test2) / (1 * 1);
+
+    if ($hour < 90) {
+        return true;
+    } else {
+        return false;
+    }
 }
 function UserIsAuthenticated()
 {
@@ -336,16 +359,18 @@ function GetUsers() {
 function ListUsers() {
   $users = GetUsers();
   foreach ($users as $user) {
-    if (!empty($user['user_status'])) {
-      echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
-      echo "<br>";
-      echo "<label>" . PurifyInput($user['user_status']) . "</label>";
-      echo "<br>";
-      echo "<hr>";
+    echo '<div class="ellipsis">';
+    echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
+    if(!IfIsOnline($user['user_updated'])) {
+      echo '<span class="status-dot users"></span>';
     } else {
-      echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
-      echo "<hr>";
+      echo '<span class="status-dot users online"></span>';
     }
+    echo '</div>';
+    if (!empty($user['user_status'])) {
+      echo "<label>" . PurifyInput($user['user_status']) . "</label>";
+    }
+    echo "<hr>";
   }
 }
 function HandleProfile($id) {
@@ -522,4 +547,3 @@ function GetMessageSender($message) {
 function GetMessageDate($message) {
   return time_elapsed_string($message['msg_created']);
 }
-

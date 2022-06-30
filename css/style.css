@@ -257,4 +257,25 @@ code {
   font-size: 105%;
 }
 
+.status-dot {
+  float: right;
+  margin-bottom: 3px;
+  background-color: #a2a2a2;
+  border-radius: 50%;
+  width: 12.5px;
+  height: 12.5px;
+}
+.status-dot.usesrs {
+  float: none;
+}
+.status-dot.online {
+  background-color: #47d764;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 /*# sourceMappingURL=style.css.map */

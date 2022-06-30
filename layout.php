@@ -3,6 +3,9 @@ session_start();
 include("config/functions.php");
 include("config/config.php");
 @$name = AssignPageName($name);
+if (UserIsAuthenticated()) {
+  UpdateUser($conn);
+}
 ?>
 
 <!DOCTYPE html>

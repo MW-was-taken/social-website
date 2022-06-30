@@ -10,13 +10,15 @@ if (isset($_GET['id'])) {
 
 <div class="card users">
 <div class="card-header">
-  <?php echo $User['user_name']; ?>
+  <?php echo $User['user_name']; echo "<label style='font-size: 200%'>&bullet;</label>"; ?>
 </div>
 <div class="card-body">
   <?php 
     echo "<label>Status: " . PurifyInput($User['user_status']) . "</label>";
     echo "<br>";
     echo "<label>Join Date: " . HandleDate($User['user_created']) . "</label>";
+    echo "<br>";
+    echo "<label>Last Online: " . time_elapsed_string($User['user_updated']) . "</label>";
   ?>
   <br>
   <?php 
