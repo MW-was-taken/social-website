@@ -1,2 +1,2 @@
 @echo off
-sass -w sass/style.scss css/style.css
+sass  --no-source-map -w sass/style.scss css/style.css
