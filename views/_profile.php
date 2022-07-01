@@ -5,6 +5,7 @@ if (isset($_GET['id'])) {
 } else {
   header("location: ../../users/?error=Invalid User!");
 }
+$name = $User['user_name'];
 
 ?>
 

@@ -11,7 +11,7 @@ function HandlePageName($name)
   if (empty($name)) {
     return "Brick-Town";
   }
-  return $name . " - " . "Brick-Townx ";
+  return $name . " - " . "Brick-Town";
 }
 
 // config functions
@@ -199,7 +199,7 @@ function LoginUser($conn, $Username, $Password)
 // ANCHOR auth functions
 function UserIsAuthenticated()
 {
-    $session = $_SESSION['UserAuthenticated'];
+    $session = @$_SESSION['UserAuthenticated'];
     if ($session === "true") {
         return true;
     } else {
