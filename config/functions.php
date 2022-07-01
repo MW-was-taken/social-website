@@ -1,32 +1,4 @@
 <?php
-// getters
-
-// prevents xss attacks and trims whitespace
-function PurifyInput($input) {
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
-    return $input;
-}
-
-function ToLineBreaks($text) {
-    return nl2br($text);
-}
-
-function ToMarkdown($text) {
-  $text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
-  $text = preg_replace("#\_([^_]+)\_#", '<i>$1</i>', $text);
-  $text = preg_replace("#\%([^%]+)\%#", '<strike>$1</strike>', $text);
-  $text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
-  return $text;
-}
-
-// TODO : 003 - find better use of getters or remove them
-function GetAuthentication()
-{
-    return @$_SESSION["UserAuthenticated"];
-}
-
 // page functions
 function AssignPageName($name) {
   if (isset($name) && !empty($name)) {
@@ -39,7 +11,7 @@ function HandlePageName($name)
   if (empty($name)) {
     return "Brick-Town";
   }
-  return $name . " - " . "Brick-Town";
+  return $name . " - " . "Brick-Townx ";
 }
 
 // config functions
@@ -224,48 +196,10 @@ function LoginUser($conn, $Username, $Password)
         exit();
     }
 }
-
-// this function is run everytime the user clicks on a page.
-// this will be used to tell if the user is online or not.
-function UpdateUser($conn)
-{
-    $User = $_SESSION["UserID"];
-
-    $sql = "UPDATE users SET user_updated = now() WHERE user_id = ?";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("location: ?error=Database Failed!");
-        exit();
-    }
-
-    mysqli_stmt_bind_param($stmt, "s", $User);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-}
-function IfIsOnline($updated_at_timestamp)
-{
-    if ($updated_at_timestamp == null) {
-        return false;
-    }
-    $now = date_create(date('Y-m-d H:i:s'));
-    $updated = date_create($updated_at_timestamp);
-
-    $now_format = date_format($now, 'Y-m-d H:i:s');
-    $updated_format =  date_format($updated, 'Y-m-d H:i:s');
-
-    $test1 = strtotime($now_format);
-    $test2 = strtotime($updated_format);
-    $hour = abs($test1 - $test2) / (1 * 1);
-
-    if ($hour < 90) {
-        return true;
-    } else {
-        return false;
-    }
-}
+// ANCHOR auth functions
 function UserIsAuthenticated()
 {
-    $session = GetAuthentication();
+    $session = $_SESSION['UserAuthenticated'];
     if ($session === "true") {
         return true;
     } else {
@@ -284,19 +218,13 @@ function RequireGuest() {
     exit();
   }
 }
-
-function GetNumberOfUsers() {
-  global $conn;
-  $sql = "SELECT * FROM users";
-  $result = mysqli_query($conn, $sql);
-  $NumberOfUsers = mysqli_num_rows($result);
-  mysqli_close($conn);
-  return $NumberOfUsers;
-}
-
+// end auth functions
 // status functions
 
-// TODO: 001 - check if user id is not null
+// TODO: make empty input checker for status
+
+
+
 function UpdateStatus($conn, $status, $user_id) {
   $sql = "UPDATE users SET user_status = ? WHERE user_id = ?";
   $stmt = mysqli_stmt_init($conn);
@@ -331,7 +259,7 @@ function GetStatus($conn, $user_id) {
     return "";
   }
 }
-
+// end status functions
 function GetUsers() {
   global $conn;
   $sql = "SELECT * FROM users";
@@ -373,11 +301,83 @@ function ListUsers() {
     echo "<hr>";
   }
 }
+// ANCHOR profile sectuion
 function HandleProfile($id) {
   if ($id !== null && !empty($id)) {
     $user = GetUserByID($id);
     return $user;
   }
+}
+function GetProfileLink($user_id, $user_name) {
+  return "<a href='/profile?id=" . $user_id . "'>" . $user_name . "</a>";
+}
+// end profile section
+
+// ANCHOR handlers and misc functions
+// prevents xss attacks and trims whitespace
+function PurifyInput($input) {
+  $input = trim($input);
+  $input = stripslashes($input);
+  $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+  return $input;
+}
+
+function ToLineBreaks($text) {
+  return nl2br($text);
+}
+
+function ToMarkdown($text) {
+$text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
+$text = preg_replace("#\_([^_]+)\_#", '<i>$1</i>', $text);
+$text = preg_replace("#\%([^%]+)\%#", '<strike>$1</strike>', $text);
+$text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
+return $text;
+}
+// this function is run everytime the user clicks on a page.
+// this will be used to tell if the user is online or not.
+function UpdateUser($conn)
+{
+    $User = $_SESSION["UserID"];
+
+    $sql = "UPDATE users SET user_updated = now() WHERE user_id = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ?error=Database Failed!");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $User);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+function IfIsOnline($updated_at_timestamp)
+{
+    if ($updated_at_timestamp == null) {
+        return false;
+    }
+    $now = date_create(date('Y-m-d H:i:s'));
+    $updated = date_create($updated_at_timestamp);
+
+    $now_format = date_format($now, 'Y-m-d H:i:s');
+    $updated_format =  date_format($updated, 'Y-m-d H:i:s');
+
+    $test1 = strtotime($now_format);
+    $test2 = strtotime($updated_format);
+    $hour = abs($test1 - $test2) / (1 * 1);
+
+    if ($hour < 90) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function GetNumberOfUsers() {
+  global $conn;
+  $sql = "SELECT * FROM users";
+  $result = mysqli_query($conn, $sql);
+  $NumberOfUsers = mysqli_num_rows($result);
+  mysqli_close($conn);
+  return $NumberOfUsers;
 }
 
 function GetUserByID($id) {
@@ -398,9 +398,6 @@ function GetUserByID($id) {
   } else {
     header("location: ../../users/?error=Invalid User! This usually means that the ID entered is not a valid user." . $id);
   }
-}
-function GetProfileLink($user_id, $user_name) {
-  return "<a href='/profile?id=" . $user_id . "'>" . $user_name . "</a>";
 }
 function HandleDate($date) {
   $date_formatted = date("F j, Y", strtotime($date));
@@ -450,6 +447,30 @@ function HandleNote($type) {
   </script>';
   }
 }
+// ANCHOR message section
+function UnseenMessages($user_id) {
+  $message_number = GetNumberOfUnseenMessages($user_id);
+  if ($message_number > 0) {
+    return $message_number;
+  } else {
+    return false;
+  }
+}
+function GetNumberOfUnseenMessages($user_id) {
+  global $conn;
+  $sql = "SELECT * FROM messages WHERE msg_seen = 0 AND msg_receiver = ?";
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    header("location: ?error=Database Failed!");
+    exit();
+  }
+  mysqli_stmt_bind_param($stmt, "s", $user_id);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+  $NumberOfUnseenMessages = mysqli_num_rows($result);
+  mysqli_stmt_close($stmt);
+  return $NumberOfUnseenMessages;
+}
 
 function ViewMessages($user_id) {
   global $conn;
@@ -480,6 +501,8 @@ function ListMessages($result) {
       echo "<br>";
       echo "<a href='/profile?id=" . $message['msg_sender'] . "'>" . GetUserByID($message['msg_sender'])['user_name'] . "</a><br>";
       echo "<label>" . HandleDate($message['msg_created']) . "</label>";
+      echo " | ";
+      echo "<label>" . IfMessageIsSeen($message) . "</label>";
       echo "<hr>";
     }
   } else {
@@ -513,6 +536,17 @@ function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurifi
 }
 function ViewMessage($msg_id, $user_id) {
     global $conn;
+    // set message as seen
+    $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_id = ? AND msg_receiver = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      header("location: ../../messages/?error=Database Failed!");
+      exit();
+    }
+    mysqli_stmt_bind_param($stmt, "ss", $msg_id, $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    //
     $sql = "SELECT * FROM messages WHERE msg_id = ? AND msg_receiver = ?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -546,4 +580,12 @@ function GetMessageSender($message) {
 
 function GetMessageDate($message) {
   return time_elapsed_string($message['msg_created']);
+}
+
+function IfMessageIsSeen($message) {
+  if ($message['msg_seen'] == 1) {
+    return "Seen";
+  } else {
+    return "Unseen";
+  }
 }
