@@ -45,7 +45,12 @@ if (UserIsAuthenticated()) {
         <a href="/forum">Forum</a>
         <?php
         if (UserIsAuthenticated()) {
-          echo "<a href='/messages'>Messages</a>\n";
+          $messages = UnseenMessages($_SESSION['UserID']);
+          if($messages != false) {
+            echo "<a href='/messages'>Messages<span class='badge'>" .$messages . "</span></a>\n";
+          } else {
+            echo "<a href='/messages'>Messages</a>\n";
+          } 
           echo "<a href='/profile?id=" . $_SESSION['UserID'] . "'>Profile</a>\n";
         }
         ?>

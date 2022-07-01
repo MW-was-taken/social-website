@@ -15,7 +15,7 @@ $red: #f00;
 body {
   // dark bg
   background-color: $dark;
-  font-family: "Ubuntu Mono";
+  font-family: "Cartograph CF","Ubuntu Mono";
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -281,4 +281,13 @@ code {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.badge {
+  background-color: red;
+  color: white;
+  margin: 5px;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 15px;
 }
