@@ -1,5 +1,5 @@
 <?php
-$User = GetUserByID($_GET['id']);
+$User = GetUserByID($conn, $_GET['id']);
 ?>
 <div class="card form-card message">
   <div class="card-header">

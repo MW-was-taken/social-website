@@ -2,7 +2,7 @@
 $message_id = $_GET['id'];
 $UserID = $_SESSION['UserID'];
 $message = ViewMessage($message_id, $UserID);
-$Sender = GetUserByID($message['msg_sender']);
+$Sender = GetUserByID($conn, $message['msg_sender']);
 $name = GetMessageTitle($message);
 ?>
 <div class="card users">

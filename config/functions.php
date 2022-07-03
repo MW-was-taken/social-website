@@ -1,4 +1,9 @@
 <?php
+// Convert all mysql functions to PDO functions:
+
+
+
+
 // page functions
 function AssignPageName($name) {
   if (isset($name) && !empty($name)) {
@@ -19,32 +24,17 @@ function HandlePageName($name)
 
 function OpenConnection($db_host, $db_username, $db_password, $db)
 {
-    $conn = mysqli_connect($db_host, $db_username, $db_password);
-    // select database
-    try {
-        // declare database if it exists
-        // if it does not exist the catch block will be ran
-        $db_selected = mysqli_select_db($conn, $db);
-    } catch (Exception $e) {
-        // variable e wont be used due to the problem being present
-        unset($e);
-        // create the database
-        $sql = 'CREATE DATABASE ' . $db;
-
-        if (mysqli_query($conn, $sql)) {
-            return $conn;
-        } else {
-            echo 'Error creating database: ' . $conn->error . "\n";
-        }
-    } finally {
-        // return $conn after the database is created
-        return $conn;
-    }
+  // PDO connection
+  $dsn = "mysql:host=$db_host;dbname=$db";
+  $pdo = new PDO($dsn, $db_username, $db_password);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  return $pdo;
 }
 
 function CloseConnection($database_connection)
 {
-    $database_connection->close();
+    // close pdo connection
+    $database_connection = null;
 }
 
 // Authentication Functions
@@ -89,55 +79,34 @@ function InvalidPasswordMatch($password, $passwordRepeat)
     return $result;
 }
 
-function UsernameExists($conn, $username)
+function UsernameExists($pdo, $username)
 {
-    $sql = "SELECT * FROM users WHERE user_name = ?;";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("location: ../signup/?error=databasefailure");
-        exit();
-    }
-
-
-    mysqli_stmt_bind_param($stmt, "s", $username);
-    mysqli_stmt_execute($stmt);
-
-    $Data = mysqli_stmt_get_result($stmt);
-
-    if ($row = mysqli_fetch_assoc($Data)) {
-        return $row;
-    } else {
-        $result = false;
-        return $result;
-    }
-
-    mysqli_stmt_close($stmt);
+  $statement = $pdo->prepare("SELECT * FROM users WHERE user_name = :username");
+  $statement->execute(array(':username' => $username));
+  $result = $statement->fetch();
+  // if result is not empty, username exists
+  if (!empty($result)) {
+    return true;
+  } else {
+    return $result;
+  }
 }
 
-function CreateUser($conn, $username, $email, $password)
+function CreateUser($pdo, $username, $email, $password)
 {
-    $sql = "INSERT INTO users (user_name, user_email, user_password) VALUES (?, ?, ?)";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("location: ../signup.php?error=databasefailure");
-        exit();
-    }
-
-    // hash password
-    $HashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    mysqli_stmt_bind_param($stmt, "sss", $username, $email, $HashedPassword);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    $UsernameExists = UsernameExists($conn, $username, $username);
-    session_start();
-    // ANCHOR session variables
-    $_SESSION["UserAuthenticated"] = "true";
-    $_SESSION["UserID"] = $UsernameExists["user_id"];
-    $_SESSION["Username"] = $UsernameExists["user_name"];
-    $_SESSION["UserEmail"] = $UsernameExists["user_email"];
-    header("location: ../../dashboard/?note=Successfully signed up!");
-    exit();
+  $statement = $pdo->prepare("INSERT INTO users (user_name, user_email, user_password) VALUES (:username, :email, :password)");
+  // hash password
+  $password = password_hash($password, PASSWORD_DEFAULT);
+  $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
+  $result = $statement->fetch();
+  session_start();
+  // ANCHOR session variables
+  $_SESSION["UserAuthenticated"] = "true";
+  $_SESSION['UserID'] = $pdo->lastInsertId();
+  $_SESSION['Username'] = $username;
+  $_SESSION['UserEmail'] = $email;
+  header("location: ../../dashboard/?note=Successfully signed up!");
+  exit();
 }
 function EmptyInputLogin($username, $password)
 {
@@ -180,21 +149,28 @@ function time_elapsed_string($datetime, $full = false) {
 // ANCHOR login functions
 function LoginUser($conn, $Username, $Password)
 {
-    $UsernameExists = UsernameExists($conn, $Username, $Username);
-    $PasswordHashed = $UsernameExists["user_password"];
-    $CheckPassword = password_verify($Password, $PasswordHashed);
-
-    if ($CheckPassword === false) {
-        header("location: ../../login/?error=Wrong username or password!");
-    } else if ($CheckPassword === true) {
-        session_start();
-        $_SESSION["UserAuthenticated"] = "true";
-        $_SESSION["UserID"] = $UsernameExists["user_id"];
-        $_SESSION["Username"] = $UsernameExists["user_name"];
-        $_SESSION["UserEmail"] = $UsernameExists["uesr_email"];
-        header("location: ../../dashboard/?note=Successfully logged in!");
-        exit();
+  $statement = $conn->prepare("SELECT * FROM users WHERE user_name = :username");
+  $statement->execute(array(':username' => $Username));
+  $result = $statement->fetch();
+  if (!empty($result)) {
+    // check password
+    if (password_verify($Password, $result['user_password'])) {
+      session_start();
+      // ANCHOR session variables
+      $_SESSION["UserAuthenticated"] = "true";
+      $_SESSION['UserID'] = $result['user_id'];
+      $_SESSION['Username'] = $result['user_name'];
+      $_SESSION['UserEmail'] = $result['user_email'];
+      header("location: ../../dashboard/?note=Successfully logged in!");
+      exit();
+    } else {
+      header("location: ../../login/?note=Invalid password!");
+      exit();
     }
+  } else {
+    header("location: ../../login/?note=Invalid username!");
+    exit();
+  }
 }
 // ANCHOR auth functions
 function UserIsAuthenticated()
@@ -226,62 +202,30 @@ function RequireGuest() {
 
 
 function UpdateStatus($conn, $status, $user_id) {
-  $sql = "UPDATE users SET user_status = ? WHERE user_id = ?";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ../../dashboard/?error=Database Failed!");
-    exit();
-  }
-
-  mysqli_stmt_bind_param($stmt, "ss", $status, $user_id);
-  mysqli_stmt_execute($stmt);
-  mysqli_stmt_close($stmt);
-
+  // insert user_status into users table
+  $statement = $conn->prepare("UPDATE users SET user_status = :status WHERE user_id = :user_id");
+  $statement->execute(array(':status' => $status, ':user_id' => $user_id));
   header("location: ../../dashboard/?note=Status updated!");
-  exit();
 }
 
 function GetStatus($conn, $user_id) {
-  $sql = "SELECT user_status FROM users WHERE user_id = ?";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ../../dashboard/?error=Database Failed!");
-    exit();
-  }
-
-  mysqli_stmt_bind_param($stmt, "s", $user_id);
-  mysqli_stmt_execute($stmt);
-  $Data = mysqli_stmt_get_result($stmt);
-
-  if ($row = mysqli_fetch_assoc($Data)) {
-    return PurifyInput($row["user_status"]);
-  } else {
-    return "";
-  }
+  // get user_status from users table
+  $statement = $conn->prepare("SELECT user_status FROM users WHERE user_id = :user_id");
+  $statement->execute(array(':user_id' => $user_id));
+  $result = $statement->fetch();
+  return $result['user_status'];
 }
 // end status functions
 function GetUsers() {
   global $conn;
-  $sql = "SELECT * FROM users";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ../../dashboard/?error=Database Failed!");
-    exit();
-  }
-
-  mysqli_stmt_execute($stmt);
-  $Data = mysqli_stmt_get_result($stmt);
-
-  $result = [];
-  while ($row = mysqli_fetch_assoc($Data)) {
-    $result[] = $row;
-  }
-  if ($result == null) {
-    echo "<label>No users found! Click <a href='/signup' class='link'>here</a> to signup today!</label>";
-  } else {
+  $statement = $conn->prepare("SELECT * FROM users");
+  $statement->execute();
+  $result = $statement->fetchAll();
+  if(!empty($result)) {
     return $result;
+  } else {
+    echo "No users found!";
   }
-  return $result;
 }
 
 function ListUsers() {
@@ -303,8 +247,9 @@ function ListUsers() {
 }
 // ANCHOR profile sectuion
 function HandleProfile($id) {
+  global $conn;
   if ($id !== null && !empty($id)) {
-    $user = GetUserByID($id);
+    $user = GetUserByID($conn, $id);
     return $user;
   }
 }
@@ -335,20 +280,12 @@ return $text;
 }
 // this function is run everytime the user clicks on a page.
 // this will be used to tell if the user is online or not.
-function UpdateUser($conn)
+function UpdateUser($pdo)
 {
-    $User = $_SESSION["UserID"];
-
-    $sql = "UPDATE users SET user_updated = now() WHERE user_id = ?";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("location: ?error=Database Failed!");
-        exit();
-    }
-
-    mysqli_stmt_bind_param($stmt, "s", $User);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+  // use pdo to update user
+  $sql = "UPDATE users SET user_updated = NOW() WHERE user_id = :user_id";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':user_id' => $_SESSION['UserID']));
 }
 function IfIsOnline($updated_at_timestamp)
 {
@@ -371,33 +308,20 @@ function IfIsOnline($updated_at_timestamp)
         return false;
     }
 }
-function GetNumberOfUsers() {
-  global $conn;
+function GetNumberOfUsers($pdo) {
+  // use pdo to get number of users
   $sql = "SELECT * FROM users";
-  $result = mysqli_query($conn, $sql);
-  $NumberOfUsers = mysqli_num_rows($result);
-  mysqli_close($conn);
-  return $NumberOfUsers;
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
 }
 
-function GetUserByID($id) {
-  global $conn;
-  $sql = "SELECT * FROM users WHERE user_id = ?";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ../../dashboard/?error=Database Failed!");
-    exit();
-  }
-
-  mysqli_stmt_bind_param($stmt, "s", $id);
-  mysqli_stmt_execute($stmt);
-  $Data = mysqli_stmt_get_result($stmt);
-
-  if ($row = mysqli_fetch_assoc($Data)) {
-    return $row;
-  } else {
-    header("location: ../../users/?error=Invalid User! This usually means that the ID entered is not a valid user." . $id);
-  }
+function GetUserByID($pdo, $id) {
+  // use pdo to get user by id
+  $sql = "SELECT * FROM users WHERE user_id = :user_id";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':user_id' => $id));
+  $result = $stmt->fetch();
+  return $result;
 }
 function HandleDate($date) {
   $date_formatted = date("F j, Y", strtotime($date));
@@ -457,49 +381,61 @@ function UnseenMessages($user_id) {
   }
 }
 function GetNumberOfUnseenMessages($user_id) {
+  // get number of unseen messages with PDO
   global $conn;
-  $sql = "SELECT * FROM messages WHERE msg_seen = 0 AND msg_receiver = ?";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ?error=Database Failed!");
-    exit();
-  }
-  mysqli_stmt_bind_param($stmt, "s", $user_id);
-  mysqli_stmt_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-  $NumberOfUnseenMessages = mysqli_num_rows($result);
-  mysqli_stmt_close($stmt);
-  return $NumberOfUnseenMessages;
+  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 0";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  $number_of_unseen_messages = count($result);
+  return $number_of_unseen_messages;
+}
+function GetNumberOfSeenMessages($user_id) {
+  // get number of unseen messages with PDO
+  global $conn;
+  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  $number_of_seen_messages = count($result);
+  return $number_of_seen_messages;
 }
 
-function ViewMessages($user_id) {
+
+function ViewUnseenMessages($user_id) {
   global $conn;
-  $sql = "SELECT * FROM messages WHERE msg_receiver = ? ORDER BY msg_id DESC";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ../../messages/?error=Database Failed!");
-    exit();
-  }
-
-  mysqli_stmt_bind_param($stmt, "s", $user_id);
-  mysqli_stmt_execute($stmt);
-
-  $Data = mysqli_stmt_get_result($stmt);
-
-  $result = [];
-  while ($row = mysqli_fetch_assoc($Data)) {
-    $result[] = $row;
-  }
-  if ($result != null) {
-    return $result;
-  }
+  // use pdo to get messages
+  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 0";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+function ViewSeenMessages($user_id) {
+  global $conn;
+  // use pdo to get messages
+  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+function ViewSentMessages($user_id) {
+  global $conn;
+  // use pdo to get messages
+  $sql = "SELECT * FROM messages WHERE msg_sender = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
 }
 function ListMessages($result) {
-  if ($result !== null) {
+  global $conn;
+  if (!empty($result)) {
     foreach ($result as $message) {
       echo "<a href='/messages/view?id=" . $message['msg_id'] . "'>" . $message['msg_title'] . "</a>";
       echo "<br>";
-      echo "<a href='/profile?id=" . $message['msg_sender'] . "'>" . GetUserByID($message['msg_sender'])['user_name'] . "</a><br>";
+      echo "<a href='/profile?id=" . $message['msg_sender'] . "'>" . GetUserByID($conn, $message['msg_sender'])['user_name'] . "</a><br>";
       echo "<label>" . HandleDate($message['msg_created']) . "</label>";
       echo " | ";
       echo "<label>" . IfMessageIsSeen($message) . "</label>";
@@ -515,55 +451,24 @@ function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurifi
   $body_markdown = ToMarkdown($body_sanitized);
   $title = PurifyInput($title_unpurified);
   $body= ToLineBreaks($body_markdown);
-  $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body) VALUES (?, ?, ?, ?)";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    header("location: ../../messages/?error=Database Failed!");
-    exit();
-  }
-
-  mysqli_stmt_bind_param($stmt, "ssss", $sender_id, $receiver_id, $title, $body);
-  mysqli_stmt_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-
-  if ($result) {
-    HandleNote("Message Sent!");
-    header("location: ../../messages/");
-  } else {
-    HandleError("Message Failed to Send!");
-    header("location: ../../messages/");
-  }
+  $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
+  // redirect to messages
+  header("Location: ../../messages");
 }
 function ViewMessage($msg_id, $user_id) {
     global $conn;
     // set message as seen
-    $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_id = ? AND msg_receiver = ?";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-      header("location: ../../messages/?error=Database Failed!");
-      exit();
-    }
-    mysqli_stmt_bind_param($stmt, "ss", $msg_id, $user_id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    //
-    $sql = "SELECT * FROM messages WHERE msg_id = ? AND msg_receiver = ?";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-      header("location: ../../messages/?error=Database Failed!");
-      exit();
-    }
-  
-    mysqli_stmt_bind_param($stmt, "ss", $msg_id, $user_id);
-    mysqli_stmt_execute($stmt);
-  
-    $Data = mysqli_stmt_get_result($stmt);
-  
-    if ($row = mysqli_fetch_assoc($Data)) {
-      return $row;
-    } else {
-      header("location: ../../messages/?error=Invalid Message!");
-    }
+    $sql = "UPDATE messages SET message_seen = 1 WHERE msg_id = :msg_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':msg_id' => $msg_id));
+    // get message with PDO
+    $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':msg_id' => $msg_id));
+    $result = $stmt->fetch();
+    return $result;
 }
 
 function GetMessageTitle($message) {
