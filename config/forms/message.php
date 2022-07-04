@@ -18,7 +18,7 @@ if (isset($_POST["submit"])) {
     }
 
     SendMessage($sender_id, $receiver_id, $title, $body);
-    header("location: ../../messages/?success=Message sent!");
+    header("location: ../../messages/?note=Message sent!");
 } else {
     header('location: ../../signup?error=Access Denied!');
 }

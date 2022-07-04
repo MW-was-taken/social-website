@@ -454,13 +454,18 @@ function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurifi
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
-  // redirect to messages
-  header("Location: ../../messages");
+}
+function SetAllMessagesAsSeen($user_id) {
+  global $conn;
+  $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_receiver = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  header("Location: /messages?note=All messages set as seen.");
 }
 function ViewMessage($msg_id, $user_id) {
     global $conn;
     // set message as seen
-    $sql = "UPDATE messages SET message_seen = 1 WHERE msg_id = :msg_id";
+    $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_id = :msg_id";
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':msg_id' => $msg_id));
     // get message with PDO
