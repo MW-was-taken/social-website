@@ -9,6 +9,7 @@ if (isset($_POST["submit"])) {
 
     if(!empty($status)) {  
       UpdateStatus($conn, $status, $_SESSION["UserID"]);
+      exit();
     }
 
     header("Location: /dashboard?error=Status is empty!");

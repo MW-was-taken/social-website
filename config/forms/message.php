@@ -12,13 +12,19 @@ if (isset($_POST["submit"])) {
 
     if (empty($title) || empty($body)) {
         header("location: ../../messages/?error=Please fill in all fields!");
+        exit();
     }
-    if ($sender_id != $_SESSION['UserID']) {
-        header("location: ../../messages/?error=Sender ID did not match User ID! Did you log-out before sending?");
+    if ($sender_id == $receiver_id) {
+      header("location: ../../messages/?error=You can't send a message to yourself!");
+      exit();
     }
-
-    SendMessage($sender_id, $receiver_id, $title, $body);
-    header("location: ../../messages/?note=Message sent!");
+    if($sender_id != $_SESSION["UserID"]) {
+      header("location: ../../messages/?error=Sender ID does not match User ID!");
+      exit();
+    } else {
+      SendMessage($sender_id, $receiver_id, $title, $body);
+      header("location: ../../messages/?note=Message sent!");
+    }
 } else {
     header('location: ../../signup?error=Access Denied!');
 }
