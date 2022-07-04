@@ -7,8 +7,11 @@ if (isset($_POST["submit"])) {
     require_once '../functions.php';
     require_once '../config.php';
 
+    if(!empty($status)) {  
+      UpdateStatus($conn, $status, $_SESSION["UserID"]);
+    }
 
-    UpdateStatus($conn, $status, $_SESSION["UserID"]);
+    header("Location: /dashboard?error=Status is empty!");
 } else {
     header('location: ../../dashboard?error=Access Denied!');
 }

@@ -1,5 +1,6 @@
 <?php
 HandleNote(@$_GET["note"]);
+HandleError(@$_GET["error"]);
 ?>
 <div class="card users">
   <div class="card-header">

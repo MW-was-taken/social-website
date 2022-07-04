@@ -201,7 +201,10 @@ function RequireGuest() {
 
 
 
-function UpdateStatus($conn, $status, $user_id) {
+function UpdateStatus($conn, $status_raw, $user_id) {
+  // sanitize input
+  $status = PurifyInput($status_raw);
+
   // insert user_status into users table
   $statement = $conn->prepare("UPDATE users SET user_status = :status WHERE user_id = :user_id");
   $statement->execute(array(':status' => $status, ':user_id' => $user_id));
@@ -453,7 +456,7 @@ function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurifi
   $body= ToLineBreaks($body_markdown);
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
   $stmt = $conn->prepare($sql);
-  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
+  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));  
 }
 function SetAllMessagesAsSeen($user_id) {
   global $conn;
