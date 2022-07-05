@@ -8,8 +8,8 @@ if (isset($_POST["submit"])) {
 
     require_once '../functions.php';
     require_once '../config.php';
-
-    if (EmptyInputSignup($username, $email, $password, $passwordRepeat) !== false) {
+    // TODO make this all one function
+    if (EmptyInputSignup($username, $email, $password,  $passwordRepeat) !== false) {
         header("location: ../../signup?error=Please fill in all fields!");
         exit();
     }
@@ -17,8 +17,16 @@ if (isset($_POST["submit"])) {
         header("location: ../../signup?error=Username contains forbidden characters.");
         exit();
     }
+    if (InvalidUsernameLength($username) !== false) {
+        header("location: ../../signup?error=Username must be atleast 3 characters but not exceed 20.");
+        exit();
+    }
     if (InvalidEmail($email) !== false) {
         header("location: ../../signup?error=Invalid email. This usually means that you entered your email address incorrectly or your email provider is on our blocked list to prevent spam.");
+        exit();
+    }
+    if (InvalidPasswordLength($password) !== false) {
+        header("location: ../../signup?error=Password must be atleast 8 characters but not exceed 50 characters.");
         exit();
     }
     if (InvalidPasswordMatch($password, $passwordRepeat) !== false) {
