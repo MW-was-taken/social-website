@@ -22,7 +22,7 @@ $name = $User['user_name'];
 </div>
 <div class="card-body">
   <?php 
-    echo "<label>Status: " . PurifyInput($User['user_status']) . "</label>";
+    echo "<label>Status: " . $User['user_status'] . "</label>";
     echo "<br>";
     echo "<label>Join Date: " . HandleDate($User['user_created']) . "</label>";
     echo "<br>";

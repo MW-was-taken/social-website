@@ -197,9 +197,26 @@ function RequireGuest() {
 // end auth functions
 // status functions
 
-// TODO: make empty input checker for status
-
-
+// check if status has invalid characters
+function InvalidStatus($status)
+{
+    if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?]*$/", $status)) {
+        $result = true;
+    } else {
+        $result = false;
+    }
+    return $result;
+}
+// check if status is over 100 characters
+function StatusTooLong($status)
+{
+    if (strlen($status) > 50) {
+        $result = true;
+    } else {
+        $result = false;
+    }
+    return $result;
+}
 
 function UpdateStatus($conn, $status_raw, $user_id) {
   // sanitize input
@@ -233,19 +250,24 @@ function GetUsers() {
 
 function ListUsers() {
   $users = GetUsers();
-  foreach ($users as $user) {
-    echo '<div class="ellipsis">';
-    echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
-    if(!IfIsOnline($user['user_updated'])) {
-      echo '<span class="status-dot users"></span>';
-    } else {
-      echo '<span class="status-dot users online"></span>';
+  $usercount = count($users);
+  if ($usercount > 0) {
+    foreach ($users as $user) {
+      echo '<div class="ellipsis">';
+      echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
+      if(!IfIsOnline($user['user_updated'])) {
+        echo '<span class="status-dot users"></span>';
+      } else {
+        echo '<span class="status-dot users online"></span>';
+      }
+      echo '</div>';
+      if (!empty($user['user_status'])) {
+        echo "<label>" . PurifyInput($user['user_status']) . "</label>";
+      }
+      echo "<hr>";
     }
-    echo '</div>';
-    if (!empty($user['user_status'])) {
-      echo "<label>" . PurifyInput($user['user_status']) . "</label>";
-    }
-    echo "<hr>";
+  } else {
+    echo "No users found!";
   }
 }
 // ANCHOR profile sectuion
@@ -316,6 +338,8 @@ function GetNumberOfUsers($pdo) {
   $sql = "SELECT * FROM users";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
+  $result = $stmt->fetchAll();
+  return count($result);
 }
 
 function GetUserByID($pdo, $id) {
