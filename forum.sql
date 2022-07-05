@@ -51,7 +51,9 @@ CREATE TABLE `users` (
   `user_status` varchar(250) NOT NULL DEFAULT 'Hi, I''m new here!',
   `user_bio` text DEFAULT NULL,
   `user_updated` datetime NOT NULL,
-  `user_email` varchar(500) NOT NULL
+  `user_email` varchar(500) NOT NULL,
+  `user_signup_ip` varchar(500) DEFAULT NULL,
+  `user_ip` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

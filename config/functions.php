@@ -51,12 +51,22 @@ function EmptyInputSignup($username, $email, $password, $passwordRepeat)
 
 function InvalidUsername($username)
 {
-    if (!preg_match("/^[a-zA-Z0-9_]*$/", $username)) {
+    if (!preg_match("/^[a-zA-Z0-9_ ]*$/", $username)) {
         $result = true;
     } else {
         $result = false;
     }
     return $result;
+}
+
+function InvalidUsernameLength($username) {
+  // user name must be atleast 3 characters long but not exceed 20 characters long
+  if (strlen($username) < 3 || strlen($username) > 20) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 function InvalidEmail($email)
@@ -79,6 +89,16 @@ function InvalidPasswordMatch($password, $passwordRepeat)
     return $result;
 }
 
+function InvalidPasswordLength($password)
+{
+    if (strlen($password) < 8 || strlen($password) > 50) {
+        $result = true;
+    } else {
+        $result = false;
+    }
+    return $result;
+}
+
 function UsernameExists($pdo, $username)
 {
   $statement = $pdo->prepare("SELECT * FROM users WHERE user_name = :username");
@@ -94,10 +114,10 @@ function UsernameExists($pdo, $username)
 
 function CreateUser($pdo, $username, $email, $password)
 {
-  $statement = $pdo->prepare("INSERT INTO users (user_name, user_email, user_password) VALUES (:username, :email, :password)");
+  $statement = $pdo->prepare("INSERT INTO users (user_name, user_email, user_password, user_signup_ip, user_ip) VALUES (:username, :email, :password, :ip, :ip)");
   // hash password
   $password = password_hash($password, PASSWORD_DEFAULT);
-  $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
+  $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password, ':ip' => $_SERVER['REMOTE_ADDR']));
   $result = $statement->fetch();
   session_start();
   // ANCHOR session variables
@@ -105,6 +125,7 @@ function CreateUser($pdo, $username, $email, $password)
   $_SESSION['UserID'] = $pdo->lastInsertId();
   $_SESSION['Username'] = $username;
   $_SESSION['UserEmail'] = $email;
+  $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
   header("location: ../../dashboard/?note=Successfully signed up!");
   exit();
 }
@@ -161,6 +182,7 @@ function LoginUser($conn, $Username, $Password)
       $_SESSION['UserID'] = $result['user_id'];
       $_SESSION['Username'] = $result['user_name'];
       $_SESSION['UserEmail'] = $result['user_email'];
+      $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
       header("location: ../../dashboard/?note=Successfully logged in!");
       exit();
     } else {
@@ -262,7 +284,7 @@ function ListUsers() {
       }
       echo '</div>';
       if (!empty($user['user_status'])) {
-        echo "<label>" . PurifyInput($user['user_status']) . "</label>";
+        echo "<label>" . $user['user_status'] . "</label>";
       }
       echo "<hr>";
     }
@@ -303,6 +325,22 @@ $text = preg_replace("#\%([^%]+)\%#", '<strike>$1</strike>', $text);
 $text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
 return $text;
 }
+function CheckIpAddress($ip) {
+  if(filter_var($ip, FILTER_VALIDATE_IP)) {
+    if ($_SESSION['UserIP'] === $ip) {
+      UpdateIP($ip);
+    } else {
+      return false;
+    }
+  } else {
+    UpdateIP($ip);
+  }
+}
+function UpdateIP($ip) {
+  global $conn;
+  $statement = $conn->prepare("UPDATE users SET user_ip = :ip WHERE user_id = :user_id");
+  $statement->execute(array(':ip' => $ip, ':user_id' => $_SESSION['UserID']));
+}
 // this function is run everytime the user clicks on a page.
 // this will be used to tell if the user is online or not.
 function UpdateUser($pdo)
@@ -327,7 +365,7 @@ function IfIsOnline($updated_at_timestamp)
     $test2 = strtotime($updated_format);
     $hour = abs($test1 - $test2) / (1 * 1);
 
-    if ($hour < 90) {
+    if ($hour < 180) {
         return true;
     } else {
         return false;

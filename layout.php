@@ -5,6 +5,7 @@ include("config/config.php");
 @$name = AssignPageName($name);
 if (UserIsAuthenticated()) {
   UpdateUser($conn);
+  CheckIpAddress($_SERVER['REMOTE_ADDR']);
 }
 ?>
 
