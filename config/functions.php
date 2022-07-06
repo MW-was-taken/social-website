@@ -328,11 +328,13 @@ return $text;
 function CheckIpAddress($ip) {
   if(filter_var($ip, FILTER_VALIDATE_IP)) {
     if ($_SESSION['UserIP'] === $ip) {
+      CheckIfIpIsBanned($ip);
       UpdateIP($ip);
     } else {
       return false;
     }
   } else {
+    CheckIfIpIsBanned($ip);
     UpdateIP($ip);
   }
 }
@@ -340,6 +342,21 @@ function UpdateIP($ip) {
   global $conn;
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip WHERE user_id = :user_id");
   $statement->execute(array(':ip' => $ip, ':user_id' => $_SESSION['UserID']));
+}
+function CheckIfIpIsBanned($ip) {
+  global $conn;
+  $statement = $conn->prepare("SELECT * FROM ip_bans WHERE ip= :ip");
+  $statement->execute(array(':ip' => $ip));
+  $result = $statement->fetch();
+  if(!empty($result)) {
+    IpBanRedirect();
+  } else {
+    return false;
+  }
+}
+function IpBanRedirect() {
+  header("location: ../../bans/ip_ban.html");
+  exit();
 }
 // this function is run everytime the user clicks on a page.
 // this will be used to tell if the user is online or not.
