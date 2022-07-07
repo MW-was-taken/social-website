@@ -43,6 +43,7 @@ CREATE TABLE `replies` (
   `reply_body` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `user_name` varchar(100) NOT NULL,
@@ -50,11 +51,14 @@ CREATE TABLE `users` (
   `user_created` datetime NOT NULL DEFAULT current_timestamp(),
   `user_status` varchar(250) NOT NULL DEFAULT 'Hi, I''m new here!',
   `user_bio` text DEFAULT NULL,
-  `user_updated` datetime NOT NULL,
+  `user_updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `user_email` varchar(500) NOT NULL,
-  `user_signup_ip` varchar(500) DEFAULT NULL,
-  `user_ip` varchar(500) DEFAULT NULL
+  `user_signup_ip` varchar(100) NOT NULL,
+  `user_ip` varchar(50) NOT NULL,
+  `user_admin` tinyint(4) NOT NULL DEFAULT 0,
+  `user_flood` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 
 ALTER TABLE `categories`
