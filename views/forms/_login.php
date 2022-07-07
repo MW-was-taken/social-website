@@ -18,7 +18,7 @@ HandleError($error);
         <button type="submit" name="submit" value="submit">Login</button>
       </form>
       <hr>
-      <a href="/signup/" style="display: block; color: #fff; text-align: center; font-size: 135%; text-decoration: none;">Signup</a>
+      <div style="display: block; color: #fff; text-align: center; font-size: 1.3em">No account? <a href="/signup/" style="text-decoration: none; color: #067aef;">Signup</a></div>
     </div>
   </div>
 </div>

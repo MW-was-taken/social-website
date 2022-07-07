@@ -4,7 +4,7 @@ HandleError(@$_GET["error"]);
 ?>
 <div class="card users">
   <div class="card-header">
-    Welcome back to Elfo's Forum, <?php echo ($_SESSION["Username"]); ?>
+    Welcome back to Brick-Town, <?php echo ($_SESSION["Username"]); ?>
   </div>
   <div class="card-body">
     <label for="status" class="status">Your Status</label>

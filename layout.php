@@ -48,6 +48,7 @@ if (UserIsAuthenticated()) {
             echo "<a href='/messages'>Messages</a>\n";
           } 
           echo "<a href='/profile?id=" . $_SESSION['UserID'] . "'>Profile</a>\n";
+          echo "<a href='/settings'>Account Settings</a>\n";
         }
         ?>
         <a href="/users">Users</a>

@@ -19,6 +19,21 @@ function HandlePageName($name)
   return $name . " - " . "Brick-Town";
 }
 
+// site settings functions
+function GetSiteSettings() {
+  global $db;
+  $stmt = $db->prepare("SELECT * FROM site_settings");
+  $stmt->execute();
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function WebsiteAlert($site_settings) {
+  if ($site_settings['alert'] == 1) {
+    return true;
+  }
+}
+
 // config functions
 
 
@@ -258,6 +273,50 @@ function GetStatus($conn, $user_id) {
   return $result['user_status'];
 }
 // end status functions
+
+// bio functions
+
+function UpdateBio($conn, $bio_raw, $user_id) {
+  // sanitize input
+  $bio_raw_1 = PurifyInput($bio_raw);
+  $bio_raw_2 = ToLineBreaks($bio_raw_1);
+  $bio = ToMarkdown($bio_raw_2);
+
+  // insert user_bio into users table
+  $statement = $conn->prepare("UPDATE users SET user_bio = :bio WHERE user_id = :user_id");
+  $statement->execute(array(':bio' => $bio, ':user_id' => $user_id));
+  header("location: ../../dashboard/?note=Bio updated!");
+}
+
+function GetBio($conn, $user_id) {
+  // get user_bio from users table
+  $statement = $conn->prepare("SELECT user_bio FROM users WHERE user_id = :user_id");
+  $statement->execute(array(':user_id' => $user_id));
+  $result = $statement->fetch();
+  return $result['user_bio'];
+}
+
+function InvalidBio($bio)
+{
+    if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?`]*$/", $bio)) {
+        $result = true;
+    } else {
+        $result = false;
+    }
+    return $result;
+}
+
+function BioTooLong($bio)
+{
+    if (strlen($bio) > 3000) {
+        $result = true;
+    } else {
+        $result = false;
+    }
+    return $result;
+}
+
+// end bio functions
 function GetUsers() {
   global $conn;
   $statement = $conn->prepare("SELECT * FROM users");
@@ -275,16 +334,20 @@ function ListUsers() {
   $usercount = count($users);
   if ($usercount > 0) {
     foreach ($users as $user) {
+      $status = $user['user_status'];
+      $bio = $user['user_bio'];
+      $username = $user['user_name'];
+      $id = $user['user_id'];
       echo '<div class="ellipsis">';
-      echo "<a href='/profile?id=" . $user['user_id'] . "'>" . $user['user_name'] . "</a>";
+      echo "<a href='/profile?id=" . $id . "'>" . $username . "</a>";
       if(!IfIsOnline($user['user_updated'])) {
         echo '<span class="status-dot users"></span>';
       } else {
         echo '<span class="status-dot users online"></span>';
       }
       echo '</div>';
-      if (!empty($user['user_status'])) {
-        echo "<label>" . $user['user_status'] . "</label>";
+      if (!empty($status)) {
+        echo "<label>" . $status . "</label>";
       }
       echo "<hr>";
     }
@@ -362,10 +425,9 @@ function IpBanRedirect() {
 // this will be used to tell if the user is online or not.
 function UpdateUser($pdo)
 {
-  // use pdo to update user
-  $sql = "UPDATE users SET user_updated = NOW() WHERE user_id = :user_id";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute(array(':user_id' => $_SESSION['UserID']));
+  // update user_upated field in users table to current timestamp WITHOUT NOW()
+  $statement = $pdo->prepare("UPDATE users SET user_updated = CURRENT_TIMESTAMP WHERE user_id = :user_id");
+  $statement->execute(array(':user_id' => $_SESSION['UserID']));
 }
 function IfIsOnline($updated_at_timestamp)
 {

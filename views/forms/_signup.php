@@ -20,6 +20,8 @@ HandleError($error);
         <label for="passwordRPT">Password Repeat</label>
         <input type="password" name="passwordRepeat" id="passwordRPT" placeholder="Password Repeat..." required>
         <button type="submit" name="submit" value="submit">Sign Up</button>
+        <hr>
+        <div style="display: block; color: #fff; text-align: center; font-size: 1.3em"><a href="/login/" style="text-decoration: none; color: #067aef;">Login</a>Already have an account?</div>
       </form>
     </div>
   </div>

@@ -40,7 +40,7 @@ input, textarea {
   margin-top: 5px;
 }
 textarea {
-  resize: none;
+  resize: vertical;
   min-height: 100px;
 }
 
@@ -100,7 +100,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
 }
 .alert {
-  background: rgb(4, 4, 82);
+  background: $red;
   color: $white;
   padding: 5px 0;
   border-radius: 5px;
@@ -134,7 +134,8 @@ button {
   }
 }
 .card {
-  border: 1px solid rgb(44, 44, 44);
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
   &.form-card {
     &.signup {
       max-width: 21.5em;
@@ -160,13 +161,15 @@ button {
   }
   .card-header {
     color: $white;
-    background: rgb(1, 1, 113);
-    padding: 5px;
+    background: $dark-blue;
+    padding: 12px;
+    border-radius: 5px 5px 0 0;
   }
   .card-body {
     padding: 5px;
     background: #2a2a2a;
     color: $white;
+    border-radius: 0 0 5px 5px;
     &.message {
       hr {
         margin: 5px;
