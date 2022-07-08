@@ -154,6 +154,12 @@ function EmptyInputLogin($username, $password)
     return $result;
 }
 // Credit: https://stackoverflow.com/users/67332/glavi%c4%87
+function ConvertDateToTimezone($date)
+{
+    $date = new DateTime($date);
+    $date->setTimezone(new DateTimeZone('America/New_York'));
+    return $date;
+}
 function time_elapsed_string($datetime, $full = false) {
   $now = new DateTime;
   $ago = new DateTime($datetime);
@@ -434,8 +440,11 @@ function IfIsOnline($updated_at_timestamp)
     if ($updated_at_timestamp == null) {
         return false;
     }
+
+    // use convertdatetotimezone to convert the timestamp to the user's timezone
+    $updated = ConvertDateToTimezone($updated_at_timestamp);
     $now = date_create(date('Y-m-d H:i:s'));
-    $updated = date_create($updated_at_timestamp);
+
 
     $now_format = date_format($now, 'Y-m-d H:i:s');
     $updated_format =  date_format($updated, 'Y-m-d H:i:s');
