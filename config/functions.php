@@ -414,15 +414,13 @@ function UpdateIP($ip) {
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip WHERE user_id = :user_id");
   $statement->execute(array(':ip' => $ip_hash, ':user_id' => $_SESSION['UserID']));
 }
-function UnhashIpAddress($ip) {
-  // unhash ip address
-  $ip = hash('sha256', $ip);
-  return $ip;
-}
 function CheckIfIpIsBanned($ip) {
+  // hash ip
+  $ip_hash = hash('sha256', $ip);
+
   global $conn;
-  $statement = $conn->prepare("SELECT * FROM ip_bans WHERE ip= :ip");
-  $statement->execute(array(':ip' => $ip));
+  $statement = $conn->prepare("SELECT * FROM ip_bans WHERE ip= :ip_hash");
+  $statement->execute(array(':ip_hash' => $ip_hash));
   $result = $statement->fetch();
   if(!empty($result)) {
     IpBanRedirect();
