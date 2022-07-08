@@ -15,7 +15,8 @@ $red: #f00;
 body {
   // dark bg
   background-color: $dark;
-  font-family: "Cartograph CF","Ubuntu Mono";
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -32,7 +33,7 @@ input, textarea {
   color: $white;
   padding: 10px;
   font-size: 1.2rem;
-  font-weight: 300;
+  font-weight: inherit;
   width: 100%;
   &:focus {
     outline: none;
@@ -82,6 +83,7 @@ nav {
     display: inline-block;
     text-decoration: none;
     font-size: large;
+    font-weight: 500;
     &:hover {
       background: $dark-blue-hover;
     }
@@ -126,7 +128,7 @@ button {
   background: $dark-blue-hover;
   color: $white;
   font-size: larger;
-  font-weight: 300;
+  font-weight: inherit;
   transition: 200ms;
   &:hover {
     background: $dark-blue-hover-hover;

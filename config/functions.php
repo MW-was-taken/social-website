@@ -408,8 +408,16 @@ function CheckIpAddress($ip) {
 }
 function UpdateIP($ip) {
   global $conn;
+  // hash ip address
+  $ip_hash = hash('sha256', $ip);
+  // update ip address
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip WHERE user_id = :user_id");
-  $statement->execute(array(':ip' => $ip, ':user_id' => $_SESSION['UserID']));
+  $statement->execute(array(':ip' => $ip_hash, ':user_id' => $_SESSION['UserID']));
+}
+function UnhashIpAddress($ip) {
+  // unhash ip address
+  $ip = hash('sha256', $ip);
+  return $ip;
 }
 function CheckIfIpIsBanned($ip) {
   global $conn;
