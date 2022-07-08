@@ -1,7 +1,7 @@
 <?php
-session_start();
 include("config/functions.php");
 include("config/config.php");
+session_start();
 @$name = AssignPageName($name);
 CheckIfIpIsBanned($_SERVER['REMOTE_ADDR']);
 ?>

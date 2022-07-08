@@ -1,9 +1,8 @@
 <?php
-// Convert all mysql functions to PDO functions:
-
-
-
-
+// set session timeout to 24 hours
+ini_set('session.gc_maxlifetime', 86400);
+// set session cookie to 24 hours
+ini_set('session.cookie_lifetime', 86400);
 // page functions
 function AssignPageName($name) {
   if (isset($name) && !empty($name)) {
