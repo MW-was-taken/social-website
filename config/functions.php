@@ -421,11 +421,11 @@ function CheckIfIpIsBanned($ip) {
   $statement->execute(array(':ip' => $ip));
   $result = $statement->fetch();
   if(!empty($result)) {
-    header("location: /bans/ip_ban.html");
+    IpBanRedirect();
   }
 }
 function IpBanRedirect() {
-  header("location: ../../bans/ip_ban.html");
+  header("location: ../../bans/ip");
   exit();
 }
 // this function is run everytime the user clicks on a page.
