@@ -53,8 +53,8 @@ CREATE TABLE `users` (
   `user_bio` text DEFAULT NULL,
   `user_updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `user_email` varchar(500) NOT NULL,
-  `user_signup_ip` varchar(100) NOT NULL,
-  `user_ip` varchar(50) NOT NULL,
+  `user_signup_ip` varchar(500) NOT NULL,
+  `user_ip` varchar(500) NOT NULL,
   `user_admin` tinyint(4) NOT NULL DEFAULT 0,
   `user_flood` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

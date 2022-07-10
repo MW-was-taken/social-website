@@ -410,22 +410,18 @@ function UpdateIP($ip) {
   global $conn;
   // hash ip address
   $ip_hash = hash('sha256', $ip);
-  // update ip address
-  $statement = $conn->prepare("UPDATE users SET user_ip = :ip WHERE user_id = :user_id");
-  $statement->execute(array(':ip' => $ip_hash, ':user_id' => $_SESSION['UserID']));
+  // update ip address in users table
+  $statement = $conn->prepare("UPDATE users SET user_ip = :ip_hash WHERE user_id = :user_id");
+  $statement->execute(array(':ip_hash' => $ip_hash, ':user_id' => $_SESSION['UserID']));
 }
 function CheckIfIpIsBanned($ip) {
-  // hash ip
-  $ip_hash = hash('sha256', $ip);
-
   global $conn;
-  $statement = $conn->prepare("SELECT * FROM ip_bans WHERE ip= :ip_hash");
-  $statement->execute(array(':ip_hash' => $ip_hash));
+  
+  $statement = $conn->prepare("SELECT * FROM ip_bans WHERE ip = :ip");
+  $statement->execute(array(':ip' => $ip));
   $result = $statement->fetch();
   if(!empty($result)) {
-    IpBanRedirect();
-  } else {
-    return false;
+    header("location: /bans/ip_ban.html");
   }
 }
 function IpBanRedirect() {
