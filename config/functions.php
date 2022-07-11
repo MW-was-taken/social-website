@@ -1,4 +1,16 @@
 <?php
+/*
+PROPERTY OF:
+U _____ u                 _____     U  ___ u     _    
+\| ___"|/      ___       |" ___|     \/"_ \/    /"|   
+ |  _|"       |_"_|     U| |_  u     | | | |  u | |u  
+ | |___        | |      \|  _|/  .-,_| |_| |   \| |/  
+ |_____|     U/| |\u     |_|      \_)-\___/     |_|   
+ <<   >>  .-,_|___|_,-.  )(\\,-        \\     _//<,-, 
+(__) (__)  \_)-' '-(_/  (__)(_/       (__)   (__)(_/  
+*/
+
+
 // set session timeout to 24 hours
 ini_set('session.gc_maxlifetime', 86400);
 // set session cookie to 24 hours
@@ -293,7 +305,7 @@ function UpdateBio($conn, $bio_raw, $user_id)
   // insert user_bio into users table
   $statement = $conn->prepare("UPDATE users SET user_bio = :bio WHERE user_id = :user_id");
   $statement->execute(array(':bio' => $bio, ':user_id' => $user_id));
-  header("location: ../../dashboard/?note=Bio updated!");
+  header("location: ../../settings/?note=Bio updated!");
 }
 
 function GetBio($conn, $user_id)
@@ -661,6 +673,8 @@ function SetAllMessagesAsSeen($user_id)
 }
 function ViewMessage($msg_id, $user_id)
 {
+  // i do not know how this works
+
   // check if message exists
   global $conn;
   $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
@@ -720,3 +734,32 @@ function IfMessageIsSeen($message)
     return "Unseen";
   }
 }
+// end of messages functions
+// badge functions
+function GetBadge($user_id)
+{
+  global $conn;
+  $sql = "SELECT * FROM badges WHERE user_id = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':badge_owner' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function HandleBadgeColor($badge_color) {
+  // gh copilot is overpowered
+  if ($badge_color == "red") {
+    return "danger";
+  } else if ($badge_color == "green") {
+    return "success";
+  } else if ($badge_color == "blue") {
+    return "primary";
+  } else if ($badge_color == "yellow") {
+    return "warning";
+  } else if ($badge_color == "orange") {
+    return "info";
+  } else {
+    return "secondary";
+  }
+}
+

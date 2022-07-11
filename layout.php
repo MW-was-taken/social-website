@@ -70,6 +70,7 @@ if (UserIsAuthenticated()) {
       ?>
     </div>
   </div>
+  <!-- </body> -->
 </body>
 <head>
 <title>

@@ -8,7 +8,6 @@ if (isset($_GET['id'])) {
 $name = $User['user_name'];
 
 ?>
-
 <div class="card users">
 <div class="card-header">
   <?php echo $User['user_name']; 
