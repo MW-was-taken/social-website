@@ -12,6 +12,14 @@ $name = $User['user_name'];
 <div class="card users">
 <div class="card-header">
   <?php echo $User['user_name']; 
+  if($User['user_admin'] == 3) {
+    echo ' <span class="admin-text">Admin</span>';
+  } else if($User['user_admin'] == 2 || $User['user_admin'] == 1) {
+    echo ' <span class="mod-text">Moderator</span>';
+  }
+
+  ?>
+  <?php
       if(!IfIsOnline($User['user_updated'])) {
         echo '<span class="status-dot users"></span>';
       } else {

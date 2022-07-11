@@ -344,7 +344,13 @@ function ListUsers() {
       $username = $user['user_name'];
       $id = $user['user_id'];
       echo '<div class="ellipsis">';
-      echo "<a href='/profile?id=" . $id . "'>" . $username . "</a>";
+      echo "<a href='/profile?id=" . $id . "'>" . $username;
+      echo '</a>';
+      if($user['user_admin'] == 3) {
+        echo ' <span class="admin-text">Admin</span>';
+      } else if($user['user_admin'] == 2 || $user['user_admin'] == 1) {
+        echo ' <span class="mod-text">Moderator</span>';
+      }
       if(!IfIsOnline($user['user_updated'])) {
         echo '<span class="status-dot users"></span>';
       } else {
