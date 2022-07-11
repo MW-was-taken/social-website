@@ -4,7 +4,8 @@ ini_set('session.gc_maxlifetime', 86400);
 // set session cookie to 24 hours
 ini_set('session.cookie_lifetime', 86400);
 // page functions
-function AssignPageName($name) {
+function AssignPageName($name)
+{
   if (isset($name) && !empty($name)) {
     return $name;
   }
@@ -19,7 +20,8 @@ function HandlePageName($name)
 }
 
 // site settings functions
-function GetSiteSettings() {
+function GetSiteSettings()
+{
   global $db;
   $stmt = $db->prepare("SELECT * FROM site_settings");
   $stmt->execute();
@@ -27,7 +29,8 @@ function GetSiteSettings() {
   return $result;
 }
 
-function WebsiteAlert($site_settings) {
+function WebsiteAlert($site_settings)
+{
   if ($site_settings['alert'] == 1) {
     return true;
   }
@@ -47,33 +50,34 @@ function OpenConnection($db_host, $db_username, $db_password, $db)
 
 function CloseConnection($database_connection)
 {
-    // close pdo connection
-    $database_connection = null;
+  // close pdo connection
+  $database_connection = null;
 }
 
 // Authentication Functions
 $result;
 function EmptyInputSignup($username, $email, $password, $passwordRepeat)
 {
-    if (empty($username) || empty($email) || empty($password) || empty($passwordRepeat)) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (empty($username) || empty($email) || empty($password) || empty($passwordRepeat)) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 function InvalidUsername($username)
 {
-    if (!preg_match("/^[a-zA-Z0-9_ ]*$/", $username)) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (!preg_match("/^[a-zA-Z0-9_ ]*$/", $username)) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
-function InvalidUsernameLength($username) {
+function InvalidUsernameLength($username)
+{
   // user name must be atleast 3 characters long but not exceed 20 characters long
   if (strlen($username) < 3 || strlen($username) > 20) {
     $result = true;
@@ -85,32 +89,32 @@ function InvalidUsernameLength($username) {
 
 function InvalidEmail($email)
 {
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 function InvalidPasswordMatch($password, $passwordRepeat)
 {
-    if ($password !== $passwordRepeat) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if ($password !== $passwordRepeat) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 function InvalidPasswordLength($password)
 {
-    if (strlen($password) < 8 || strlen($password) > 50) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (strlen($password) < 8 || strlen($password) > 50) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 function UsernameExists($pdo, $username)
@@ -145,21 +149,15 @@ function CreateUser($pdo, $username, $email, $password)
 }
 function EmptyInputLogin($username, $password)
 {
-    if (empty($username) || empty($password)) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (empty($username) || empty($password)) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
-// Credit: https://stackoverflow.com/users/67332/glavi%c4%87
-function ConvertDateToTimezone($date)
+function time_elapsed_string($datetime, $full = false)
 {
-    $date = new DateTime($date);
-    $date->setTimezone(new DateTimeZone('America/New_York'));
-    return $date;
-}
-function time_elapsed_string($datetime, $full = false) {
   $now = new DateTime;
   $ago = new DateTime($datetime);
   $diff = $now->diff($ago);
@@ -168,20 +166,20 @@ function time_elapsed_string($datetime, $full = false) {
   $diff->d -= $diff->w * 7;
 
   $string = array(
-      'y' => 'year',
-      'm' => 'month',
-      'w' => 'week',
-      'd' => 'day',
-      'h' => 'hour',
-      'i' => 'minute',
-      's' => 'second',
+    'y' => 'year',
+    'm' => 'month',
+    'w' => 'week',
+    'd' => 'day',
+    'h' => 'hour',
+    'i' => 'minute',
+    's' => 'second',
   );
   foreach ($string as $k => &$v) {
-      if ($diff->$k) {
-          $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-      } else {
-          unset($string[$k]);
-      }
+    if ($diff->$k) {
+      $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+    } else {
+      unset($string[$k]);
+    }
   }
 
   if (!$full) $string = array_slice($string, 0, 1);
@@ -217,20 +215,22 @@ function LoginUser($conn, $Username, $Password)
 // ANCHOR auth functions
 function UserIsAuthenticated()
 {
-    $session = @$_SESSION['UserAuthenticated'];
-    if ($session === "true") {
-        return true;
-    } else {
-        return false;
-    }
+  $session = @$_SESSION['UserAuthenticated'];
+  if ($session === "true") {
+    return true;
+  } else {
+    return false;
+  }
 }
-function RequireAuthentication() {
+function RequireAuthentication()
+{
   if (UserIsAuthenticated() === false) {
     header("location: ../login/?error=You must be logged in to do this!");
     exit();
   }
 }
-function RequireGuest() {
+function RequireGuest()
+{
   if (UserIsAuthenticated() === true) {
     header("location: ../../dashboard");
     exit();
@@ -242,25 +242,26 @@ function RequireGuest() {
 // check if status has invalid characters
 function InvalidStatus($status)
 {
-    if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?]*$/", $status)) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?]*$/", $status)) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 // check if status is over 100 characters
 function StatusTooLong($status)
 {
-    if (strlen($status) > 50) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (strlen($status) > 50) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
-function UpdateStatus($conn, $status_raw, $user_id) {
+function UpdateStatus($conn, $status_raw, $user_id)
+{
   // sanitize input
   $status = PurifyInput($status_raw);
 
@@ -270,7 +271,8 @@ function UpdateStatus($conn, $status_raw, $user_id) {
   header("location: ../../dashboard/?note=Status updated!");
 }
 
-function GetStatus($conn, $user_id) {
+function GetStatus($conn, $user_id)
+{
   // get user_status from users table
   $statement = $conn->prepare("SELECT user_status FROM users WHERE user_id = :user_id");
   $statement->execute(array(':user_id' => $user_id));
@@ -281,7 +283,8 @@ function GetStatus($conn, $user_id) {
 
 // bio functions
 
-function UpdateBio($conn, $bio_raw, $user_id) {
+function UpdateBio($conn, $bio_raw, $user_id)
+{
   // sanitize input
   $bio_raw_1 = PurifyInput($bio_raw);
   $bio_raw_2 = ToLineBreaks($bio_raw_1);
@@ -293,7 +296,8 @@ function UpdateBio($conn, $bio_raw, $user_id) {
   header("location: ../../dashboard/?note=Bio updated!");
 }
 
-function GetBio($conn, $user_id) {
+function GetBio($conn, $user_id)
+{
   // get user_bio from users table
   $statement = $conn->prepare("SELECT user_bio FROM users WHERE user_id = :user_id");
   $statement->execute(array(':user_id' => $user_id));
@@ -303,38 +307,40 @@ function GetBio($conn, $user_id) {
 
 function InvalidBio($bio)
 {
-    if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?`]*$/", $bio)) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?`]*$/", $bio)) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 function BioTooLong($bio)
 {
-    if (strlen($bio) > 3000) {
-        $result = true;
-    } else {
-        $result = false;
-    }
-    return $result;
+  if (strlen($bio) > 3000) {
+    $result = true;
+  } else {
+    $result = false;
+  }
+  return $result;
 }
 
 // end bio functions
-function GetUsers() {
+function GetUsers()
+{
   global $conn;
   $statement = $conn->prepare("SELECT * FROM users");
   $statement->execute();
   $result = $statement->fetchAll();
-  if(!empty($result)) {
+  if (!empty($result)) {
     return $result;
   } else {
     echo "No users found!";
   }
 }
 
-function ListUsers() {
+function ListUsers()
+{
   $users = GetUsers();
   $usercount = count($users);
   if ($usercount > 0) {
@@ -346,12 +352,12 @@ function ListUsers() {
       echo '<div class="ellipsis">';
       echo "<a href='/profile?id=" . $id . "'>" . $username;
       echo '</a>';
-      if($user['user_admin'] == 3) {
+      if ($user['user_admin'] == 3) {
         echo ' <span class="admin-text">Admin</span>';
-      } else if($user['user_admin'] == 2 || $user['user_admin'] == 1) {
+      } else if ($user['user_admin'] == 2 || $user['user_admin'] == 1) {
         echo ' <span class="mod-text">Moderator</span>';
       }
-      if(!IfIsOnline($user['user_updated'])) {
+      if (!IfIsOnline($user['user_updated'])) {
         echo '<span class="status-dot users"></span>';
       } else {
         echo '<span class="status-dot users online"></span>';
@@ -367,40 +373,46 @@ function ListUsers() {
   }
 }
 // ANCHOR profile sectuion
-function HandleProfile($id) {
+function HandleProfile($id)
+{
   global $conn;
   if ($id !== null && !empty($id)) {
     $user = GetUserByID($conn, $id);
     return $user;
   }
 }
-function GetProfileLink($user_id, $user_name) {
+function GetProfileLink($user_id, $user_name)
+{
   return "<a href='/profile?id=" . $user_id . "'>" . $user_name . "</a>";
 }
 // end profile section
 
 // ANCHOR handlers and misc functions
 // prevents xss attacks and trims whitespace
-function PurifyInput($input) {
+function PurifyInput($input)
+{
   $input = trim($input);
   $input = stripslashes($input);
   $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
   return $input;
 }
 
-function ToLineBreaks($text) {
+function ToLineBreaks($text)
+{
   return nl2br($text);
 }
 
-function ToMarkdown($text) {
-$text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
-$text = preg_replace("#\_([^_]+)\_#", '<i>$1</i>', $text);
-$text = preg_replace("#\%([^%]+)\%#", '<strike>$1</strike>', $text);
-$text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
-return $text;
+function ToMarkdown($text)
+{
+  $text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
+  $text = preg_replace("#\_([^_]+)\_#", '<i>$1</i>', $text);
+  $text = preg_replace("#\%([^%]+)\%#", '<strike>$1</strike>', $text);
+  $text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
+  return $text;
 }
-function CheckIpAddress($ip) {
-  if(filter_var($ip, FILTER_VALIDATE_IP)) {
+function CheckIpAddress($ip)
+{
+  if (filter_var($ip, FILTER_VALIDATE_IP)) {
     if ($_SESSION['UserIP'] === $ip) {
       CheckIfIpIsBanned($ip);
       UpdateIP($ip);
@@ -412,7 +424,8 @@ function CheckIpAddress($ip) {
     UpdateIP($ip);
   }
 }
-function UpdateIP($ip) {
+function UpdateIP($ip)
+{
   global $conn;
   // hash ip address
   $ip_hash = hash('sha256', $ip);
@@ -420,17 +433,19 @@ function UpdateIP($ip) {
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip_hash WHERE user_id = :user_id");
   $statement->execute(array(':ip_hash' => $ip_hash, ':user_id' => $_SESSION['UserID']));
 }
-function CheckIfIpIsBanned($ip) {
+function CheckIfIpIsBanned($ip)
+{
   global $conn;
-  
+
   $statement = $conn->prepare("SELECT * FROM ip_bans WHERE ip = :ip");
   $statement->execute(array(':ip' => $ip));
   $result = $statement->fetch();
-  if(!empty($result)) {
+  if (!empty($result)) {
     IpBanRedirect();
   }
 }
-function IpBanRedirect() {
+function IpBanRedirect()
+{
   header("location: ../../bans/ip");
   exit();
 }
@@ -444,29 +459,27 @@ function UpdateUser($pdo)
 }
 function IfIsOnline($updated_at_timestamp)
 {
-    if ($updated_at_timestamp == null) {
-        return false;
-    }
+  if ($updated_at_timestamp == null) {
+    return false;
+  }
+  $now = date_create(date('Y-m-d H:i:s'));
+  $updated = date_create($updated_at_timestamp);
 
-    // use convertdatetotimezone to convert the timestamp to the user's timezone
-    $updated = ConvertDateToTimezone($updated_at_timestamp);
-    $now = date_create(date('Y-m-d H:i:s'));
+  $now_format = date_format($now, 'Y-m-d H:i:s');
+  $updated_format =  date_format($updated, 'Y-m-d H:i:s');
 
+  $test1 = strtotime($now_format);
+  $test2 = strtotime($updated_format);
+  $hour = abs($test1 - $test2) / (1 * 1);
 
-    $now_format = date_format($now, 'Y-m-d H:i:s');
-    $updated_format =  date_format($updated, 'Y-m-d H:i:s');
-
-    $test1 = strtotime($now_format);
-    $test2 = strtotime($updated_format);
-    $hour = abs($test1 - $test2) / (1 * 1);
-
-    if ($hour < 180) {
-        return true;
-    } else {
-        return false;
-    }
+  if ($hour < 180) {
+    return true;
+  } else {
+    return false;
+  }
 }
-function GetNumberOfUsers($pdo) {
+function GetNumberOfUsers($pdo)
+{
   // use pdo to get number of users
   $sql = "SELECT * FROM users";
   $stmt = $pdo->prepare($sql);
@@ -475,7 +488,8 @@ function GetNumberOfUsers($pdo) {
   return count($result);
 }
 
-function GetUserByID($pdo, $id) {
+function GetUserByID($pdo, $id)
+{
   // use pdo to get user by id
   $sql = "SELECT * FROM users WHERE user_id = :user_id";
   $stmt = $pdo->prepare($sql);
@@ -483,11 +497,13 @@ function GetUserByID($pdo, $id) {
   $result = $stmt->fetch();
   return $result;
 }
-function HandleDate($date) {
+function HandleDate($date)
+{
   $date_formatted = date("F j, Y", strtotime($date));
   return $date_formatted;
 }
-function HandleError($type) {
+function HandleError($type)
+{
   if (isset($type)) {
     echo '<div class="toast-wrapper">
     <div class="toast error" id="toast">
@@ -503,13 +519,14 @@ function HandleError($type) {
       </button>
     </div>
   </div>';
-  echo '<script src="/js/toast.js"></script>
+    echo '<script src="/js/toast.js"></script>
   <script>
   showToast();
   </script>';
   }
 }
-function HandleNote($type) {
+function HandleNote($type)
+{
   if (isset($type)) {
     echo '<div class="toast-wrapper">
     <div class="toast" id="toast">
@@ -525,14 +542,15 @@ function HandleNote($type) {
       </button>
     </div>
   </div>';
-  echo '<script src="/js/toast.js"></script>
+    echo '<script src="/js/toast.js"></script>
   <script>
   showToast();
   </script>';
   }
 }
 // ANCHOR message section
-function UnseenMessages($user_id) {
+function UnseenMessages($user_id)
+{
   $message_number = GetNumberOfUnseenMessages($user_id);
   if ($message_number > 0) {
     return $message_number;
@@ -540,7 +558,8 @@ function UnseenMessages($user_id) {
     return false;
   }
 }
-function GetNumberOfUnseenMessages($user_id) {
+function GetNumberOfUnseenMessages($user_id)
+{
   // get number of unseen messages with PDO
   global $conn;
   $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 0";
@@ -550,7 +569,8 @@ function GetNumberOfUnseenMessages($user_id) {
   $number_of_unseen_messages = count($result);
   return $number_of_unseen_messages;
 }
-function GetNumberOfSeenMessages($user_id) {
+function GetNumberOfSeenMessages($user_id)
+{
   // get number of unseen messages with PDO
   global $conn;
   $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 1";
@@ -560,7 +580,8 @@ function GetNumberOfSeenMessages($user_id) {
   $number_of_seen_messages = count($result);
   return $number_of_seen_messages;
 }
-function GetNumberOfSentMessages($user_id) {
+function GetNumberOfSentMessages($user_id)
+{
   // get number of unseen messages with PDO
   global $conn;
   $sql = "SELECT * FROM messages WHERE msg_sender = :user_id";
@@ -572,7 +593,8 @@ function GetNumberOfSentMessages($user_id) {
 }
 
 
-function ViewUnseenMessages($user_id) {
+function ViewUnseenMessages($user_id)
+{
   global $conn;
   // use pdo to get messages
   $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 0";
@@ -581,7 +603,8 @@ function ViewUnseenMessages($user_id) {
   $result = $stmt->fetchAll();
   return $result;
 }
-function ViewSeenMessages($user_id) {
+function ViewSeenMessages($user_id)
+{
   global $conn;
   // use pdo to get messages
   $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 1";
@@ -590,7 +613,8 @@ function ViewSeenMessages($user_id) {
   $result = $stmt->fetchAll();
   return $result;
 }
-function ViewSentMessages($user_id) {
+function ViewSentMessages($user_id)
+{
   global $conn;
   // use pdo to get messages
   $sql = "SELECT * FROM messages WHERE msg_sender = :user_id";
@@ -599,7 +623,8 @@ function ViewSentMessages($user_id) {
   $result = $stmt->fetchAll();
   return $result;
 }
-function ListMessages($result) {
+function ListMessages($result)
+{
   global $conn;
   if (!empty($result)) {
     foreach ($result as $message) {
@@ -615,24 +640,27 @@ function ListMessages($result) {
     echo "<p>No Messages</p>";
   }
 }
-function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurified) {
+function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurified)
+{
   global $conn;
   $body_sanitized = PurifyInput($body_unpurified);
   $body_markdown = ToMarkdown($body_sanitized);
   $title = PurifyInput($title_unpurified);
-  $body= ToLineBreaks($body_markdown);
+  $body = ToLineBreaks($body_markdown);
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
   $stmt = $conn->prepare($sql);
-  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));  
+  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
 }
-function SetAllMessagesAsSeen($user_id) {
+function SetAllMessagesAsSeen($user_id)
+{
   global $conn;
   $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_receiver = :user_id";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   header("Location: /messages?note=All messages set as seen.");
 }
-function ViewMessage($msg_id, $user_id) {
+function ViewMessage($msg_id, $user_id)
+{
   // check if message exists
   global $conn;
   $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
@@ -664,23 +692,28 @@ function ViewMessage($msg_id, $user_id) {
   }
 }
 
-function GetMessageTitle($message) {
+function GetMessageTitle($message)
+{
   return $message['msg_title'];
 }
 
-function GetMessageBody($message) {
+function GetMessageBody($message)
+{
   return $message['msg_body'];
 }
 
-function GetMessageSender($message) {
+function GetMessageSender($message)
+{
   return $message['msg_sender'];
 }
 
-function GetMessageDate($message) {
+function GetMessageDate($message)
+{
   return time_elapsed_string($message['msg_created']);
 }
 
-function IfMessageIsSeen($message) {
+function IfMessageIsSeen($message)
+{
   if ($message['msg_seen'] == 1) {
     return "Seen";
   } else {
