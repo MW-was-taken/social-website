@@ -1,6 +1,6 @@
 <?php
 $UserID = $_SESSION['UserID'];
-$messages = ViewSeenMessages($UserID);
+$messages = ViewSentMessages($UserID);
 
 
 ?>
@@ -15,8 +15,12 @@ $messages = ViewSeenMessages($UserID);
     ?>
     <a href="/markdown">Markdown Tutorial</a>
     |
-    <a href="/messages/">Look at Unseen Messages (<?php if(GetNumberOfUnseenMessages($_SESSION['UserID']) != 0) {
+    <a href="/messages/">Unseen Messages (<?php if(GetNumberOfUnseenMessages($_SESSION['UserID']) != 0) {
      echo GetNumberOfUnseenMessages($_SESSION['UserID']); } else {
+     echo 'None';}?>)</a>
+     |
+              <a href="/messages/seen/">Seen Messages (<?php if(GetNumberOfSeenMessages($_SESSION['UserID']) != 0) {
+     echo GetNumberOfSentMessages($_SESSION['UserID']); } else {
      echo 'None';}?>)</a>
   </div>
 </div>

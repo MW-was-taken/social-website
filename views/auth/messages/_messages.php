@@ -24,8 +24,11 @@ if(isset($_GET['error'])) {
     <hr>
     <a href="/markdown">Markdown Tutorial</a>
     |
-    <a href="/messages/seen">Look at Previous Messages (<?php if(GetNumberOfSeenMessages($_SESSION['UserID']) != 0) {
+    <a href="/messages/seen">Seen Messages (<?php if(GetNumberOfSeenMessages($_SESSION['UserID']) != 0) {
      echo GetNumberOfSeenMessages($_SESSION['UserID']); } else {
-     echo '0';}?>)</a>
+     echo 'None';}?>)</a>
+         <a href="/messages/sent">Look at Sent Messages (<?php if(GetNumberOfSentMessages($_SESSION['UserID']) != 0) {
+     echo GetNumberOfSentMessages($_SESSION['UserID']); } else {
+     echo 'None';}?>)</a>
   </div>
 </div>

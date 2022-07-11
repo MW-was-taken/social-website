@@ -23,5 +23,5 @@ if (isset($_POST["submit"])) {
 
     header("Location: /settings?error=Bio is empty!");
 } else {
-    header('location: ../../dashboard?error=Access Denied!');
+    header('location: /404/');
 }

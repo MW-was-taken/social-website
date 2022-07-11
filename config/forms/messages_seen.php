@@ -8,4 +8,6 @@ if(isset($_POST['submit'])) {
   session_start();
   SetAllMessagesAsSeen($_SESSION['UserID']);
   exit();
+} else {
+  header('location: /404/');
 }

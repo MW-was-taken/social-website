@@ -14,5 +14,5 @@ if (isset($_POST["submit"])) {
     }
     LoginUser($conn, $username, $password);
 } else {
-    header('location: ../../signup?error=Access Denied!');
+  header('location: /404/');
 }

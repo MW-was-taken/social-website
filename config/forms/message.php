@@ -26,5 +26,5 @@ if (isset($_POST["submit"])) {
       header("location: ../../messages/?note=Message sent!");
     }
 } else {
-    header('location: ../../signup?error=Access Denied!');
+  header('location: /404/');
 }

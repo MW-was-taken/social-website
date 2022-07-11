@@ -5,3 +5,6 @@ Options -Indexes
 <Files "config.php">  
   Require all denied
 </Files>
+<Files "env.php">  
+  Require all denied
+</Files>

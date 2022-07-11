@@ -40,5 +40,5 @@ if (isset($_POST["submit"])) {
 
     CreateUser($conn, $username, $email, $password);
 } else {
-    header('location: ../../signup?error=Access Denied!');
+  header('location: /404/');
 }

@@ -554,6 +554,16 @@ function GetNumberOfSeenMessages($user_id) {
   $number_of_seen_messages = count($result);
   return $number_of_seen_messages;
 }
+function GetNumberOfSentMessages($user_id) {
+  // get number of unseen messages with PDO
+  global $conn;
+  $sql = "SELECT * FROM messages WHERE msg_sender = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  $number_of_sent_messages = count($result);
+  return $number_of_sent_messages;
+}
 
 
 function ViewUnseenMessages($user_id) {
@@ -617,17 +627,35 @@ function SetAllMessagesAsSeen($user_id) {
   header("Location: /messages?note=All messages set as seen.");
 }
 function ViewMessage($msg_id, $user_id) {
-    global $conn;
-    // set message as seen
-    $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_id = :msg_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':msg_id' => $msg_id));
-    // get message with PDO
-    $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':msg_id' => $msg_id));
-    $result = $stmt->fetch();
-    return $result;
+  // check if message exists
+  global $conn;
+  $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':msg_id' => $msg_id));
+  $result = $stmt->fetchAll();
+  if (!empty($result)) {
+    // check if message is for user
+    if ($result[0]['msg_receiver'] == $user_id || $result[0]['msg_sender'] == $user_id) {
+      // set message as seen
+      // if message receiver is user, set message as seen
+      if ($result[0]['msg_receiver'] == $user_id) {
+        $sql = "UPDATE messages SET msg_seen = 1 WHERE msg_id = :msg_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':msg_id' => $msg_id));
+      }
+      // get message
+      $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute(array(':msg_id' => $msg_id));
+      $msg_result = $stmt->fetchAll();
+      // return message
+      return $msg_result[0];
+    } else {
+      header("Location: /messages?error=You do not have permission to view this message.");
+    }
+  } else {
+    header("Location: /messages?error=Message does not exist.");
+  }
 }
 
 function GetMessageTitle($message) {
