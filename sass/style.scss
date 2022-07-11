@@ -296,3 +296,43 @@ code {
   padding: 5px 10px;
   border-radius: 15px;
 }
+
+.admin-text {
+  font-weight: 500;
+  // vibrant dark red
+  color: #ff0011;
+  padding: 2px;
+  background-color: #5e151a;
+  // make uppercase
+  text-transform: uppercase;
+  // letter spacing
+  letter-spacing: 1px;
+  // borde radius
+  border-radius: 5px;
+}
+.mod-text {
+  // blue color
+  color: #0d71d5;
+  padding: 2px;
+  // dark blue background
+  background-color: #1a1a5e;
+  // make uppercase
+  text-transform: uppercase;
+  // letter spacing
+  letter-spacing: 1px;
+  // borde radius
+  border-radius: 5px;
+}
+
+.logo {
+  margin: 0 0!important;
+  // make uppercase
+  text-transform: uppercase;
+  // letter spacing
+  letter-spacing: 1px;
+  font-weight: 800!important;
+  &:hover {
+    // don't change background
+    background-color: transparent!important;
+  }
+}

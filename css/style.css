@@ -290,3 +290,32 @@ code {
   padding: 5px 10px;
   border-radius: 15px;
 }
+
+.admin-text {
+  font-weight: 500;
+  color: #ff0011;
+  padding: 2px;
+  background-color: #5e151a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 5px;
+}
+
+.mod-text {
+  color: #0d71d5;
+  padding: 2px;
+  background-color: #1a1a5e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 5px;
+}
+
+.logo {
+  margin: 0 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800 !important;
+}
+.logo:hover {
+  background-color: transparent !important;
+}

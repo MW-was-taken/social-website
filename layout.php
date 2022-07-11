@@ -24,14 +24,10 @@ if (UserIsAuthenticated()) {
 </head>
 <body>
   <nav>
-    <div class="header">
-      <h1>
-        Brick-Town
-      </h1>
-    </div>
     <div class="navbar">
       <div class="container">
         <div class="left">
+        <a style="font-weight: 600;" class="logo">Brick-Town</a>
         <?php
         if (UserIsAuthenticated()) {
           echo "<a href='/dashboard'>Dashboard</a>\n";
