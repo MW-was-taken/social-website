@@ -71,6 +71,7 @@ if (UserIsAuthenticated()) {
     </div>
   </div>
   <!-- </body> -->
+  <script src="/js/warning.js"></script>
 </body>
 <head>
 <title>
