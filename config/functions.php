@@ -364,11 +364,7 @@ function ListUsers()
       echo '<div class="ellipsis">';
       echo "<a href='/profile?id=" . $id . "'>" . $username;
       echo '</a>';
-      if ($user['user_admin'] == 3) {
-        echo ' <span class="admin-text">Admin</span>';
-      } else if ($user['user_admin'] == 2 || $user['user_admin'] == 1) {
-        echo ' <span class="mod-text">Moderator</span>';
-      }
+      ProfileBadge($user['user_admin']);
       if (!IfIsOnline($user['user_updated'])) {
         echo '<span class="status-dot users"></span>';
       } else {
@@ -764,6 +760,36 @@ function HandleBadgeColor($badge_color) {
 }
 
 // end of badge functions
+// profile badge functions
+function ProfileBadge($admin) {
+  // moderator badge
+  if ($admin == 1) {
+    ModeratorBadge();
+  } elseif ($admin == 2) {
+    // admin badge
+    AdminBadge();
+  } elseif($admin == 3) {
+    SiteDeveloperBadge();
+  } elseif($admin == 4) {
+    OwnerBadge();
+  }
+}
+
+function ModeratorBadge() {
+  echo "<span class='mod-text'>Moderator</span>";
+}
+
+function AdminBadge() {
+  echo "<span class='admin-text'>Admin</span>";
+}
+
+function SiteDeveloperBadge() {
+  echo "<span class='dev-text'>Site Developer</span>";
+}
+function OwnerBadge() {
+  echo "<span class='owner-text'>Owner</span>";
+}
+// end profile badge functions
 // friend functions
 function GetFriends($user_id)
 {
@@ -804,4 +830,44 @@ function SendFriendRequest($sender_id, $receiver_id)
   $sql = "INSERT INTO friends (sender, receiver, time_sent) VALUES (:sender_id, :receiver_id, NOW())";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id));
+}
+
+function AcceptFriendRequest($sender_id, $receiver_id)
+{
+  global $conn;
+  $sql = "UPDATE friends SET request = 0 WHERE sender = :sender_id AND receiver = :receiver_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id));
+}
+
+function DeclineFriendRequest($sender_id, $receiver_id)
+{
+  global $conn;
+  $sql = "DELETE FROM friends WHERE sender = :sender_id AND receiver = :receiver_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id));
+}
+
+// end of friend functions
+// admin functions
+function GetAdmin($user_id)
+{
+  global $conn;
+  // get * from users where admin = 2 or 3
+  $sql = "SELECT * FROM users WHERE user_admin = 2 OR user_admin = 3";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute();
+  $result = $stmt->fetchAll();
+  if (!empty($result)) {
+    if ($result[0]['user_admin'] == 2) {
+      $result[0]['AdminType'] = "Administrator";
+    } elseif ($result[0]['user_admin'] == 3) {
+      return "Site Developer";
+    } elseif($result[0]['user_admin'] == 4) {
+      return "Owner";
+    }
+    return $result;
+  } else {
+    return false;
+  }
 }

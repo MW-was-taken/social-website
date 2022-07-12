@@ -297,31 +297,38 @@ code {
   border-radius: 15px;
 }
 
-.admin-text {
+@mixin badge {
   font-weight: 500;
-  // vibrant dark red
-  color: #ff0011;
   padding: 2px;
-  background-color: #5e151a;
-  // make uppercase
   text-transform: uppercase;
-  // letter spacing
   letter-spacing: 1px;
-  // borde radius
   border-radius: 5px;
+  margin: 0 5px;
+}
+
+.admin-text {
+  // use badge mixin
+  @include badge;
+  color: #ff0011;
+  background-color: #5e151a;
 }
 .mod-text {
-  // blue color
+  // use badge mixin
+  @include badge;
   color: #0d71d5;
-  padding: 2px;
-  // dark blue background
   background-color: #1a1a5e;
-  // make uppercase
-  text-transform: uppercase;
-  // letter spacing
-  letter-spacing: 1px;
-  // borde radius
-  border-radius: 5px;
+}
+.dev-text {
+  // use badge mixin
+  @include badge;
+  color: #10a5fc;
+  background-color: #0a26ae;
+}
+.owner-text {
+  // use badge mixin
+  @include badge;
+  color: #cd44df;
+  background-color: #69097c;
 }
 
 .logo {

@@ -293,21 +293,46 @@ code {
 
 .admin-text {
   font-weight: 500;
-  color: #ff0011;
   padding: 2px;
-  background-color: #5e151a;
   text-transform: uppercase;
   letter-spacing: 1px;
   border-radius: 5px;
+  margin: 0 5px;
+  color: #ff0011;
+  background-color: #5e151a;
 }
 
 .mod-text {
-  color: #0d71d5;
+  font-weight: 500;
   padding: 2px;
-  background-color: #1a1a5e;
   text-transform: uppercase;
   letter-spacing: 1px;
   border-radius: 5px;
+  margin: 0 5px;
+  color: #0d71d5;
+  background-color: #1a1a5e;
+}
+
+.dev-text {
+  font-weight: 500;
+  padding: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  margin: 0 5px;
+  color: #10a5fc;
+  background-color: #0a26ae;
+}
+
+.owner-text {
+  font-weight: 500;
+  padding: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  margin: 0 5px;
+  color: #cd44df;
+  background-color: #69097c;
 }
 
 .logo {
