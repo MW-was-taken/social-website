@@ -763,3 +763,45 @@ function HandleBadgeColor($badge_color) {
   }
 }
 
+// end of badge functions
+// friend functions
+function GetFriends($user_id)
+{
+  // get * from friends where receiver or sender is user_id but is not request
+  global $conn;
+  $sql = "SELECT * FROM friends WHERE (receiver = :user_id AND request = 0) OR (sender = :user_id AND request = 0)";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function GetFriendRequestsReceived($user_id)
+{
+  // get * from friends where receiver or sender is user_id but is request
+  global $conn;
+  $sql = "SELECT * FROM friends WHERE (receiver = :user_id AND request = 1)";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function GetFriendRequestsSent($user_id)
+{
+  // get * from friends where receiver or sender is user_id but is request
+  global $conn;
+  $sql = "SELECT * FROM friends WHERE sender = :user_id AND request = 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function SendFriendRequest($sender_id, $receiver_id)
+{
+  global $conn;
+  $sql = "INSERT INTO friends (sender, receiver, time_sent) VALUES (:sender_id, :receiver_id, NOW())";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id));
+}
