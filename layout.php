@@ -3,7 +3,7 @@
 include("config/functions.php");
 include("config/config.php");
 session_start();
-@$name = AssignPageName($name);
+ob_start();
 if (UserIsAuthenticated()) {
   UpdateUser($conn);
   CheckIpAddress($_SERVER['REMOTE_ADDR']);
@@ -19,8 +19,8 @@ if (UserIsAuthenticated()) {
   <link rel="stylesheet" href="/css/style.css ">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <nav>
@@ -29,24 +29,13 @@ if (UserIsAuthenticated()) {
         <div class="left">
         <a style="font-weight: 600;" class="logo">Brick-Town</a>
         <?php
-        if (UserIsAuthenticated()) {
-          echo "<a href='/dashboard'>Dashboard</a>\n";
-        } else {
-          echo "<a href='/'>Home</a>\n";
-        }
+        echo HomeLink();
         ?>
         <a href="/forum">Forum</a>
         <?php
-        if (UserIsAuthenticated()) {
-          $messages = UnseenMessages($_SESSION['UserID']);
-          if($messages != false) {
-            echo "<a href='/messages'>Messages<span class='badge'>" .$messages . "</span></a>\n";
-          } else {
-            echo "<a href='/messages'>Messages</a>\n";
-          } 
-          echo "<a href='/profile?id=" . $_SESSION['UserID'] . "'>Profile</a>\n";
-          echo "<a href='/settings'>Account Settings</a>\n";
-        }
+        echo ProfileLink();
+        echo MessageLink();
+        echo AdminLink();
         ?>
         <a href="/users">Users</a>
         </div>
@@ -66,7 +55,8 @@ if (UserIsAuthenticated()) {
   <div class="container">
     <div class="content">
       <?php
-        include($child_view);
+      echo Alert();
+      include($child_view);
       ?>
     </div>
   </div>

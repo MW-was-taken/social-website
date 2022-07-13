@@ -106,11 +106,17 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 5px !important;
   text-align: center;
 }
-.alert.success {
-  background: #040452;
+.alert.green {
+  background: #47d764;
 }
-.alert.error {
+.alert.red {
   background: #f00;
+}
+.alert.orange {
+  background: #fb9803;
+}
+.alert.purple {
+  background: #9b51e0;
 }
 .alert.form-alert {
   max-width: 20em;
@@ -343,4 +349,67 @@ code {
 }
 .logo:hover {
   background-color: transparent !important;
+}
+
+.admin-card .admin-header {
+  background-color: #2a2a2a;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px 5px 0 0;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.admin-card .admin-wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: #202020;
+  border-radius: 0 0 5px 5px;
+}
+.admin-card .admin-wrapper .admin-content {
+  flex: 1;
+  padding: 25px;
+}
+.admin-card .admin-wrapper .admin-content h1, .admin-card .admin-wrapper .admin-content h2, .admin-card .admin-wrapper .admin-content h3, .admin-card .admin-wrapper .admin-content h4, .admin-card .admin-wrapper .admin-content h5, .admin-card .admin-wrapper .admin-content h6 {
+  color: #fff;
+}
+.admin-card .admin-wrapper .admin-content p {
+  color: #aaa;
+}
+.admin-card .admin-wrapper .admin-sidebar {
+  width: 20%;
+  padding: 10px;
+  background-color: #262525;
+}
+.admin-card .admin-wrapper .admin-sidebar a {
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: block;
+  padding: 5px;
+}
+.admin-card .admin-wrapper .admin-sidebar a i {
+  margin-right: 5px;
+}
+.admin-card .admin-wrapper .admin-sidebar a .caret {
+  margin-left: 5px;
+}
+.admin-card .admin-wrapper .admin-sidebar a.no-hover:hover {
+  color: #fff !important;
+}
+.admin-card .admin-wrapper .admin-sidebar a:hover {
+  color: #aaa;
+}
+.admin-card .admin-wrapper .admin-sidebar a.sublink {
+  margin-left: 20px;
+}
+
+select {
+  border-radius: 2px;
+  padding: 12px 25px;
+  color: #aaa;
+  font-family: inherit;
+  font-weight: inherit;
+  background-color: #202020;
+}
+select:focus {
+  outline: none;
 }

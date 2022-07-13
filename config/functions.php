@@ -16,13 +16,6 @@ ini_set('session.gc_maxlifetime', 86400);
 // set session cookie to 24 hours
 ini_set('session.cookie_lifetime', 86400);
 // page functions
-function AssignPageName($name)
-{
-  if (isset($name) && !empty($name)) {
-    return $name;
-  }
-  return null;
-}
 function HandlePageName($name)
 {
   if (empty($name)) {
@@ -30,24 +23,6 @@ function HandlePageName($name)
   }
   return $name . " - " . "Brick-Town";
 }
-
-// site settings functions
-function GetSiteSettings()
-{
-  global $db;
-  $stmt = $db->prepare("SELECT * FROM site_settings");
-  $stmt->execute();
-  $result = $stmt->fetchAll();
-  return $result;
-}
-
-function WebsiteAlert($site_settings)
-{
-  if ($site_settings['alert'] == 1) {
-    return true;
-  }
-}
-
 // config functions
 
 
@@ -64,6 +39,75 @@ function CloseConnection($database_connection)
 {
   // close pdo connection
   $database_connection = null;
+}
+
+
+// site settings functions
+
+function Alert() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  if($row['alert'] == 1) {
+    return "<div class='alert ". DetermineAlertColor($row['alert_type']) . "' role='alert'>".$row['alert_text']."</div>";
+  } else {
+    return "";
+  }
+}
+
+function UpdateAlert($alert_bool, $alert_text, $alert_type) {
+  global $conn;
+  $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_type = :alert_type WHERE id = 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':alert_bool', $alert_bool);
+  $stmt->bindParam(':alert_text', $alert_text);
+  $stmt->bindParam(':alert_type', $alert_type);
+  $stmt->execute();
+}
+
+function GetAlertText() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  return $row['alert_text'];
+}
+
+function GetAlertType() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  return $row['alert_type'];
+}
+
+function GetAlertBool() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  return $row['alert'];
+}
+
+function DetermineAlertColor($type) {
+  switch ($type) {
+    case 1:
+      return "green";
+      break;
+    case 2:
+      return "purple";
+      break;
+    case 3:
+      return "orange";
+      break;
+    case 4:
+      return "red";
+      break;
+    default:
+      return "green";
+      break;
+  }
 }
 
 // Authentication Functions
@@ -216,11 +260,11 @@ function LoginUser($conn, $Username, $Password)
       header("location: ../../dashboard/?note=Successfully logged in!");
       exit();
     } else {
-      header("location: ../../login/?note=Invalid password!");
+      header("location: ../../login/?error=Invalid password!");
       exit();
     }
   } else {
-    header("location: ../../login/?note=Invalid username!");
+    header("location: ../../login/?error=Invalid username!");
     exit();
   }
 }
@@ -850,24 +894,69 @@ function DeclineFriendRequest($sender_id, $receiver_id)
 
 // end of friend functions
 // admin functions
-function GetAdmin($user_id)
+function IfAdmin($user_id)
 {
   global $conn;
-  // get * from users where admin = 2 or 3
-  $sql = "SELECT * FROM users WHERE user_admin = 2 OR user_admin = 3";
+  // get * from users where user_id is user_id and admin is 2 or higher
+  $sql = "SELECT * FROM users WHERE user_id = :user_id AND user_admin >= 2";
   $stmt = $conn->prepare($sql);
-  $stmt->execute();
+  $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
-  if (!empty($result)) {
-    if ($result[0]['user_admin'] == 2) {
-      $result[0]['AdminType'] = "Administrator";
-    } elseif ($result[0]['user_admin'] == 3) {
-      return "Site Developer";
-    } elseif($result[0]['user_admin'] == 4) {
-      return "Owner";
-    }
-    return $result;
+  // if user is admin return true
+  if (count($result) > 0) {
+    return true;
   } else {
     return false;
+  }
+}
+function RequireAdmin()
+{
+  if (!UserIsAuthenticated()) {
+    header("Location: /login");
+  }
+  if (!IfAdmin($_SESSION['UserID'])) {
+    header("Location: /");
+  }
+}
+// links
+function ProfileLink()
+{
+  global $conn;
+  if(UserIsAuthenticated()) {
+    $user_id = $_SESSION['UserID'];
+    $user = GetUserByID($conn, $user_id);
+    return '<a href="/profile?id=' . $user['user_id'] . '">' . $user['user_name'] . '</a>';
+  }
+}
+
+function HomeLink() {
+  if(UserIsAuthenticated()) {
+    return '<a href="/dashboard">Dashboard</a>';
+  } else {
+    return '<a href="/">Home</a>';
+  }
+}
+
+function MessageLink() {
+  if (UserIsAuthenticated()) {
+    // get user_id from session
+    $user_id = $_SESSION['UserID'];
+    // get number of unread messages
+    $messages = UnseenMessages($user_id);
+    if($messages > 0) {
+      return '<a href="/messages">Messages <span class="badge">' . $messages . '</span></a>';
+    } else {
+      return '<a href="/messages">Messages</a>';
+    }
+  }
+}
+
+function AdminLink(){
+
+  if(UserIsAuthenticated()) {
+    $user_id = $_SESSION['UserID'];
+    if(IfAdmin($user_id)) {
+      return '<a href="/admin">Admin</a>';
+    }
   }
 }

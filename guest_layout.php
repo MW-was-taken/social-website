@@ -2,7 +2,6 @@
 include("config/functions.php");
 include("config/config.php");
 session_start();
-@$name = AssignPageName($name);
 CheckIfIpIsBanned($_SERVER['REMOTE_ADDR']);
 ?>
 
@@ -16,8 +15,8 @@ CheckIfIpIsBanned($_SERVER['REMOTE_ADDR']);
   <link rel="stylesheet" href="/css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <?php

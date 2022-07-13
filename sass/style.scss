@@ -108,11 +108,21 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 5px;
   margin-bottom: 5px!important;
   text-align: center;
-  &.success {
-    background: $dark-blue-hover;
+  &.green {
+    // green color
+    background: #47d764;
   }
-  &.error {
+  &.red {
+    // red color
     background: $red;
+  }
+  &.orange {
+    // orange color
+    background: #fb9803;
+  }
+  &.purple {
+    // purple color
+    background: #9b51e0;
   }
   &.form-alert {
     max-width: 20em;
@@ -341,5 +351,77 @@ code {
   &:hover {
     // don't change background
     background-color: transparent!important;
+  }
+}
+
+.admin-card {
+  .admin-header {
+    // grey background
+    background-color: #2a2a2a;
+    // white text
+    color: $white;
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+    // box shadow
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+  .admin-wrapper {
+    display: flex;
+    flex-direction: row;
+    background-color: #202020;
+    border-radius: 0 0 5px 5px;
+    .admin-content {
+      // do not shrink
+      flex: 1;
+      padding: 25px;
+      h1, h2, h3, h4, h5, h6 {
+        color: $white;
+      }
+      p {
+        color: $grey;
+      }
+    }
+    .admin-sidebar {
+      width: 20%;
+      padding: 10px;
+      background-color: #262525;
+      a {
+        color: $white;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: block;
+        padding: 5px;
+        i {
+          margin-right: 5px;
+        }
+        .caret {
+          margin-left: 5px;
+        }
+        &.no-hover {
+          &:hover {
+            color: $white!important;
+          }
+        }
+        &:hover {
+          color: $grey;
+        }
+        &.sublink {
+          // margin left for sublink
+          margin-left: 20px;
+        }
+      }
+    }
+  }
+}
+
+select {
+  border-radius: 2px;
+  padding: 12px 25px;
+  color: $grey;
+  font-family: inherit;
+  font-weight: inherit;
+  background-color: #202020;
+  &:focus {
+    outline: none;
   }
 }
