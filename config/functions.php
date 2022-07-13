@@ -58,6 +58,10 @@ function Alert() {
 
 function UpdateAlert($alert_bool, $alert_text, $alert_type) {
   global $conn;
+  session_start();
+  // StaffLog
+  StaffLog($_SESSION['UserID'], "UPDATED ALERT: ENABLED: " . $alert_bool . " TEXT: " . $alert_text . " TYPE: " . $alert_type);
+
   $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_type = :alert_type WHERE id = 1";
   $stmt = $conn->prepare($sql);
   $stmt->bindParam(':alert_bool', $alert_bool);
@@ -107,6 +111,61 @@ function DetermineAlertColor($type) {
     default:
       return "green";
       break;
+  }
+}
+
+function SiteMaintenance() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  if($row['maintenance'] == 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function UpdateMaintenance($maintenance_bool) {
+  global $conn;
+  session_start();
+
+  // if maintenance bool is not 1 or 0, set it to 1
+  if($maintenance_bool != 1 && $maintenance_bool != 0) {
+    $maintenance_bool = 1;
+  }
+
+  if($maintenance_bool == 1) {
+  // StaffLog
+    StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: ENABLED: " . $maintenance_bool);
+    // update alert to maintenance alert
+    UpdateAlert(1, "Site is currently under maintenance.", 4);
+  } else {
+    // StaffLog
+    StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: DISABLED");
+    // update alert to normal alert
+    UpdateAlert(0, "", 0);
+  }
+
+  $sql = "UPDATE site_settings SET maintenance = :maintenance_bool WHERE id = 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':maintenance_bool', $maintenance_bool);
+  $stmt->execute();
+}
+
+function GetMaintenanceBool() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  return $row['maintenance'];
+}
+
+function Maintenance() {
+  // if site is in maintenance mode, redirect to maintenance page
+  if(!IfAdmin($_SESSION['UserID']) && SiteMaintenance()) {
+    header("Location: /maintenance");
+    exit();
   }
 }
 
@@ -918,6 +977,13 @@ function RequireAdmin()
     header("Location: /");
   }
 }
+function StaffLog($user_id, $action)
+{
+  global $conn;
+  $sql = "INSERT INTO staff_log (log_user_id, log_action, time_logged) VALUES (:user_id, :action, NOW())";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id, ':action' => $action));
+}
 // links
 function ProfileLink()
 {
@@ -952,7 +1018,6 @@ function MessageLink() {
 }
 
 function AdminLink(){
-
   if(UserIsAuthenticated()) {
     $user_id = $_SESSION['UserID'];
     if(IfAdmin($user_id)) {
@@ -960,3 +1025,4 @@ function AdminLink(){
     }
   }
 }
+

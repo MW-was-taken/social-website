@@ -409,6 +409,7 @@ select {
   font-family: inherit;
   font-weight: inherit;
   background-color: #202020;
+  text-align: center;
 }
 select:focus {
   outline: none;

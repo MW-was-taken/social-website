@@ -7,6 +7,7 @@ ob_start();
 if (UserIsAuthenticated()) {
   UpdateUser($conn);
   CheckIpAddress($_SERVER['REMOTE_ADDR']);
+  Maintenance();
 }
 ?>
 
