@@ -251,7 +251,6 @@ function CreateUser($pdo, $username, $email, $password)
   // hash password
   $password = password_hash($password, PASSWORD_DEFAULT);
   $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password, ':ip' => $_SERVER['REMOTE_ADDR']));
-  $result = $statement->fetch();
   session_start();
   // ANCHOR session variables
   $_SESSION["UserAuthenticated"] = "true";
