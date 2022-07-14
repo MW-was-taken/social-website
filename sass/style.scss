@@ -1,11 +1,27 @@
-$dark: #1a1a1a;
+// convert all css variables to sass variables
+$dark: #141313;
+$dark-secondary: lighten($dark, 5%);
 $white: #fff;
 $grey: #aaa;
 $blue: rgb(13, 13, 169);
-$dark-blue: rgb(1, 1, 113);
-$dark-blue-hover: rgb(4, 4, 82);
-$dark-blue-hover-hover: rgb(10, 10, 120);
+$dark-blue: darken($blue, 10%);
+$dark-blue-hover: darken($blue, 20%);
+$dark-blue-hover-hover: darken($blue, 25%);
 $red: #f00;
+
+
+:root {
+  --dark: #{$dark};
+  --dark-secondary: #{lighten($dark, 5%)};
+  --white: #{$white};
+  --grey: #{$grey};
+  --blue:  #{$blue};
+  --dark-blue: #{darken($blue, 10%)};
+  --dark-blue-hover: #{darken($blue, 20%)};
+  --dark-blue-hover-hover: #{darken($blue, 25%)};
+  --red: #{$red};
+}
+
 
 * {
   box-sizing: border-box;
@@ -14,7 +30,7 @@ $red: #f00;
 }
 body {
   // dark bg
-  background-color: $dark;
+  background-color: var(--dark);
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
   margin: 0;
@@ -29,8 +45,8 @@ input, textarea {
   border: none;
   outline: none;
   border-radius: 2px;
-  background-color: $dark;
-  color: $white;
+  background-color: var(--dark);
+  color: var(--white);
   padding: 10px;
   font-size: 1.2rem;
   font-weight: inherit;
@@ -46,15 +62,15 @@ textarea {
 }
 
 h1, h2 {
-  color: $white;
+  color: var(--white);
 }
 h3, h4, h5, h6 {
   // gray text
-  color: $grey;
+  color: var(--grey);
 }
 label, p {
   // gray text
-  color: $grey;
+  color: var(--grey);
 }
 nav {
   margin-bottom: 1em;
@@ -62,12 +78,12 @@ nav {
 .header {
   padding: 5px;
   text-align: center;
-  background: $blue;
+  background: var(--blue);
   font-size: larger;
-  color: $white;
+  color: var(--white);
 }
 .navbar {
-  background: $dark-blue;
+  background: var(--dark-blue);
   overflow: hidden;
   .left {
     float: left;
@@ -79,13 +95,13 @@ nav {
   }
   a {
     padding: 8px 12px;
-    color: $white;
+    color: var(--white);
     display: inline-block;
     text-decoration: none;
     font-size: large;
     font-weight: 500;
     &:hover {
-      background: $dark-blue-hover;
+      background: var(--dark-blue-hover);
     }
     margin: 7.5px;
     border-radius: 5px;
@@ -102,8 +118,8 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
 }
 .alert {
-  background: $red;
-  color: $white;
+  background: var(--red);
+  color: var(--white);
   padding: 5px 0;
   border-radius: 5px;
   margin-bottom: 5px!important;
@@ -114,7 +130,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   &.red {
     // red color
-    background: $red;
+    background: var(--red);
   }
   &.orange {
     // orange color
@@ -123,6 +139,10 @@ h1, h2, h3, h4, h5, h6 {
   &.purple {
     // purple color
     background: #9b51e0;
+  }
+  &.blue {
+    // blue color
+    background: #00bcd4;
   }
   &.form-alert {
     max-width: 20em;
@@ -135,13 +155,13 @@ button {
   margin: 5px 0;
   border: none;
   border-radius: 2px; 
-  background: $dark-blue-hover;
-  color: $white;
+  background: var(--dark-blue-hover);
+  color: var(--white);
   font-size: larger;
   font-weight: inherit;
   transition: 200ms;
   &:hover {
-    background: $dark-blue-hover-hover;
+    background: var(--dark-blue-hover-hover);
     cursor: pointer;
   }
 }
@@ -172,15 +192,15 @@ button {
     }
   }
   .card-header {
-    color: $white;
-    background: $dark-blue;
+    color: var(--white);
+    background: var(--dark-blue);
     padding: 12px;
     border-radius: 5px 5px 0 0;
   }
   .card-body {
     padding: 5px;
-    background: #2a2a2a;
-    color: $white;
+    background: var(--dark-secondary);
+    color: var(--white);
     border-radius: 0 0 5px 5px;
     &.message {
       hr {
@@ -194,10 +214,10 @@ button {
       }
     }
     .link {
-      color: $grey;
+      color: var(--grey);
       text-decoration: none;
       &:hover {
-        color: $white;
+        color: var(--white);
         text-decoration: underline;
       }
     }
@@ -206,7 +226,7 @@ button {
     max-width: 40em;
     margin: 0 auto;
     a {
-      color: $white;
+      color: var(--white);
       text-decoration: none;
     }
   }
@@ -221,7 +241,7 @@ button {
   .toast {
     width: 380px;
     padding: 20px;
-    background-color: #2a2a2a;
+    background-color: var(--dark-secondary);
     border-left: solid 8px #47d764;
     border-radius: 7px;
     display: grid;
@@ -229,7 +249,7 @@ button {
     transform: translate(400px);
     transition: 1s;
     &.error {
-      border-left: solid 8px rgb(233, 13, 13);
+      border-left: solid 8px var(--red);
     }
     .container-1, .container-2{
       align-self: center;
@@ -238,18 +258,18 @@ button {
       font-size: 40px;
       color: #47d764;
       &.error {
-        color: rgb(233, 13, 13);
+        color: var(--red);
       }
     }
     .container-2 p:first-child {
-      color: $white;
+      color: var(--white);
       font-weight: 600;
       font-size: 16px;
     }
     .container-2 p:last-child {
       font-size: 12px;
       font-weight: 400;
-      color: $grey;
+      color: var(--grey);
     }
     button {
       align-self: flex-start;
@@ -257,21 +277,21 @@ button {
       font-size: 25px;
       line-height: 0;
       border: none;
-      color: $grey;
+      color: var(--grey);
       cursor: pointer;
     }
   }
 }
 
 hr {
-  border: 1px solid rgb(28, 27, 27);
+  border: 1px solid var(--dark);
   margin: 10px 0;  
 }
 
 code {
   font-family: monospace, Consolas, "courier new";
   color: crimson;
-  background-color: $dark;
+  background-color: var(--dark);
   padding: 2px 5px;
   display: inline-block;
   border-radius: 2.5px; 
@@ -285,9 +305,6 @@ code {
   border-radius: 50%;
   width: 12.5px;
   height: 12.5px;
-  &.usesrs {
-    float: none;
-  }
   &.online {
     background-color: #47d764;
   }
@@ -359,7 +376,7 @@ code {
     // grey background
     background-color: #2a2a2a;
     // white text
-    color: $white;
+    color: var(--white);
     padding: 10px;
     border-radius: 5px 5px 0 0;
     // box shadow
@@ -375,10 +392,10 @@ code {
       flex: 1;
       padding: 25px;
       h1, h2, h3, h4, h5, h6 {
-        color: $white;
+        color: var(--white);
       }
       p {
-        color: $grey;
+        color: var(--grey);
       }
     }
     .admin-sidebar {
@@ -386,7 +403,7 @@ code {
       padding: 10px;
       background-color: #262525;
       a {
-        color: $white;
+        color: var(--white);
         text-decoration: none;
         transition: all 0.2s;
         display: block;
@@ -399,11 +416,11 @@ code {
         }
         &.no-hover {
           &:hover {
-            color: $white!important;
+            color: var(--white!important);
           }
         }
         &:hover {
-          color: $grey;
+          color: var(--grey);
         }
         &.sublink {
           // margin left for sublink
@@ -417,7 +434,7 @@ code {
 select {
   border-radius: 2px;
   padding: 12px 25px;
-  color: $grey;
+  color: var(--grey);
   font-family: inherit;
   font-weight: inherit;
   background-color: #202020;
