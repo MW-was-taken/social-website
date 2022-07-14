@@ -1,0 +1,17 @@
+$dark: #262323;
+$white: #fff;
+$grey: #aaa;
+$blue: rgb(117, 13, 169);
+$red: #f00;
+
+:root {
+  --dark: #{$dark};
+  --dark-secondary: #{lighten($dark, 5%)};
+  --white: #{$white};
+  --grey: #{$grey};
+  --blue:  #{$blue};
+  --dark-blue: #{darken($blue, 10%)};
+  --dark-blue-hover: #{darken($blue, 20%)};
+  --dark-blue-hover-hover: #{darken($blue, 25%)};
+  --red: #{$red};
+}

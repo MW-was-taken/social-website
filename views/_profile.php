@@ -30,6 +30,10 @@ $name = $User['user_name'];
   <?php 
     echo "<label>Status: " . $User['user_status'] . "</label>";
     echo "<br>";
+    if(!empty($User['user_bio'])) {
+      echo "<label>Bio</label>";
+      echo "<p>" . $User['user_bio'] . "</p>";
+    }
     echo "<label>Join Date: " . HandleDate($User['user_created']) . "</label>";
     echo "<br>";
     echo "<label>Last Online: " . time_elapsed_string($User['user_updated']) . "</label>";

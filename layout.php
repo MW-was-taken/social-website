@@ -22,6 +22,9 @@ if (UserIsAuthenticated()) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <?php
+    echo HandleTheme(GetTheme());
+  ?>
 </head>
 <body>
   <nav>
@@ -43,6 +46,7 @@ if (UserIsAuthenticated()) {
         <div class="right">
           <?php
           if (isset($_SESSION['UserAuthenticated']) && $_SESSION['UserAuthenticated'] == true) {
+            echo("<a href='/settings'>Account Settings</a>");
             echo("<a href='/logout'>Logout</a>\n");
           } else {
             echo("<a href='/login'>Login</a>\n

@@ -50,22 +50,28 @@ function Alert() {
   $result = $conn->query($sql);
   $row = $result->fetch();
   if($row['alert'] == 1) {
-    return "<div class='alert ". DetermineAlertColor($row['alert_type']) . "' role='alert'>".$row['alert_text']."</div>";
+    // if alert link
+    if($row['alert_link'] != "") {
+      echo '<div class="alert alert '.DetermineAlertColor($row['alert_type']).'"><i class="fa-solid fa-circle-exclamation icon-left"></i>'.$row['alert_text'].' <a href="'.$row['alert_link'].'" class="alert-link">Click here to learn more.</a><i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
+    } else {
+      echo '<div class="alert alert '.DetermineAlertColor($row['alert_type']).'"><i class="fa-solid fa-circle-exclamation icon-left"></i>'.$row['alert_text'].'<i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
+    }
   } else {
     return "";
   }
 }
 
-function UpdateAlert($alert_bool, $alert_text, $alert_type) {
+function UpdateAlert($alert_bool, $alert_text, $alert_link, $alert_type) {
   global $conn;
   session_start();
   // StaffLog
-  StaffLog($_SESSION['UserID'], "UPDATED ALERT: ENABLED: " . $alert_bool . " TEXT: " . $alert_text . " TYPE: " . $alert_type);
+  StaffLog($_SESSION['UserID'], "UPDATED ALERT: ENABLED: " . $alert_bool . " TEXT: " . $alert_text . " LINK: " . $alert_link . " TYPE: " . $alert_type);
 
-  $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_type = :alert_type WHERE id = 1";
+  $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_link = :alert_link, alert_type = :alert_type WHERE id = 1";
   $stmt = $conn->prepare($sql);
   $stmt->bindParam(':alert_bool', $alert_bool);
   $stmt->bindParam(':alert_text', $alert_text);
+  $stmt->bindParam(':alert_link', $alert_link);
   $stmt->bindParam(':alert_type', $alert_type);
   $stmt->execute();
 }
@@ -94,6 +100,14 @@ function GetAlertBool() {
   return $row['alert'];
 }
 
+function GetAlertLink() {
+  global $conn;
+  $sql = "SELECT * FROM site_settings WHERE id = 1";
+  $result = $conn->query($sql);
+  $row = $result->fetch();
+  return $row['alert_link'];
+}
+
 function DetermineAlertColor($type) {
   switch ($type) {
     case 1:
@@ -107,6 +121,9 @@ function DetermineAlertColor($type) {
       break;
     case 4:
       return "red";
+      break;
+    case 5:
+      return "blue";
       break;
     default:
       return "green";
@@ -126,6 +143,9 @@ function SiteMaintenance() {
   }
 }
 
+
+
+
 function UpdateMaintenance($maintenance_bool) {
   global $conn;
   session_start();
@@ -139,12 +159,12 @@ function UpdateMaintenance($maintenance_bool) {
   // StaffLog
     StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: ENABLED: " . $maintenance_bool);
     // update alert to maintenance alert
-    UpdateAlert(1, "Site is currently under maintenance.", 4);
+    UpdateAlert(1, "Site is currently under maintenance.", "", 4);
   } else {
     // StaffLog
     StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: DISABLED");
     // update alert to normal alert
-    UpdateAlert(0, "", 0);
+    UpdateAlert(0, "", "", 0);
   }
 
   $sql = "UPDATE site_settings SET maintenance = :maintenance_bool WHERE id = 1";
@@ -401,8 +421,7 @@ function UpdateBio($conn, $bio_raw, $user_id)
 {
   // sanitize input
   $bio_raw_1 = PurifyInput($bio_raw);
-  $bio_raw_2 = ToLineBreaks($bio_raw_1);
-  $bio = ToMarkdown($bio_raw_2);
+  $bio = ToMarkdown($bio_raw_1);
 
   // insert user_bio into users table
   $statement = $conn->prepare("UPDATE users SET user_bio = :bio WHERE user_id = :user_id");
@@ -416,17 +435,9 @@ function GetBio($conn, $user_id)
   $statement = $conn->prepare("SELECT user_bio FROM users WHERE user_id = :user_id");
   $statement->execute(array(':user_id' => $user_id));
   $result = $statement->fetch();
-  return $result['user_bio'];
-}
-
-function InvalidBio($bio)
-{
-  if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?`]*$/", $bio)) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
+  // remove <br /> tags
+  $bio = str_replace("<br />", "", $result['user_bio']);
+  return $bio;
 }
 
 function BioTooLong($bio)
@@ -1025,3 +1036,29 @@ function AdminLink(){
   }
 }
 
+function GetTheme() {
+  global $conn;
+  if(UserIsAuthenticated()) {
+    $user_id = $_SESSION['UserID'];
+    $user = GetUserByID($conn, $user_id);
+    return $user['user_theme'];
+  }
+}
+
+function UpdateTheme($theme, $user_id) {
+  global $conn;
+  if(UserIsAuthenticated()) {
+    $sql = "UPDATE users SET user_theme = :theme WHERE user_id = :user_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':theme' => $theme, ':user_id' => $user_id));
+  }
+}
+
+function HandleTheme($theme_id) {
+  if ($theme_id == 2) {
+    return '<link rel="stylesheet" href="/css/grizlers_theme.css">';
+  }
+  if ($theme_id == 3) {
+    return '<link rel="stylesheet" href="/css/elfos_theme.css">';
+  }
+}

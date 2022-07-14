@@ -1,6 +1,8 @@
 // convert all css variables to sass variables
 $dark: #141313;
 $dark-secondary: lighten($dark, 5%);
+$dark-third: lighten($dark, 10%);
+$dark-fourth: lighten($dark, 12.5%);
 $white: #fff;
 $grey: #aaa;
 $blue: rgb(13, 13, 169);
@@ -120,10 +122,40 @@ h1, h2, h3, h4, h5, h6 {
 .alert {
   background: var(--red);
   color: var(--white);
-  padding: 5px 0;
+  padding: 16px;
   border-radius: 5px;
   margin-bottom: 5px!important;
   text-align: center;
+  a {
+    color: var(--white);
+    margin: 0 5px;
+  }
+  .text {
+    // center
+    text-align: center;
+  }
+
+  .icon-left {
+    float: left;
+    margin-right: 10px;
+    // center vertical
+    display: block;
+    margin: 0 auto;
+  }
+  .icon-right {
+    float: right;
+    margin-left: 10px;
+    // center vertical
+    display: block;
+    margin: 0 auto;
+  }
+
+  i {
+    text-align: center;
+    vertical-align: middle;
+    line-height: 18px;
+  }
+  
   &.green {
     // green color
     background: #47d764;
@@ -374,7 +406,7 @@ code {
 .admin-card {
   .admin-header {
     // grey background
-    background-color: #2a2a2a;
+    background-color: $dark-secondary;
     // white text
     color: var(--white);
     padding: 10px;
@@ -385,7 +417,7 @@ code {
   .admin-wrapper {
     display: flex;
     flex-direction: row;
-    background-color: #202020;
+    background-color: $dark-third;
     border-radius: 0 0 5px 5px;
     .admin-content {
       // do not shrink
@@ -401,7 +433,7 @@ code {
     .admin-sidebar {
       width: 20%;
       padding: 10px;
-      background-color: #262525;
+      background-color: $dark-fourth;
       a {
         color: var(--white);
         text-decoration: none;
@@ -437,7 +469,7 @@ select {
   color: var(--grey);
   font-family: inherit;
   font-weight: inherit;
-  background-color: #202020;
+  background-color: var(--dark);
   text-align: center;
   &:focus {
     outline: none;

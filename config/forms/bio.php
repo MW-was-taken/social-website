@@ -2,17 +2,15 @@
 
 if (isset($_POST["submit"])) {
     session_start();
-    $Bio = $_POST["bio"];
+    $Bio_raw = $_POST["bio"];
 
     require_once '../functions.php';
     require_once '../config.php';
+
+    $Bio = ToLineBreaks($Bio_raw);
     
-    if(InvalidBio($Bio)) {
-      header("location: ../../dashboard/?error=Invalid Bio!");
-      exit();
-    }
     if(BioTooLong($Bio)) {
-      header("location: ../../dashboard/?error=Bio too long!");
+      header("location: ../../settings/?error=Bio too long!");
       exit();
     }
 

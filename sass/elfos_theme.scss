@@ -1,0 +1,25 @@
+// convert all css variables to sass variables
+$dark: #000000;
+$dark-secondary: lighten($dark, 7%);
+$dark-third: lighten($dark, 10%);
+$dark-fourth: lighten($dark, 12.5%);
+$white: #fff;
+$grey: #aaa;
+$blue: #f00;
+$dark-blue: darken($blue, 10%);
+$dark-blue-hover: darken($blue, 20%);
+$dark-blue-hover-hover: darken($blue, 25%);
+$red: #f00;
+
+
+:root {
+  --dark: #{$dark};
+  --dark-secondary: #{lighten($dark, 5%)};
+  --white: #{$white};
+  --grey: #{$grey};
+  --blue:  #{$blue};
+  --dark-blue: #{darken($blue, 10%)};
+  --dark-blue-hover: #{darken($blue, 20%)};
+  --dark-blue-hover-hover: #{darken($blue, 25%)};
+  --red: #{$red};
+}
