@@ -7,10 +7,13 @@ if(isset($_POST['submit'])) {
   $alert_link = $_POST['alert_link'];
   require_once '../functions.php';
   require_once '../config.php';
+  require_once '../profanity.php';
 
   // sanitize input
   $alert_text = PurifyInput($alert_text);
   $alert_link = PurifyInput($alert_link);
+
+  $alert_text = ProfanityFilter($alert_text);
   
   // check if alert bool doesn't equal 0 or 1
   if($alert_bool != 0 && $alert_bool != 1) {

@@ -2,10 +2,13 @@
 
 if (isset($_POST["submit"])) {
     session_start();
-    $status = $_POST["status"];
+    $status_raw = $_POST["status"];
 
     require_once '../functions.php';
     require_once '../config.php';
+    require_once '../profanity.php';
+
+    $status = ProfanityFilter($status_raw);
     
     if(InvalidStatus($status)) {
       header("location: ../../dashboard/?error=Invalid status!");

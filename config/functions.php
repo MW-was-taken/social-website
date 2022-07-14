@@ -9,12 +9,10 @@ U _____ u                 _____     U  ___ u     _
  <<   >>  .-,_|___|_,-.  )(\\,-        \\     _//<,-, 
 (__) (__)  \_)-' '-(_/  (__)(_/       (__)   (__)(_/  
 */
-
-
-// set session timeout to 24 hours
-ini_set('session.gc_maxlifetime', 86400);
-// set session cookie to 24 hours
-ini_set('session.cookie_lifetime', 86400);
+if(@$_SESSION['UserID'] == null) {
+  ini_set('session.gc.maxlifetime', 60*60*24*30); // 30 days
+  session_set_cookie_params(60*60*24*30); // 30 days
+}
 // page functions
 function HandlePageName($name)
 {
@@ -766,8 +764,13 @@ function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurifi
   global $conn;
   $body_sanitized = PurifyInput($body_unpurified);
   $body_markdown = ToMarkdown($body_sanitized);
-  $title = PurifyInput($title_unpurified);
-  $body = ToLineBreaks($body_markdown);
+  // profanity filter
+  include_once '../profanity.php';
+
+  $body_profanity = ProfanityFilter($body_markdown);
+  $title_profanity = ProfanityFilter($title_unpurified);
+  $title = PurifyInput($title_profanity);
+  $body = ToLineBreaks($body_profanity);
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
