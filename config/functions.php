@@ -157,7 +157,7 @@ function UpdateMaintenance($maintenance_bool) {
   // StaffLog
     StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: ENABLED: " . $maintenance_bool);
     // update alert to maintenance alert
-    UpdateAlert(1, "Site is currently under maintenance.", "", 4);
+    UpdateAlert(1, "Welcome admins. Site is currently under maintenance.", "", 2);
   } else {
     // StaffLog
     StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: DISABLED");
@@ -1063,5 +1063,8 @@ function HandleTheme($theme_id) {
   }
   if ($theme_id == 3) {
     return '<link rel="stylesheet" href="/css/elfos_theme.css">';
+  }
+  if($theme_id == 4) {
+    return '<link rel="stylesheet" href="/css/cool_theme.css">';
   }
 }

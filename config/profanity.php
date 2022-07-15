@@ -45,7 +45,8 @@ function ProfanityFilter($text) {
     "rule34",
     ".onion",
     "wanker",
-    "hitler"
+    "hitler",
+    "niggers"
   );
 
 $filterCount = sizeof($filterWords);

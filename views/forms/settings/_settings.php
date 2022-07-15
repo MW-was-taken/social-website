@@ -33,6 +33,9 @@ HandleNote($note);
         <option value="3" <?php if ($theme == 3) {
                               echo "selected";
                             } ?>>eifo's cool red theme</option>
+        <option value="4" <?php if ($theme == 4) {
+                              echo "selected";
+                            } ?>>eifo's cool blue theme</option>
       </select>
       <br>
       <button type="submit" name="submit" class="btn btn-primary">Submit</button>

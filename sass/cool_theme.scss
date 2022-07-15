@@ -1,0 +1,24 @@
+$dark: #000000;
+$dark-secondary: lighten($dark, 10%);
+$dark-third: lighten($dark, 14%);
+$dark-fourth: lighten($dark, 17.5%);
+$white: #fff;
+$grey: #aaa;
+$blue: rgba(9, 114, 252, 0.946);
+$dark-blue: darken($blue, 10%);
+$dark-blue-hover: darken($blue, 20%);
+$dark-blue-hover-hover: darken($blue, 25%);
+$red: rgb(148, 13, 11);
+
+
+:root {
+  --dark: #{$dark};
+  --dark-secondary: #{lighten($dark, 10%)};
+  --white: #{$white};
+  --grey: #{$grey};
+  --blue:  #{$blue};
+  --dark-blue: #{darken($blue, 10%)};
+  --dark-blue-hover: #{darken($blue, 20%)};
+  --dark-blue-hover-hover: #{darken($blue, 25%)};
+  --red: #{$red};
+}
