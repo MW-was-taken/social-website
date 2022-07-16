@@ -1,6 +1,7 @@
 <?php
-function ProfanityFilter($text) {
-  // array
+function ProfanityFilter($text)
+{
+  // you probably shouldn't look at this array.
   $filterWords = array(
     "nigger",
     "bldn",
@@ -19,6 +20,7 @@ function ProfanityFilter($text) {
     "nigga",
     "mong",
     "cock and ball torture",
+    "cbt",
     "isaac hymer",
     "spacebuilder",
     "brick luke",
@@ -46,14 +48,20 @@ function ProfanityFilter($text) {
     ".onion",
     "wanker",
     "hitler",
-    "niggers"
+    "rule34.xxx",
+    "e621.net",
+    "brick luke deez",
+    "brick deez luke nutz",
+    "mentally retarded"
   );
 
-$filterCount = sizeof($filterWords);
- for ($i = 0; $i < $filterCount; $i++) {
-  $text = preg_replace_callback('/\b' . $filterWords[$i] . '\b/i', function($matches){return str_repeat('*', strlen($matches[0]));}, $text);
- }
- return $text;
+  $filterCount = sizeof($filterWords);
+  for ($i = 0; $i < $filterCount; $i++) {
+    $text = preg_replace_callback('/\b' . $filterWords[$i] . '/i', function ($matches) {
+      return str_repeat('*', strlen($matches[0]));
+    }, $text);
+  }
+  return $text;
 }
 
 // GOD FUCKING KILL ME

@@ -4,15 +4,17 @@ include("config/functions.php");
 include("config/config.php");
 session_start();
 ob_start();
-if (UserIsAuthenticated()) {
-  UpdateUser($conn);
+RequireAuthentication();
+UpdateUser($conn);
+if ($_SESSION['last_ip'] != $_SERVER['REMOTE_ADDR']) {
   CheckIpAddress($_SERVER['REMOTE_ADDR']);
-  Maintenance();
 }
+Maintenance();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,37 +25,46 @@ if (UserIsAuthenticated()) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <?php
-    echo HandleTheme(GetTheme());
+  echo HandleTheme($_SESSION['Theme']);
   ?>
+  <style>
+    nav i {
+      margin-right: 5px;
+    }
+  </style>
 </head>
+
 <body>
   <nav>
     <div class="navbar">
       <div class="container">
         <div class="left">
-        <a style="font-weight: 600;" class="logo">Brick-Town</a>
-        <?php
-        echo HomeLink();
-        ?>
-        <a href="/forum">Forum</a>
+          <img src="/cdn/logo.png" alt="Brick-Town logo">
+          <?php
+          echo HomeLink();
+          ?>
+          <a href="/forum"><i class="fa-solid fa-comments"></i>Forum</a>
+          <?php
+          echo AdminLink();
+          ?>
+          <a href="/users">
+            <i class="fa-solid fa-users"></i>Users
+          </a>
+        </div>
+        <div class="right">
+            <a href='/logout'><i class='fa-solid fa-sign-out-alt'></i>Logout</a>
+        </div>
+      </div>
+    </div>
+    <div class="secondary-navbar">
+      <div class="container">
         <?php
         echo ProfileLink();
         echo MessageLink();
-        echo AdminLink();
         ?>
-        <a href="/users">Users</a>
-        </div>
-        <div class="right">
-          <?php
-          if (isset($_SESSION['UserAuthenticated']) && $_SESSION['UserAuthenticated'] == true) {
-            echo("<a href='/settings'>Account Settings</a>");
-            echo("<a href='/logout'>Logout</a>\n");
-          } else {
-            echo("<a href='/login'>Login</a>\n
-            <a href='/signup'>Sign Up</a>\n");
-          }
-          ?>
-        </div>
+        <a href='/settings'>
+          <i class='fa-solid fa-cog'></i>Account Settings
+        </a>
       </div>
     </div>
   </nav>
@@ -65,14 +76,19 @@ if (UserIsAuthenticated()) {
       ?>
     </div>
   </div>
+  <footer>
+    <a href="/staff">Staff List</a> | Copyright &copy; 2022 Brick-Town. All rights reserved. | <a href="/terms">Terms of Service</a> | <a href="/privacy">Privacy Policy</a>
+  </footer>
   <!-- </body> -->
   <script src="/js/warning.js"></script>
 </body>
+
 <head>
-<title>
+  <title>
     <?php
-      echo(HandlePageName($name));
+    echo (HandlePageName($name));
     ?>
   </title>
 </head>
+
 </html>

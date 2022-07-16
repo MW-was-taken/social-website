@@ -1,19 +1,26 @@
 <?php
 /*
-PROPERTY OF:
-U _____ u                 _____     U  ___ u     _    
-\| ___"|/      ___       |" ___|     \/"_ \/    /"|   
- |  _|"       |_"_|     U| |_  u     | | | |  u | |u  
- | |___        | |      \|  _|/  .-,_| |_| |   \| |/  
- |_____|     U/| |\u     |_|      \_)-\___/     |_|   
- <<   >>  .-,_|___|_,-.  )(\\,-        \\     _//<,-, 
-(__) (__)  \_)-' '-(_/  (__)(_/       (__)   (__)(_/  
+
+CREDITS: 
+Grizler
+  FOR: profanity filter, and a huge help all around
+
+Glavic (https://stackoverflow.com/users/67332/glavi%c4%87)
+  FOR: time_elapsed_string()
+
 */
-if(@$_SESSION['UserID'] == null) {
-  ini_set('session.gc.maxlifetime', 60*60*24*30); // 30 days
-  session_set_cookie_params(60*60*24*30); // 30 days
+
+
+if (@$_SESSION['UserID'] == null) {
+  ini_set('session.gc.maxlifetime', 60 * 60 * 24 * 30); // 30 days
+  session_set_cookie_params(60 * 60 * 24 * 30); // 30 days
 }
 // page functions
+/**
+ * This function sets the page's title.
+ * If there is no title present, it will just be the website's name.
+ * 
+ */
 function HandlePageName($name)
 {
   if (empty($name)) {
@@ -23,6 +30,15 @@ function HandlePageName($name)
 }
 // config functions
 
+/**
+ * This function is the master of it all. This function handles the database connection.
+ * 
+ * @param string $db_host The hostname of the database.
+ * @param string $db_username The username of the database.
+ * @param string $db_password The password of the database.
+ * @param string $db The name of the database.
+ * @return object The connection to the database.
+ */
 
 function OpenConnection($db_host, $db_username, $db_password, $db)
 {
@@ -42,24 +58,39 @@ function CloseConnection($database_connection)
 
 // site settings functions
 
-function Alert() {
+/**
+ * This function returns the alert if present.
+ * @return string
+ */
+
+function Alert()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
   $row = $result->fetch();
-  if($row['alert'] == 1) {
+  if ($row['alert'] == 1) {
     // if alert link
-    if($row['alert_link'] != "") {
-      echo '<div class="alert alert '.DetermineAlertColor($row['alert_type']).'"><i class="fa-solid fa-circle-exclamation icon-left"></i>'.$row['alert_text'].' <a href="'.$row['alert_link'].'" class="alert-link">Click here to learn more.</a><i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
+    if ($row['alert_link'] != "") {
+      echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa-solid fa-circle-exclamation icon-left"></i>' . $row['alert_text'] . ' <a href="' . $row['alert_link'] . '" class="alert-link">Click here to learn more.</a><i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
     } else {
-      echo '<div class="alert alert '.DetermineAlertColor($row['alert_type']).'"><i class="fa-solid fa-circle-exclamation icon-left"></i>'.$row['alert_text'].'<i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
+      echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa-solid fa-circle-exclamation icon-left"></i>' . $row['alert_text'] . '<i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
     }
   } else {
     return "";
   }
 }
 
-function UpdateAlert($alert_bool, $alert_text, $alert_link, $alert_type) {
+/**
+ * This function updates the alert.
+ * @param  string $alert_bool Determines if the alert is enabled or disabled. (required)
+ * @param  string $alert_text The text of the alert. (required)
+ * @param  string $alert_link The link of the alert. (optional)
+ * @param  string $alert_type The type of the alert. (required)
+ */
+
+function UpdateAlert($alert_bool, $alert_text, $alert_link, $alert_type)
+{
   global $conn;
   session_start();
   // StaffLog
@@ -74,7 +105,13 @@ function UpdateAlert($alert_bool, $alert_text, $alert_link, $alert_type) {
   $stmt->execute();
 }
 
-function GetAlertText() {
+/**
+ * This function returns the alert's text.
+ * @return string
+ */
+
+function GetAlertText()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
@@ -82,15 +119,28 @@ function GetAlertText() {
   return $row['alert_text'];
 }
 
-function GetAlertType() {
+/**
+ * This function returns the alert type which is used to determine the color of the alert.
+ * 
+ * @return string
+ */
+
+function GetAlertType()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
   $row = $result->fetch();
   return $row['alert_type'];
 }
+/** 
+ * This function returns the boolean that determines if the alert is enabled or not.
+ * 
+ * @return string
+ */
 
-function GetAlertBool() {
+function GetAlertBool()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
@@ -98,7 +148,13 @@ function GetAlertBool() {
   return $row['alert'];
 }
 
-function GetAlertLink() {
+/**
+ * This function returns the alert link if present.
+ * @return string
+ */
+
+function GetAlertLink()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
@@ -106,7 +162,14 @@ function GetAlertLink() {
   return $row['alert_link'];
 }
 
-function DetermineAlertColor($type) {
+/**
+ * This function returns the alert color based on the alert type.
+ * @param  string $alert_type The type of the alert. (required)
+ * @return string
+ */
+
+function DetermineAlertColor($type)
+{
   switch ($type) {
     case 1:
       return "green";
@@ -129,32 +192,31 @@ function DetermineAlertColor($type) {
   }
 }
 
-function SiteMaintenance() {
+function SiteMaintenance()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
   $row = $result->fetch();
-  if($row['maintenance'] == 1) {
+  if ($row['maintenance'] == 1) {
     return true;
   } else {
     return false;
   }
 }
 
-
-
-
-function UpdateMaintenance($maintenance_bool) {
+function UpdateMaintenance($maintenance_bool)
+{
   global $conn;
   session_start();
 
   // if maintenance bool is not 1 or 0, set it to 1
-  if($maintenance_bool != 1 && $maintenance_bool != 0) {
+  if ($maintenance_bool != 1 && $maintenance_bool != 0) {
     $maintenance_bool = 1;
   }
 
-  if($maintenance_bool == 1) {
-  // StaffLog
+  if ($maintenance_bool == 1) {
+    // StaffLog
     StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: ENABLED: " . $maintenance_bool);
     // update alert to maintenance alert
     UpdateAlert(1, "Welcome admins. Site is currently under maintenance.", "", 2);
@@ -171,7 +233,8 @@ function UpdateMaintenance($maintenance_bool) {
   $stmt->execute();
 }
 
-function GetMaintenanceBool() {
+function GetMaintenanceBool()
+{
   global $conn;
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
@@ -179,9 +242,10 @@ function GetMaintenanceBool() {
   return $row['maintenance'];
 }
 
-function Maintenance() {
+function Maintenance()
+{
   // if site is in maintenance mode, redirect to maintenance page
-  if(!IfAdmin($_SESSION['UserID']) && SiteMaintenance()) {
+  if (!IfAdmin($_SESSION['UserID']) && SiteMaintenance()) {
     header("Location: /maintenance");
     exit();
   }
@@ -276,6 +340,7 @@ function CreateUser($pdo, $username, $email, $password)
   $_SESSION['Username'] = $username;
   $_SESSION['UserEmail'] = $email;
   $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
+  $_SESSION['Theme'] = 0;
   header("location: ../../dashboard/?note=Successfully signed up!");
   exit();
 }
@@ -332,7 +397,9 @@ function LoginUser($conn, $Username, $Password)
       $_SESSION['UserID'] = $result['user_id'];
       $_SESSION['Username'] = $result['user_name'];
       $_SESSION['UserEmail'] = $result['user_email'];
+      $_SESSION['last_ip'] = $result['user_ip'];
       $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
+      $_SESSION['Theme'] = $result['user_theme'];
       header("location: ../../dashboard/?note=Successfully logged in!");
       exit();
     } else {
@@ -433,8 +500,8 @@ function GetBio($conn, $user_id)
   $statement = $conn->prepare("SELECT user_bio FROM users WHERE user_id = :user_id");
   $statement->execute(array(':user_id' => $user_id));
   $result = $statement->fetch();
-  // remove <br /> tags
-  $bio = str_replace("<br />", "", $result['user_bio']);
+  $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
+  $bio = str_ireplace($breaks, "", $result['user_bio']);
   return $bio;
 }
 
@@ -449,27 +516,70 @@ function BioTooLong($bio)
 }
 
 // end bio functions
-function GetUsers()
+function GetUsers($page)
 {
   global $conn;
-  $statement = $conn->prepare("SELECT * FROM users");
+  $limit = 10;
+  $offset = ($page - 1) * $limit;
+  $statement = $conn->prepare("SELECT * FROM users ORDER BY user_id ASC LIMIT :limit OFFSET :offset");
+  $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+  $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
+  $statement->execute();
+  $result = $statement->fetchAll();
+  return $result;
+}
+
+function GetStaff()
+{
+  // get all users with user_admin = 2, 3, or 4
+  global $conn;
+  $statement = $conn->prepare("SELECT * FROM users WHERE user_admin = 2 OR user_admin = 3 OR user_admin = 4");
   $statement->execute();
   $result = $statement->fetchAll();
   if (!empty($result)) {
     return $result;
   } else {
-    echo "No users found!";
+    echo "No staff found!";
   }
 }
 
-function ListUsers()
+function ListUsers($page)
 {
-  $users = GetUsers();
+  $users = GetUsers($page);
+  $usercount = count($users);
+  if ($usercount > 0) {
+    foreach ($users as $user) {
+      $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
+      $bio = str_ireplace($breaks, "", $user['user_bio']);
+?>
+      <div class="row">
+        <div class="col-1">
+          <img src="/Avatar?id=<?php echo $user['user_id']; ?>" alt="<?php echo $user['user_name']; ?>" width=50>
+        </div>
+        <div class="col">
+          <div class="ellipsis">
+            <a href="/profile/?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
+            <?php OnlineDot($user['user_updated'], true) ?>
+          </div>
+          <p class="bio">
+            <?php echo $bio; ?>
+          </p>
+        </div>
+      </div>
+      <hr>
+<?php
+    }
+  } else {
+    echo "No users found!";
+  }
+}
+function ListStaff()
+{
+  $users = GetStaff();
   $usercount = count($users);
   if ($usercount > 0) {
     foreach ($users as $user) {
       $status = $user['user_status'];
-      $bio = $user['user_bio'];
       $username = $user['user_name'];
       $id = $user['user_id'];
       echo '<div class="ellipsis">';
@@ -495,10 +605,8 @@ function ListUsers()
 function HandleProfile($id)
 {
   global $conn;
-  if ($id !== null && !empty($id)) {
-    $user = GetUserByID($conn, $id);
-    return $user;
-  }
+  $user = GetUserByID($conn, $id);
+  return $user;
 }
 function GetProfileLink($user_id, $user_name)
 {
@@ -518,6 +626,8 @@ function PurifyInput($input)
 
 function ToLineBreaks($text)
 {
+  // remove <br /> tags
+  $text = str_ireplace("<br />", "", $text);
   return nl2br($text);
 }
 
@@ -858,7 +968,8 @@ function GetBadge($user_id)
   return $result;
 }
 
-function HandleBadgeColor($badge_color) {
+function HandleBadgeColor($badge_color)
+{
   // gh copilot is overpowered
   if ($badge_color == "red") {
     return "danger";
@@ -877,32 +988,37 @@ function HandleBadgeColor($badge_color) {
 
 // end of badge functions
 // profile badge functions
-function ProfileBadge($admin) {
+function ProfileBadge($admin)
+{
   // moderator badge
   if ($admin == 1) {
     ModeratorBadge();
   } elseif ($admin == 2) {
     // admin badge
     AdminBadge();
-  } elseif($admin == 3) {
+  } elseif ($admin == 3) {
     SiteDeveloperBadge();
-  } elseif($admin == 4) {
+  } elseif ($admin == 4) {
     OwnerBadge();
   }
 }
 
-function ModeratorBadge() {
+function ModeratorBadge()
+{
   echo "<span class='mod-text'>Moderator</span>";
 }
 
-function AdminBadge() {
+function AdminBadge()
+{
   echo "<span class='admin-text'>Admin</span>";
 }
 
-function SiteDeveloperBadge() {
-  echo "<span class='dev-text'>Site Developer</span>";
+function SiteDeveloperBadge()
+{
+  echo "<span class='dev-text'>Dev</span>";
 }
-function OwnerBadge() {
+function OwnerBadge()
+{
   echo "<span class='owner-text'>Owner</span>";
 }
 // end profile badge functions
@@ -997,74 +1113,170 @@ function StaffLog($user_id, $action)
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id, ':action' => $action));
 }
+
+function GetLogs($page)
+{
+  global $conn;
+  $limit = 5;
+  $offset = ($page - 1) * $limit;
+  $statement = $conn->prepare("SELECT * FROM staff_log ORDER BY log_id DESC LIMIT :limit OFFSET :offset");
+  $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+  $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
+  $statement->execute();
+  $result = $statement->fetchAll();
+  return $result;
+}
+
+function CheckIfUserExists($user_id)
+{
+  global $conn;
+  $sql = "SELECT * FROM users WHERE user_id = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  if (count($result) > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// end of admin functions
 // links
 function ProfileLink()
 {
   global $conn;
-  if(UserIsAuthenticated()) {
+  if (UserIsAuthenticated()) {
     $user_id = $_SESSION['UserID'];
     $user = GetUserByID($conn, $user_id);
-    return '<a href="/profile?id=' . $user['user_id'] . '">' . $user['user_name'] . '</a>';
+    return '<a href="/profile"><i class="fas fa-user"></i>' . $user['user_name'] . '</a>';
   }
 }
 
-function HomeLink() {
-  if(UserIsAuthenticated()) {
-    return '<a href="/dashboard">Dashboard</a>';
+function HomeLink()
+{
+  if (UserIsAuthenticated()) {
+    return '<a href="/dashboard">
+    <i class="fas fa-home"></i>Dashboard
+    </a>';
   } else {
     return '<a href="/">Home</a>';
   }
 }
 
-function MessageLink() {
+function MessageLink()
+{
   if (UserIsAuthenticated()) {
     // get user_id from session
     $user_id = $_SESSION['UserID'];
     // get number of unread messages
     $messages = UnseenMessages($user_id);
-    if($messages > 0) {
-      return '<a href="/messages">Messages <span class="badge">' . $messages . '</span></a>';
+    if ($messages > 0) {
+      return '<a href="/messages">
+      <i class="fas fa-envelope"></i>Messages <span class="badge">' . $messages . '</span></a>';
     } else {
-      return '<a href="/messages">Messages</a>';
+      return '<a href="/messages"><i class="fas fa-envelope"></i>Messages</a>';
     }
   }
 }
 
-function AdminLink(){
-  if(UserIsAuthenticated()) {
+function AdminLink()
+{
+  if (UserIsAuthenticated()) {
     $user_id = $_SESSION['UserID'];
-    if(IfAdmin($user_id)) {
-      return '<a href="/admin">Admin</a>';
+    if (IfAdmin($user_id)) {
+      return '<a href="/admin">
+      <i class="fa fa-cogs" aria-hidden="true"></i>Admin
+      </a>';
     }
   }
 }
 
-function GetTheme() {
+function GetTheme()
+{
   global $conn;
-  if(UserIsAuthenticated()) {
-    $user_id = $_SESSION['UserID'];
-    $user = GetUserByID($conn, $user_id);
-    return $user['user_theme'];
+  if (UserIsAuthenticated()) {
+    session_start();
+    if (isset($_SESSION['Theme'])) {
+      return $_SESSION['Theme'];
+    } else {
+      $user_id = $_SESSION['UserID'];
+      $user = GetUserByID($conn, $user_id);
+      $_SESSION['Theme'] = $user['user_theme'];
+    }
   }
 }
 
-function UpdateTheme($theme, $user_id) {
+function UpdateTheme($theme, $user_id)
+{
   global $conn;
-  if(UserIsAuthenticated()) {
+  if (UserIsAuthenticated()) {
     $sql = "UPDATE users SET user_theme = :theme WHERE user_id = :user_id";
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':theme' => $theme, ':user_id' => $user_id));
+    session_start();
+    $_SESSION['Theme'] = $theme;
   }
 }
 
-function HandleTheme($theme_id) {
+function HandleTheme($theme_id)
+{
   if ($theme_id == 2) {
     return '<link rel="stylesheet" href="/css/grizlers_theme.css">';
   }
   if ($theme_id == 3) {
     return '<link rel="stylesheet" href="/css/elfos_theme.css">';
   }
-  if($theme_id == 4) {
+  if ($theme_id == 4) {
     return '<link rel="stylesheet" href="/css/cool_theme.css">';
+  }
+}
+
+function UploadCatalogItem($name, $description, $price, $image, $user_id)
+{
+  global $conn;
+  $sql = "INSERT INTO catalog (catalog_name, catalog_description, catalog_price, catalog_image, catalog_user_id) VALUES (:name, :description, :price, :image, :user_id)";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':name' => $name, ':description' => $description, ':price' => $price, ':image' => $image, ':user_id' => $user_id));
+}
+
+//  forum functions
+function GetForumCategories()
+{
+  global $conn;
+  $sql = "SELECT * FROM categories";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute();
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function CreateCategory($cat_name, $cat_description, $cat_creator, $locked)
+{
+  global $conn;
+  $sql = "INSERT INTO categories (cat_name, cat_desc, cat_creator, cat_created, cat_admin) VALUES (:cat_name, :cat_description, :cat_creator, NOW(), :cat_admin)";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':cat_name' => $cat_name, ':cat_description' => $cat_description, ':cat_creator' => $cat_creator, ':cat_admin' => $locked));
+}
+
+function GetAvatar($user_id)
+{
+  return "/Avatar?id=" . $user_id;
+}
+
+function OnlineDot($last_online, $float = false)
+{
+  if (!$float) {
+    if (!IfIsOnline($last_online)) {
+      echo '<span class="status-dot users no-float"></span>';
+    } else {
+      echo '<span class="status-dot users online no-float"></span>';
+    }
+  } else {
+    if (!IfIsOnline($last_online)) {
+      echo '<span class="status-dot users"></span>';
+    } else {
+      echo '<span class="status-dot users online"></span>';
+    }
   }
 }

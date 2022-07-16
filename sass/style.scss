@@ -38,9 +38,22 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  color: white;
 }
 input, textarea, button {
   font-family: inherit;
+}
+input[type="checkbox"] {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: block;
+  margin: 0;
+  padding: 0;
+  // change the color of the checkbox
+  background-color: var(--dark-secondary);
+  border: 1px solid var(--dark-secondary);
+  border-radius: 5px; 
+
 }
 
 input, textarea {
@@ -87,6 +100,14 @@ nav {
 .navbar {
   background: var(--dark-blue);
   overflow: hidden;
+  img {
+    width: 161.26px;
+    height: 25px;
+    overflow: hidden;
+    margin-top: -6px;
+    display: inline-block;
+    vertical-align: middle;
+  }
   .left {
     float: left;
     text-align: left;
@@ -102,8 +123,37 @@ nav {
     text-decoration: none;
     font-size: large;
     font-weight: 500;
+    
+
     &:hover {
       background: var(--dark-blue-hover);
+    }
+    margin: 7.5px;
+    border-radius: 5px;
+  }
+}
+
+// secondary navbar
+.secondary-navbar {
+  background: var(--dark-blue-hover);
+  overflow: hidden;
+  .left {
+    float: left;
+    text-align: left;
+  }
+  .right {
+    float: right;
+    text-align: right;
+  }
+  a {
+    padding: 6px 10px;
+    color: var(--white);
+    display: inline-block;
+    text-decoration: none;
+    font-size: large;
+    font-weight: 500;
+    &:hover {
+      background: var(--dark-blue)
     }
     margin: 7.5px;
     border-radius: 5px;
@@ -199,6 +249,21 @@ button {
 }
 .card {
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  &.no-header {
+    border-radius: 5px;
+  }
+
+  &.forum {
+    .card-body {
+      a {
+        color: var(--white);
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 
   &.form-card {
     &.signup {
@@ -228,6 +293,9 @@ button {
     background: var(--dark-blue);
     padding: 12px;
     border-radius: 5px 5px 0 0;
+    &.red {
+      background: var(--red);
+    }
   }
   .card-body {
     padding: 5px;
@@ -332,13 +400,17 @@ code {
 }
 .status-dot {
   float: right;
-  margin-bottom: 3px;
   background-color: #a2a2a2;
   border-radius: 50%;
   width: 12.5px;
   height: 12.5px;
   &.online {
     background-color: #47d764;
+  }
+  &.no-float {
+    float: none;
+    display: inline-block;
+    margin: 0 5px;
   }
 }
 .ellipsis {
@@ -429,6 +501,13 @@ code {
       p {
         color: var(--grey);
       }
+      a {
+        color: var(--white);
+        text-decoration: none;
+        &:hover {
+          color: var(--grey);
+        }
+      }
     }
     .admin-sidebar {
       width: 20%;
@@ -448,7 +527,7 @@ code {
         }
         &.no-hover {
           &:hover {
-            color: var(--white!important);
+            color: #fff;
           }
         }
         &:hover {
@@ -473,5 +552,155 @@ select {
   text-align: center;
   &:focus {
     outline: none;
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  // on small screens col will be 100% width
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+  }
+  .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+    padding : 15px;
+  }
+  .col-1 {
+    flex-basis: 8.33333%;
+  }
+  .col-2 {
+    flex-basis: 16.66667%;
+  }
+  .col-3 {
+    flex-basis: 25%;
+  }
+  .col-4 {
+    flex-basis: 33.33333%;
+  }
+  .col-5 {
+    flex-basis: 41.66667%;
+  }
+  .col-6 {
+    flex-basis: 50%;
+  }
+  .col-7 {
+    flex-basis: 58.33333%;
+  }
+  .col-8 {
+    flex-basis: 66.66667%;
+  }
+  .col-9 {
+    flex-basis: 75%;
+  }
+  .col-10 {
+    flex-basis: 83.33333%;
+  }
+  .col-11 {
+    flex-basis: 91.66667%;
+  }
+  .col-12 {
+    flex-basis: 100%;
+  }
+}
+
+// css speech bubble
+.speech-bubble {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  background-color: var(--dark-secondary);
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  &:after {
+    // show bubble on bottom
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--dark-secondary);
+
+  
+  }
+}
+
+footer {
+  background-color: var(--dark);
+  color: var(--grey);
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 45px;
+  a {
+    color: var(--grey);
+    text-decoration: none;
+    &:hover {
+      color: var(--white);
+    }
+  }
+}
+
+.center-img {
+  display: block;
+  margin: 0 auto;
+}
+
+.category {
+  display: block;
+  .category_desc {
+    width: 825px;
+    word-break: break-word;
+    white-space: pre-line;
+    overflow-wrap: break-word;
+    -ms-word-break: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+}
+
+.bio {
+  // after 5 lines, put ... at the end
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  // on small screens, show all
+}
+
+.username {
+  // cut off username after 10 characters
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile_button {
+  padding: 10px;
+  background-color: var(--blue);
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  color: var(--white);
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  transition: 0.2s ease;
+  &:hover {
+    background-color: var(--dark-blue);
   }
 }

@@ -4,4 +4,8 @@
   <a href="/admin/banner" class="sublink"><i class="fa-solid fa-triangle-exclamation"></i>Site Banner</a>
   <a href="/admin/maintenance" class="sublink"><i class="fa-solid fa-circle-arrow-down"></i>Maintenance</a>
   <a href="/pma" class="sublink"><i class="fa-solid fa-database"></i>Database</a>
+  <a class="no-hover"><i class="fa-solid fa-comments"></i>Forum<i class="fa-solid fa-caret-down caret"></i></a>
+  <a href="/admin/forum/categories" class="sublink"><i class="fa-solid fa-list-ul"></i>Categories</a>
+  <!-- logs -->
+  <a href="/admin/logs"><i class="fa-solid fa-history"></i>Logs</a>
 </div>

@@ -1,5 +1,6 @@
 <?php
 $bio = GetBio($conn, $_SESSION["UserID"]);
+$bio = preg_replace("/^(<br \/>)/", "", $bio);
 $theme = GetTheme();
 // get error from url
 @$error = $_GET["error"];
@@ -9,6 +10,7 @@ HandleError($error);
 @$note = $_GET["note"];
 // if error is set
 HandleNote($note);
+
 ?>
 <div class="card users">
   <div class="card-header">
