@@ -97,6 +97,7 @@ nav {
   font-size: larger;
   color: var(--white);
 }
+
 .navbar {
   background: var(--dark-blue);
   overflow: hidden;
@@ -107,14 +108,27 @@ nav {
     margin-top: -6px;
     display: inline-block;
     vertical-align: middle;
+    @media (max-width: 768px) {
+      width: 50%;
+      height: auto;
+      margin-top: 0;
+    }
   }
   .left {
     float: left;
     text-align: left;
+    @media (max-width: 768px) {
+      float: none;
+      text-align: center;
+    }
   }
   .right {
     float: right;
     text-align: right;
+    @media (max-width: 768px) {
+      float: none;
+      text-align: center;
+    }
   }
   a {
     padding: 8px 12px;
@@ -123,14 +137,17 @@ nav {
     text-decoration: none;
     font-size: large;
     font-weight: 500;
-    
-
     &:hover {
       background: var(--dark-blue-hover);
     }
     margin: 7.5px;
     border-radius: 5px;
+    @media (max-width: 768px) {
+      display: block;
+      width: 100%;
+    }
   }
+  // on small screens, the navbar will collapse
 }
 
 // secondary navbar
@@ -140,10 +157,18 @@ nav {
   .left {
     float: left;
     text-align: left;
+    @media (max-width: 768px) {
+      float: none;
+      text-align: center;
+    }
   }
   .right {
     float: right;
     text-align: right;
+    @media (max-width: 768px) {
+      float: none;
+      text-align: center;
+    }
   }
   a {
     padding: 6px 10px;
@@ -154,6 +179,11 @@ nav {
     font-weight: 500;
     &:hover {
       background: var(--dark-blue)
+    }
+    @media (max-width: 768px) {
+      display: block;
+      width: 100%;
+      text-align: center;
     }
     margin: 7.5px;
     border-radius: 5px;
