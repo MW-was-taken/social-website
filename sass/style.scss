@@ -252,6 +252,13 @@ button {
   &.no-header {
     border-radius: 5px;
   }
+  a {
+    color: var(--white);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 
   &.forum {
     .card-body {
@@ -700,7 +707,9 @@ footer {
   text-align: center;
   display: block;
   transition: 0.2s ease;
+  margin-bottom: 5px;
   &:hover {
     background-color: var(--dark-blue);
   }
 }
+

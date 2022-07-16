@@ -94,7 +94,9 @@ function UpdateAlert($alert_bool, $alert_text, $alert_link, $alert_type)
   global $conn;
   session_start();
   // StaffLog
-  StaffLog($_SESSION['UserID'], "UPDATED ALERT: ENABLED: " . $alert_bool . " TEXT: " . $alert_text . " LINK: " . $alert_link . " TYPE: " . $alert_type);
+  $color = DetermineAlertColor($alert_type);
+  $staff_log_string = "Updated alert to say: " . $alert_text . "<br> Updated alert link: " . $alert_link . "<br> Updated alert color: " . $color;
+  StaffLog($_SESSION['UserID'], $staff_log_string);
 
   $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_link = :alert_link, alert_type = :alert_type WHERE id = 1";
   $stmt = $conn->prepare($sql);

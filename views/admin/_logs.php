@@ -47,14 +47,15 @@ $logs = GetLogs($page);
             <hr>
             <div class="col-10">
               <?php echo $log['log_action']; ?>
-              <div class="date">
-                <?php echo $log['time_logged']; ?>
-              </div>
             </div>
           </div>
           <div style="float: right;">
             <?php
-            echo $log['time_logged'];
+            echo HandleDate($log['time_logged']);
+            ?>
+            |
+            <?php 
+              echo time_elapsed_string($log['time_logged']);
             ?>
           </div>
           <br>
