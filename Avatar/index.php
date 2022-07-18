@@ -4,18 +4,39 @@ require_once "../utils/StackImage.php";
 require_once "../config/functions.php";
 require_once "../config/config.php";
 if (!isset($_GET['id'])) {
-  echo '<style>body {background-color: #1E1D1D; font-family: monospace; color: white;}</style>';
-  echo 'No ID provided.';
+  $Image = new StackImage($_SERVER["DOCUMENT_ROOT"] . "/cdn/no-id.png");
+  $Image->Error($_SERVER['DOCUMENT_ROOT'] . "/cdn/no-id.png");
 } else {
+  // check if id contains "DROP"
+  if(strpos($_GET['id'], "DROP") !== false) {
+    // dark mode error message
+    $Image = new StackImage($_SERVER["DOCUMENT_ROOT"] . "/cdn/fuck-you.png");
+    $Image->Error($_SERVER['DOCUMENT_ROOT'] . "/cdn/fuck-you.png");
+  }
+
   if (!CheckIfUserExists($_GET['id'])) {
-    echo '<style>body {background-color: #1E1D1D; font-family: monospace; color: white;}</style>';
-    echo 'The provided ID does not match a user account.';
+    // get error image from CDN
+    $Image = new StackImage($_SERVER["DOCUMENT_ROOT"] . "/cdn/no-account.png");
+    $Image->Error($_SERVER['DOCUMENT_ROOT'] . "/cdn/no-account.png");
   } else {
-    $Image = new StackImage($_SERVER["DOCUMENT_ROOT"] . "/cdn/Avatar.png");
+    $UserID = $_GET['id'];
+    $User = GetUserByID($conn, $UserID);
+    $shirt = "/cdn/Store/" . $User['wearing_shirt'].  ".png";
+    $pants = "/cdn/Store/" . $User['wearing_pants']. ".png";
+    $glasses = "/cdn/Store/" . $User['wearing_glasses'] .".png";
+    $face = "/cdn/Store/" . $User['wearing_face'] . ".png";
+    $hat = "/cdn/Store/" . $User['wearing_hat'] . ".png";
+
+    if($User["wearing_face"] == 0) {
+      $face = "/cdn/Store/default_face.png";
+    }
+
+    $Image = new StackImage($_SERVER["DOCUMENT_ROOT"] . "/cdn/TransparentBG.png");
     $Image->AddLayer($_SERVER["DOCUMENT_ROOT"] . "/cdn/Avatar.png");
-    $Image->AddLayer($_SERVER["DOCUMENT_ROOT"] . "/cdn/Pants.png");
-    $Image->AddLayer($_SERVER["DOCUMENT_ROOT"] . "/cdn/Shirt.png");
-    $Image->CropImage();
-    $Image->Output();
+    if($User["wearing_hat"] != 0) {
+      $Image->AddLayer($_SERVER["DOCUMENT_ROOT"] . $hat);
+    }
+    $Image->AddLayer($_SERVER["DOCUMENT_ROOT"] . $face);
+    $Image->Output();  
 }
 }

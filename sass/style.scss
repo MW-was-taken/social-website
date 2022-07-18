@@ -37,7 +37,6 @@ body {
   font-weight: 600;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
   color: white;
 }
 input, textarea, button {
@@ -46,6 +45,19 @@ input, textarea, button {
 input[type="checkbox"] {
   width: 1.5rem;
   height: 1.5rem;
+  display: block;
+  margin: 0;
+  padding: 0;
+  // change the color of the checkbox
+  background-color: var(--dark-secondary);
+  border: 1px solid var(--dark-secondary);
+  border-radius: 5px; 
+
+}
+
+input[type="file"] {
+  width: 100%;
+  height: 100%;
   display: block;
   margin: 0;
   padding: 0;
@@ -279,8 +291,11 @@ button {
 }
 .card {
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  
   &.no-header {
-    border-radius: 5px;
+    .card-body {
+      border-radius: 5px;
+    }
   }
   a {
     color: var(--white);
@@ -339,6 +354,12 @@ button {
     background: var(--dark-secondary);
     color: var(--white);
     border-radius: 0 0 5px 5px;
+    &.market {
+      a {
+        display: block;
+        
+      }
+    }
     &.message {
       hr {
         margin: 5px;
@@ -530,7 +551,6 @@ code {
     border-radius: 0 0 5px 5px;
     .admin-content {
       // do not shrink
-      flex: 1;
       padding: 25px;
       h1, h2, h3, h4, h5, h6 {
         color: var(--white);
@@ -602,10 +622,17 @@ select {
     flex-direction: column;
   }
   .col {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
+    // make col go as wide as content
     flex: 1;
+    // make cols wrap
+    flex-wrap: wrap;
+    // make cols fill row
+    flex-grow: 1;
+    // make cols fill row on small screens
+    @media (max-width: 768px) {
+      flex-grow: 0;
+      flex-basis: 100%;
+    }
   }
   .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
     padding : 15px;
@@ -743,3 +770,22 @@ footer {
   }
 }
 
+.center {
+  text-align: center;
+}
+
+.no-col-padding {
+  &.col-1, &.col-2, &.col-3, &.col-4, &.col-5, &.col-6, &.col-7, &.col-8, &.col-9, &.col-10, &.col-11, &.col-12 {
+    padding: 0;
+  }
+}
+
+.users-col {
+  // make height fixed
+  height: 250px;
+  .profile-link {
+    // make it stay at the bottom of the container
+    bottom: 0;
+    // make it stay at the bottom of the container without position: absolute
+  }
+}

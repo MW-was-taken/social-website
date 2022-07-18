@@ -521,7 +521,7 @@ function BioTooLong($bio)
 function GetUsers($page)
 {
   global $conn;
-  $limit = 10;
+  $limit = 12;
   $offset = ($page - 1) * $limit;
   $statement = $conn->prepare("SELECT * FROM users ORDER BY user_id ASC LIMIT :limit OFFSET :offset");
   $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -531,18 +531,17 @@ function GetUsers($page)
   return $result;
 }
 
-function GetStaff()
+function GetStaff($page)
 {
-  // get all users with user_admin = 2, 3, or 4
   global $conn;
-  $statement = $conn->prepare("SELECT * FROM users WHERE user_admin = 2 OR user_admin = 3 OR user_admin = 4");
+  $limit = 12;
+  $offset = ($page - 1) * $limit;
+  $statement = $conn->prepare("SELECT * FROM users WHERE user_admin = 2 OR user_admin = 3 OR user_admin = 4 OR user_admin = 5 ORDER BY user_id ASC LIMIT :limit OFFSET :offset");
+  $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+  $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
   $statement->execute();
   $result = $statement->fetchAll();
-  if (!empty($result)) {
-    return $result;
-  } else {
-    echo "No staff found!";
-  }
+  return $result;
 }
 
 function ListUsers($page)
@@ -550,55 +549,46 @@ function ListUsers($page)
   $users = GetUsers($page);
   $usercount = count($users);
   if ($usercount > 0) {
+    echo "<div class='row'>";
     foreach ($users as $user) {
-      $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
-      $bio = str_ireplace($breaks, "", $user['user_bio']);
 ?>
-      <div class="row">
-        <div class="col-1">
-          <img src="/Avatar?id=<?php echo $user['user_id']; ?>" alt="<?php echo $user['user_name']; ?>" width=50>
-        </div>
-        <div class="col">
-          <div class="ellipsis">
-            <a href="/profile/?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
-            <?php OnlineDot($user['user_updated'], true) ?>
-          </div>
-          <p class="bio">
-            <?php echo $bio; ?>
-          </p>
+      <div class="col-3 no-col-padding users-col">
+        <div class="center">
+        <a href="/profile/?id=<?php echo $user['user_id']; ?>">
+        <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
+        </a>
+        <br>
+        <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
         </div>
       </div>
-      <hr>
-<?php
+    <?php
     }
+    echo "</div>";
+
   } else {
     echo "No users found!";
   }
 }
-function ListStaff()
+function ListStaff($page)
 {
-  $users = GetStaff();
+  $users = GetStaff($page);
   $usercount = count($users);
   if ($usercount > 0) {
+    echo "<div class='row'>";
     foreach ($users as $user) {
-      $status = $user['user_status'];
-      $username = $user['user_name'];
-      $id = $user['user_id'];
-      echo '<div class="ellipsis">';
-      echo "<a href='/profile?id=" . $id . "'>" . $username;
-      echo '</a>';
-      ProfileBadge($user['user_admin']);
-      if (!IfIsOnline($user['user_updated'])) {
-        echo '<span class="status-dot users"></span>';
-      } else {
-        echo '<span class="status-dot users online"></span>';
-      }
-      echo '</div>';
-      if (!empty($status)) {
-        echo "<label>" . $status . "</label>";
-      }
-      echo "<hr>";
+?>
+      <div class="col-3 no-col-padding users-col">
+        <div class="center">
+        <a href="/profile/?id=<?php echo $user['user_id']; ?>">
+        <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
+        </a>
+        <br>
+        <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
+        </div>
+      </div>
+    <?php
     }
+    echo "</div>";
   } else {
     echo "No users found!";
   }
@@ -793,7 +783,8 @@ function GetNumberOfUnseenMessages($user_id)
 {
   // get number of unseen messages with PDO
   global $conn;
-  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 0";
+  // order by message_id desc to get the latest message first
+  $sql = "SELECT * FROM messages WHERE message_to = :user_id AND message_seen = 0 ORDER BY message_id DESC";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
@@ -804,7 +795,8 @@ function GetNumberOfSeenMessages($user_id)
 {
   // get number of unseen messages with PDO
   global $conn;
-  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 1";
+  // order by message_id desc to get the latest message first
+  $sql = "SELECT * FROM messages WHERE message_to = :user_id AND message_seen = 1 ORDER BY message_id DESC";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
@@ -815,7 +807,8 @@ function GetNumberOfSentMessages($user_id)
 {
   // get number of unseen messages with PDO
   global $conn;
-  $sql = "SELECT * FROM messages WHERE msg_sender = :user_id";
+  // order by message_id desc to get the latest message first
+  $sql = "SELECT * FROM messages WHERE message_from = :user_id ORDER BY message_id DESC";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
@@ -900,7 +893,8 @@ function ViewMessage($msg_id, $user_id)
   // i do not know how this works
 
   // check if message exists
-  global $conn;
+  global $conn; 
+  // limit 
   $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':msg_id' => $msg_id));
@@ -987,42 +981,6 @@ function HandleBadgeColor($badge_color)
     return "secondary";
   }
 }
-
-// end of badge functions
-// profile badge functions
-function ProfileBadge($admin)
-{
-  // moderator badge
-  if ($admin == 1) {
-    ModeratorBadge();
-  } elseif ($admin == 2) {
-    // admin badge
-    AdminBadge();
-  } elseif ($admin == 3) {
-    SiteDeveloperBadge();
-  } elseif ($admin == 4) {
-    OwnerBadge();
-  }
-}
-
-function ModeratorBadge()
-{
-  echo "<span class='mod-text'>Moderator</span>";
-}
-
-function AdminBadge()
-{
-  echo "<span class='admin-text'>Admin</span>";
-}
-
-function SiteDeveloperBadge()
-{
-  echo "<span class='dev-text'>Dev</span>";
-}
-function OwnerBadge()
-{
-  echo "<span class='owner-text'>Owner</span>";
-}
 // end profile badge functions
 // friend functions
 function GetFriends($user_id)
@@ -1088,7 +1046,7 @@ function IfAdmin($user_id)
 {
   global $conn;
   // get * from users where user_id is user_id and admin is 2 or higher
-  $sql = "SELECT * FROM users WHERE user_id = :user_id AND user_admin >= 2";
+  $sql = "SELECT * FROM users WHERE user_id = :user_id AND user_admin >= 3";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
@@ -1234,14 +1192,6 @@ function HandleTheme($theme_id)
   }
 }
 
-function UploadCatalogItem($name, $description, $price, $image, $user_id)
-{
-  global $conn;
-  $sql = "INSERT INTO catalog (catalog_name, catalog_description, catalog_price, catalog_image, catalog_user_id) VALUES (:name, :description, :price, :image, :user_id)";
-  $stmt = $conn->prepare($sql);
-  $stmt->execute(array(':name' => $name, ':description' => $description, ':price' => $price, ':image' => $image, ':user_id' => $user_id));
-}
-
 //  forum functions
 function GetForumCategories()
 {
@@ -1281,4 +1231,95 @@ function OnlineDot($last_online, $float = false)
       echo '<span class="status-dot users online"></span>';
     }
   }
+}
+
+// Catalog functions
+
+function UploadMarketItem($item_name, $item_desc, $item_price, $item_type)
+{
+  global $conn;
+  $sql = "INSERT INTO market (item_name, item_desc, item_price, item_type) VALUES (:item_name, :item_desc, :item_price, :item_type)";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':item_name' => $item_name, ':item_desc' => $item_desc, ':item_price' => $item_price, ':item_type' => $item_type));
+}
+
+function GetMarketItemByID($item_id)
+{
+  global $conn;
+  $sql = "SELECT * FROM market WHERE item_id = :item_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':item_id' => $item_id));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+
+function GetMarketItemByName($item_name)
+{
+  global $conn;
+  $sql = "SELECT * FROM market WHERE item_name = :item_name";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':item_name' => $item_name));
+  $result = $stmt->fetchAll();
+  return $result;
+}
+function GetLastMarketItem()
+{
+  // get last id
+  global $conn;
+  $sql = "SELECT item_id FROM market ORDER BY item_id DESC LIMIT 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute();
+  $result = $stmt->fetchAll();
+  return $result[0]['item_id'];
+}
+
+function GetItems($item_type = "all")
+{
+  if ($item_type == "all") {
+    global $conn;
+    $sql = "SELECT * FROM market";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+    return $result;
+  } else {
+    global $conn;
+    $sql = "SELECT * FROM market WHERE item_type = :item_type";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':item_type' => $item_type));
+    $result = $stmt->fetchAll();
+    return $result;
+  }
+}
+
+function ListItems()
+{
+  global $conn;
+  // for every 4 items, create a new row
+  $items = GetItems();
+  $itemcount = count($items);
+  echo '<div class="row">';
+  foreach ($items as $item) {
+    ?>
+    <div class="col-3">
+      <div class="card no-header">
+        <div class="card-body">
+          <div class="center">
+            <a href="/market/item?id=<?php echo $item['item_id']; ?>">
+              <img src="/Avatar/Thumbnail/?id=<?php echo $item['item_id']; ?>" width="150">
+            </a>
+          </div>
+          <hr>
+            <a href="/market/item?id=<?php echo $item['item_id']; ?>">
+              <h3 style="color: white;"><?php echo $item['item_name']; ?></h3>
+            </a>
+            <a href="/profile/<?php echo $item['item_creator']; ?>">
+              <h5><?php echo GetUserByID($conn, $item['item_creator'])['user_name']; ?></h5>
+            </a>
+        </div>
+      </div>
+    </div>
+<?php
+  }
+  echo "</div>";
 }

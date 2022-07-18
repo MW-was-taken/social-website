@@ -6,7 +6,7 @@ session_start();
 ob_start();
 RequireAuthentication();
 UpdateUser($conn);
-if ($_SESSION['last_ip'] != $_SERVER['REMOTE_ADDR']) {
+if (!isset($_SESSION['last_ip']) || $_SESSION['last_ip'] != $_SERVER['REMOTE_ADDR']) {
   CheckIpAddress($_SERVER['REMOTE_ADDR']);
 }
 Maintenance();
@@ -44,6 +44,7 @@ Maintenance();
           echo HomeLink();
           ?>
           <a href="/forum"><i class="fa-solid fa-comments"></i>Forum</a>
+          <a href="/market"><i class="fa-solid fa-shopping-cart"></i>Market</a>
           <?php
           echo AdminLink();
           ?>

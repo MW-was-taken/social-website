@@ -16,14 +16,17 @@ Users
   <?php 
     ListUsers($page);
   ?>
-  <center>
+  <div class="ellipsis">
   <?php
   if($page > 1) {
-    echo '<a href="?page=' . ($page - 1) . '">Previous</a>';
-    echo ' | ';
+     echo '<a id="prev" style="float: left" href="?page=' . ($page - 1) . '">
+        <i class="fas fa-angle-double-left"></i>
+        Previous
+        </a>';
   }
-  echo '<a href="?page=' . ($page + 1) . '">Next</a>';
+  echo '<a id="next" style="float: right" href="?page=' . ($page + 1) . '">Next
+  <i class="fa fa-angle-double-right"></i></a>';
   ?>
-  </center>
+  </div>
 </div>
 </div>

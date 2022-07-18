@@ -39,10 +39,6 @@ if ($bio != null) {
   <div class="card-header">
     <?php echo $user_name;
     ?>
-    <?php
-    ProfileBadge($user['user_admin']);
-    ?>
-
 
     <?php
     if (!IfIsOnline($user['user_updated'])) {
@@ -116,10 +112,10 @@ if ($bio != null) {
       </div>
     </div>
   </div>
-  <div class="col-5">
+  <div class="col-4">
     <div class="card no-header">
-      <div class="body">
-
+      <div class="card-body">
+        <h1></h1>
       </div>
     </div>
   </div>
