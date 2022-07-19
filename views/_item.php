@@ -31,6 +31,7 @@ $creator_name = GetUserByID($conn, $creator)['user_name'];
             <h1>
               <?php echo $name; ?> 
             </h1>
+            <?php echo GetProfileLink($creator, $creator_name); ?>
             
             <?php
             if ($price == 0) {
@@ -39,9 +40,6 @@ $creator_name = GetUserByID($conn, $creator)['user_name'];
               echo '<button type="button" class="profile_button" onclick="BuyItem(' . $id . ')">' . $price . ' CUBES</button>';
             }
             ?>
-            <h4>
-                <?php echo GetProfileLink($creator, $creator_name); ?>
-              </h4>
             <p>
               <?php echo $description; ?>
             </p>

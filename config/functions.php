@@ -784,7 +784,7 @@ function GetNumberOfUnseenMessages($user_id)
   // get number of unseen messages with PDO
   global $conn;
   // order by message_id desc to get the latest message first
-  $sql = "SELECT * FROM messages WHERE message_to = :user_id AND message_seen = 0 ORDER BY message_id DESC";
+  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 0 ORDER BY msg_id DESC";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
@@ -796,7 +796,7 @@ function GetNumberOfSeenMessages($user_id)
   // get number of unseen messages with PDO
   global $conn;
   // order by message_id desc to get the latest message first
-  $sql = "SELECT * FROM messages WHERE message_to = :user_id AND message_seen = 1 ORDER BY message_id DESC";
+  $sql = "SELECT * FROM messages WHERE msg_receiver = :user_id AND msg_seen = 1 ORDER BY msg_id DESC";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
@@ -808,7 +808,7 @@ function GetNumberOfSentMessages($user_id)
   // get number of unseen messages with PDO
   global $conn;
   // order by message_id desc to get the latest message first
-  $sql = "SELECT * FROM messages WHERE message_from = :user_id ORDER BY message_id DESC";
+  $sql = "SELECT * FROM messages WHERE msg_sender = :user_id ORDER BY msg_id DESC";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
