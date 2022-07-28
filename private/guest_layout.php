@@ -1,6 +1,6 @@
 <?php
-include("config/functions.php");
-include("config/config.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/config/functions.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/config/config.php");
 session_start();
 CheckIfIpIsBanned($_SERVER['REMOTE_ADDR']);
 ?>

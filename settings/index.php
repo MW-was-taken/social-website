@@ -2,5 +2,5 @@
 // include layout file
 $child_view = "views/forms/settings/_settings.php";
 $name = "Account Settings";
-include("../layout.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/private/layout.php");
 RequireAuthentication();

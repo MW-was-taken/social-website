@@ -1,7 +1,7 @@
 <?php
 
-if(isset($sort)) {
-  $sort = $sort;
+if(isset($_GET['sort'])) {
+  $sort = $_GET['sort'];
 } else {
   $sort = "";
 }

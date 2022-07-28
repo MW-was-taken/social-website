@@ -7,5 +7,6 @@
   <a class="no-hover"><i class="fa-solid fa-comments"></i>Forum<i class="fa-solid fa-caret-down caret"></i></a>
   <a href="/admin/forum/categories" class="sublink"><i class="fa-solid fa-list-ul"></i>Categories</a>
   <!-- logs -->
-  <a href="/admin/logs"><i class="fa-solid fa-history"></i>Logs</a>
+  <a href="/admin/logs"><i class="fa-solid fa-history"></i>Admin Logs</a>
+  <a href="/admin/user-logs"><i class="fa-solid fa-history"></i>User Logs</a>
 </div>

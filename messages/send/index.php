@@ -2,5 +2,5 @@
 // include layout file
 $child_view = "views/forms/_message.php";
 $name = "Send Message";
-include("../../layout.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/private/layout.php");
 RequireAuthentication();

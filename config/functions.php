@@ -10,6 +10,9 @@ Glavic (https://stackoverflow.com/users/67332/glavi%c4%87)
 
 */
 
+// TODO: Make headers use $_SERVER['DOCUMENT_ROOT'] instead of doing ../ infinitely
+// TODO: 
+
 
 if (@$_SESSION['UserID'] == null) {
   ini_set('session.gc.maxlifetime', 60 * 60 * 24 * 30); // 30 days
@@ -57,7 +60,6 @@ function CloseConnection($database_connection)
 
 
 // site settings functions
-
 /**
  * This function returns the alert if present.
  * @return string
@@ -76,9 +78,8 @@ function Alert()
     } else {
       echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa-solid fa-circle-exclamation icon-left"></i>' . $row['alert_text'] . '<i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
     }
-  } else {
-    return "";
   }
+  return "";
 }
 
 /**
@@ -175,25 +176,22 @@ function DetermineAlertColor($type)
   switch ($type) {
     case 1:
       return "green";
-      break;
     case 2:
       return "purple";
-      break;
     case 3:
       return "orange";
-      break;
     case 4:
       return "red";
-      break;
     case 5:
       return "blue";
-      break;
     default:
       return "green";
-      break;
   }
 }
-
+/**
+ * This function checks whether the site is in maintenance or not.
+ * @return bool
+ */
 function SiteMaintenance()
 {
   global $conn;
@@ -206,7 +204,12 @@ function SiteMaintenance()
     return false;
   }
 }
-
+/**
+ * 
+ * This function updates the site's maintenance status.
+ * @param mixed $maintenance_bool
+ * @return void
+ */
 function UpdateMaintenance($maintenance_bool)
 {
   global $conn;
@@ -234,7 +237,10 @@ function UpdateMaintenance($maintenance_bool)
   $stmt->bindParam(':maintenance_bool', $maintenance_bool);
   $stmt->execute();
 }
-
+/**
+ * This returns the site's maintenance status. (BOOL)
+ * @return bool
+ */
 function GetMaintenanceBool()
 {
   global $conn;
@@ -243,7 +249,10 @@ function GetMaintenanceBool()
   $row = $result->fetch();
   return $row['maintenance'];
 }
-
+/**
+ * This function returns the user to the maintenance page if the user is not an admin.
+ * @return void
+ */
 function Maintenance()
 {
   // if site is in maintenance mode, redirect to maintenance page
@@ -254,17 +263,32 @@ function Maintenance()
 }
 
 // Authentication Functions
+// check if this is needed or not, I'm not entirely sure
 $result;
+/**
+ * 
+ * This function checks if there are any empty inputs in the signup form.
+ * @param mixed $username
+ * @param mixed $email
+ * @param mixed $password
+ * @param mixed $passwordRepeat
+ * @return bool
+ */
 function EmptyInputSignup($username, $email, $password, $passwordRepeat)
 {
   if (empty($username) || empty($email) || empty($password) || empty($passwordRepeat)) {
     $result = true;
-  } else {
+  }
+  else {
     $result = false;
   }
   return $result;
 }
-
+/**
+ * This function determines if the username is fit for use, and if not it returns an error.
+ * @param mixed $username
+ * @return bool
+ */
 function InvalidUsername($username)
 {
   if (!preg_match("/^[a-zA-Z0-9_ ]*$/", $username)) {
@@ -274,7 +298,11 @@ function InvalidUsername($username)
   }
   return $result;
 }
-
+/**
+ * This function determines if the username is too long or too short.
+ * @param mixed $username
+ * @return bool
+ */
 function InvalidUsernameLength($username)
 {
   // user name must be atleast 3 characters long but not exceed 20 characters long
@@ -285,7 +313,11 @@ function InvalidUsernameLength($username)
   }
   return $result;
 }
-
+/**
+ * This function determines if the email is valid.
+ * @param mixed $email
+ * @return bool
+ */
 function InvalidEmail($email)
 {
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -295,7 +327,12 @@ function InvalidEmail($email)
   }
   return $result;
 }
-
+/**
+ * This function checks if the password and the password repeat match.
+ * @param mixed $password
+ * @param mixed $passwordRepeat
+ * @return bool
+ */
 function InvalidPasswordMatch($password, $passwordRepeat)
 {
   if ($password !== $passwordRepeat) {
@@ -305,7 +342,11 @@ function InvalidPasswordMatch($password, $passwordRepeat)
   }
   return $result;
 }
-
+/**
+ * This function checks if the password is too short or too long.
+ * @param mixed $password
+ * @return bool
+ */
 function InvalidPasswordLength($password)
 {
   if (strlen($password) < 8 || strlen($password) > 50) {
@@ -315,7 +356,12 @@ function InvalidPasswordLength($password)
   }
   return $result;
 }
-
+/**
+ * This function checks if the username is already taken.
+ * @param mixed $pdo
+ * @param mixed $username
+ * @return mixed
+ */
 function UsernameExists($pdo, $username)
 {
   $statement = $pdo->prepare("SELECT * FROM users WHERE user_name = :username");
@@ -328,6 +374,14 @@ function UsernameExists($pdo, $username)
     return $result;
   }
 }
+  /**
+   * This function creates the user and signs them in.
+   * @param mixed $pdo
+   * @param mixed $username
+   * @param mixed $email
+   * @param mixed $password
+   * @return void
+   */
 
 function CreateUser($pdo, $username, $email, $password)
 {
@@ -346,6 +400,12 @@ function CreateUser($pdo, $username, $email, $password)
   header("location: ../../dashboard/?note=Successfully signed up!");
   exit();
 }
+/**
+ * This function checks if any inputs on the login form are empty.
+ * @param mixed $username
+ * @param mixed $password
+ * @return bool
+ */
 function EmptyInputLogin($username, $password)
 {
   if (empty($username) || empty($password)) {
@@ -355,6 +415,49 @@ function EmptyInputLogin($username, $password)
   }
   return $result;
 }
+// ANCHOR login functions
+/**
+ * This function checks if the username and password are correct and if so logs the user in.
+ * @param mixed $conn
+ * @param mixed $Username
+ * @param mixed $Password
+ * @return void
+ */
+function LoginUser($conn, $Username, $Password)
+{
+  $statement = $conn->prepare("SELECT * FROM users WHERE user_name = :username");
+  $statement->execute(array(':username' => $Username));
+  $result = $statement->fetch();
+  if (!empty($result)) {
+    // check password
+    if (password_verify($Password, $result['user_password'])) {
+      session_start();
+      // ANCHOR session variables
+      $_SESSION["UserAuthenticated"] = "true";
+      $_SESSION['UserID'] = $result['user_id'];
+      $_SESSION['Username'] = $result['user_name'];
+      $_SESSION['UserEmail'] = $result['user_email'];
+      $_SESSION['last_ip'] = $result['user_ip'];
+      $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
+      $_SESSION['Theme'] = $result['user_theme'];
+      header("location: ../../dashboard/?note=Successfully logged in!");
+      exit();
+    } else {
+      header("location: ../../login/?error=Invalid password!");
+      exit();
+    }
+  } else {
+    header("location: ../../login/?error=Invalid username!");
+    exit();
+  }
+}
+/**
+ * This function takes in a date and time and gets how long ago it was.
+ * @author Glavic
+ * @param mixed $datetime
+ * @param mixed $full
+ * @return string
+ */
 function time_elapsed_string($datetime, $full = false)
 {
   $now = new DateTime;
@@ -384,36 +487,11 @@ function time_elapsed_string($datetime, $full = false)
   if (!$full) $string = array_slice($string, 0, 1);
   return $string ? implode(', ', $string) . ' ago' : 'Now';
 }
-// ANCHOR login functions
-function LoginUser($conn, $Username, $Password)
-{
-  $statement = $conn->prepare("SELECT * FROM users WHERE user_name = :username");
-  $statement->execute(array(':username' => $Username));
-  $result = $statement->fetch();
-  if (!empty($result)) {
-    // check password
-    if (password_verify($Password, $result['user_password'])) {
-      session_start();
-      // ANCHOR session variables
-      $_SESSION["UserAuthenticated"] = "true";
-      $_SESSION['UserID'] = $result['user_id'];
-      $_SESSION['Username'] = $result['user_name'];
-      $_SESSION['UserEmail'] = $result['user_email'];
-      $_SESSION['last_ip'] = $result['user_ip'];
-      $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
-      $_SESSION['Theme'] = $result['user_theme'];
-      header("location: ../../dashboard/?note=Successfully logged in!");
-      exit();
-    } else {
-      header("location: ../../login/?error=Invalid password!");
-      exit();
-    }
-  } else {
-    header("location: ../../login/?error=Invalid username!");
-    exit();
-  }
-}
 // ANCHOR auth functions
+/**
+ * Checks if the user is authenticated.
+ * @return bool
+ */
 function UserIsAuthenticated()
 {
   $session = @$_SESSION['UserAuthenticated'];
@@ -423,6 +501,10 @@ function UserIsAuthenticated()
     return false;
   }
 }
+/**
+ * Checks if the user is authenticated and if not redirects them to the login page with an error.
+ * @return void
+ */
 function RequireAuthentication()
 {
   if (UserIsAuthenticated() === false) {
@@ -430,6 +512,10 @@ function RequireAuthentication()
     exit();
   }
 }
+/**
+ * Checks if the user isn't logged in and if they are it redirects back to dashboard.
+ * @return void
+ */
 function RequireGuest()
 {
   if (UserIsAuthenticated() === true) {
@@ -440,7 +526,11 @@ function RequireGuest()
 // end auth functions
 // status functions
 
-// check if status has invalid characters
+/**
+ * Checks if status has invalid characters.
+ * @param mixed $status
+ * @return bool
+ */
 function InvalidStatus($status)
 {
   if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?]*$/", $status)) {
@@ -450,7 +540,11 @@ function InvalidStatus($status)
   }
   return $result;
 }
-// check if status is over 100 characters
+/**
+ * Checks if status is too long or not.
+ * @param mixed $status
+ * @return bool
+ */
 function StatusTooLong($status)
 {
   if (strlen($status) > 50) {
@@ -460,6 +554,13 @@ function StatusTooLong($status)
   }
   return $result;
 }
+  /**
+   * Updates the status.
+   * @param mixed $conn
+   * @param mixed $status_raw
+   * @param mixed $user_id
+   * @return void
+   */
 
 function UpdateStatus($conn, $status_raw, $user_id)
 {
@@ -471,6 +572,12 @@ function UpdateStatus($conn, $status_raw, $user_id)
   $statement->execute(array(':status' => $status, ':user_id' => $user_id));
   header("location: ../../dashboard/?note=Status updated!");
 }
+  /**
+   * Gets and returns the status.
+   * @param mixed $conn
+   * @param mixed $user_id
+   * @return mixed
+   */
 
 function GetStatus($conn, $user_id)
 {
@@ -483,7 +590,13 @@ function GetStatus($conn, $user_id)
 // end status functions
 
 // bio functions
-
+/**
+ * Updates the user's bio.
+ * @param mixed $conn
+ * @param mixed $bio_raw
+ * @param mixed $user_id
+ * @return void
+ */
 function UpdateBio($conn, $bio_raw, $user_id)
 {
   // sanitize input
@@ -495,7 +608,12 @@ function UpdateBio($conn, $bio_raw, $user_id)
   $statement->execute(array(':bio' => $bio, ':user_id' => $user_id));
   header("location: ../../settings/?note=Bio updated!");
 }
-
+/**
+ * Gets and returns the user's bio.
+ * @param mixed $conn
+ * @param mixed $user_id
+ * @return array|string
+ */
 function GetBio($conn, $user_id)
 {
   // get user_bio from users table
@@ -506,6 +624,11 @@ function GetBio($conn, $user_id)
   $bio = str_ireplace($breaks, "", $result['user_bio']);
   return $bio;
 }
+  /**
+   * Checks if the bio is too long. 
+   * @param mixed $bio
+   * @return bool
+   */
 
 function BioTooLong($bio)
 {
@@ -518,6 +641,11 @@ function BioTooLong($bio)
 }
 
 // end bio functions
+/**
+ * Gets all users within page limit.
+ * @param mixed $page
+ * @return mixed
+ */
 function GetUsers($page)
 {
   global $conn;
@@ -530,7 +658,11 @@ function GetUsers($page)
   $result = $statement->fetchAll();
   return $result;
 }
-
+/**
+ * Same as GetUsers but returns the staff members instead of all users.
+ * @param mixed $page
+ * @return mixed
+ */
 function GetStaff($page)
 {
   global $conn;
@@ -543,7 +675,11 @@ function GetStaff($page)
   $result = $statement->fetchAll();
   return $result;
 }
-
+/**
+ * Lists all users within the page limit.
+ * @param mixed $page
+ * @return void
+ */
 function ListUsers($page)
 {
   $users = GetUsers($page);
@@ -569,6 +705,11 @@ function ListUsers($page)
     echo "No users found!";
   }
 }
+/**
+ * Lists all staff members within the page limit.
+ * @param mixed $page
+ * @return void
+ */
 function ListStaff($page)
 {
   $users = GetStaff($page);

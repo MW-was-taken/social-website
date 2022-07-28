@@ -2,4 +2,4 @@
 // include layout file
 $child_view = "views/errors/_404.php";
 $name = "Page Not Found";
-include("../layout.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/private/layout.php");

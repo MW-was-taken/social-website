@@ -2,5 +2,5 @@
 // include layout file
 $child_view = "views/auth/_dashboard.php";
 $name = "Dashboard";
-include("../layout.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/private/layout.php");
 ?>

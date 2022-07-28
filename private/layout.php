@@ -1,7 +1,7 @@
 <?php
 // start session
-include("config/functions.php");
-include("config/config.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/config/functions.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/config/config.php");
 session_start();
 ob_start();
 RequireAuthentication();

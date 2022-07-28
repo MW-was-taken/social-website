@@ -44,6 +44,10 @@ if (isset($_POST['submit'])) {
     exit();
   }
   
+  echo $item_image['tmp_name'];
+  exit();
+
+
   UploadMarketItem($item_name, $item_description, $item_price, $item_type);
   // get id of image that was just uploaded
   $id = GetLastMarketItem();
