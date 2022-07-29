@@ -82,7 +82,7 @@ Maintenance();
   </footer>
   <noscript>
       <h1 class="center">
-        Hey...
+        Hey..
       </h1>
       <p class="center">
         Brick-Town doesn't require JavaScript but it is recommended you enable it to have an improved user experience and to remove this message.
