@@ -205,39 +205,6 @@ function SiteMaintenance()
   }
 }
 /**
- * 
- * This function updates the site's maintenance status.
- * @param mixed $maintenance_bool
- * @return void
- */
-function UpdateMaintenance($maintenance_bool)
-{
-  global $conn;
-  session_start();
-
-  // if maintenance bool is not 1 or 0, set it to 1
-  if ($maintenance_bool != 1 && $maintenance_bool != 0) {
-    $maintenance_bool = 1;
-  }
-
-  if ($maintenance_bool == 1) {
-    // StaffLog
-    StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: ENABLED: " . $maintenance_bool);
-    // update alert to maintenance alert
-    UpdateAlert(1, "Welcome admins. Site is currently under maintenance.", "", 2);
-  } else {
-    // StaffLog
-    StaffLog($_SESSION['UserID'], "UPDATED MAINTENANCE: DISABLED");
-    // update alert to normal alert
-    UpdateAlert(0, "", "", 0);
-  }
-
-  $sql = "UPDATE site_settings SET maintenance = :maintenance_bool WHERE id = 1";
-  $stmt = $conn->prepare($sql);
-  $stmt->bindParam(':maintenance_bool', $maintenance_bool);
-  $stmt->execute();
-}
-/**
  * This returns the site's maintenance status. (BOOL)
  * @return bool
  */
@@ -591,24 +558,6 @@ function GetStatus($conn, $user_id)
 
 // bio functions
 /**
- * Updates the user's bio.
- * @param mixed $conn
- * @param mixed $bio_raw
- * @param mixed $user_id
- * @return void
- */
-function UpdateBio($conn, $bio_raw, $user_id)
-{
-  // sanitize input
-  $bio_raw_1 = PurifyInput($bio_raw);
-  $bio = ToMarkdown($bio_raw_1);
-
-  // insert user_bio into users table
-  $statement = $conn->prepare("UPDATE users SET user_bio = :bio WHERE user_id = :user_id");
-  $statement->execute(array(':bio' => $bio, ':user_id' => $user_id));
-  header("location: ../../settings/?note=Bio updated!");
-}
-/**
  * Gets and returns the user's bio.
  * @param mixed $conn
  * @param mixed $user_id
@@ -735,12 +684,23 @@ function ListStaff($page)
   }
 }
 // ANCHOR profile sectuion
+/**
+ * Gets the user's profile.
+ * @param mixed $id
+ * @return mixed
+ */
 function HandleProfile($id)
 {
   global $conn;
   $user = GetUserByID($conn, $id);
   return $user;
 }
+/**
+ * Gets the user's profile link from their ID and username.
+ * @param mixed $user_id
+ * @param mixed $user_name
+ * @return string
+ */
 function GetProfileLink($user_id, $user_name)
 {
   return "<a href='/profile?id=" . $user_id . "'>" . $user_name . "</a>";
@@ -748,7 +708,11 @@ function GetProfileLink($user_id, $user_name)
 // end profile section
 
 // ANCHOR handlers and misc functions
-// prevents xss attacks and trims whitespace
+/**
+ * This function purifies input by removing HTML tags and other unwanted characters.
+ * @param mixed $input
+ * @return string
+ */
 function PurifyInput($input)
 {
   $input = trim($input);
@@ -756,14 +720,22 @@ function PurifyInput($input)
   $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
   return $input;
 }
-
+/**
+ * This function converts all line breaks to <br> tags.
+ * @param mixed $text
+ * @return string
+ */
 function ToLineBreaks($text)
 {
   // remove <br /> tags
   $text = str_ireplace("<br />", "", $text);
   return nl2br($text);
 }
-
+/**
+ * This function converts given text to markdown if any of the relevant tags are found.
+ * @param mixed $text
+ * @return array|null|string
+ */
 function ToMarkdown($text)
 {
   $text = preg_replace("#\*([^*]+)\*#", '<b>$1</b>', $text);
@@ -772,6 +744,11 @@ function ToMarkdown($text)
   $text = preg_replace("#\`([^`]+)\`#", '<code>$1</code>', $text);
   return $text;
 }
+/**
+ * This function checks if the ip address is equal to the session ip.
+ * @param mixed $ip
+ * @return bool
+ */
 function CheckIpAddress($ip)
 {
   if (filter_var($ip, FILTER_VALIDATE_IP)) {
@@ -786,6 +763,11 @@ function CheckIpAddress($ip)
     UpdateIP($ip);
   }
 }
+/**
+ * This function updates the ip address in the database.
+ * @param mixed $ip
+ * @return void
+ */
 function UpdateIP($ip)
 {
   global $conn;
@@ -795,6 +777,11 @@ function UpdateIP($ip)
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip_hash WHERE user_id = :user_id");
   $statement->execute(array(':ip_hash' => $ip_hash, ':user_id' => $_SESSION['UserID']));
 }
+/**
+ * This function checks if the ip address is banned.
+ * @param mixed $ip
+ * @return void
+ */
 function CheckIfIpIsBanned($ip)
 {
   global $conn;
@@ -806,19 +793,30 @@ function CheckIfIpIsBanned($ip)
     IpBanRedirect();
   }
 }
+/**
+ * This function redirects the user to the banned ip page.
+ * @return void
+ */
 function IpBanRedirect()
 {
   header("location: ../../bans/ip");
   exit();
 }
-// this function is run everytime the user clicks on a page.
-// this will be used to tell if the user is online or not.
+/**
+ * This function updates the user's last activity.
+ * @return void
+ */
 function UpdateUser($pdo)
 {
   // update user_upated field in users table to current timestamp WITHOUT NOW()
   $statement = $pdo->prepare("UPDATE users SET user_updated = CURRENT_TIMESTAMP WHERE user_id = :user_id");
   $statement->execute(array(':user_id' => $_SESSION['UserID']));
 }
+/**
+ * This function checks if the user is logged in and active.
+ * @param mixed $updated_at_timestamp
+ * @return bool
+ */
 function IfIsOnline($updated_at_timestamp)
 {
   if ($updated_at_timestamp == null) {
@@ -840,6 +838,11 @@ function IfIsOnline($updated_at_timestamp)
     return false;
   }
 }
+/**
+ * This function gets the number of users.
+ * @param mixed $pdo
+ * @return int
+ */
 function GetNumberOfUsers($pdo)
 {
   // use pdo to get number of users
@@ -849,7 +852,12 @@ function GetNumberOfUsers($pdo)
   $result = $stmt->fetchAll();
   return count($result);
 }
-
+/**
+ * This function gets all user info by their id.
+ * @param mixed $pdo
+ * @param mixed $id
+ * @return mixed
+ */
 function GetUserByID($pdo, $id)
 {
   // use pdo to get user by id
@@ -859,11 +867,21 @@ function GetUserByID($pdo, $id)
   $result = $stmt->fetch();
   return $result;
 }
+/**
+ * This function gets date in MM DD, YYYY format.
+ * @param mixed $date
+ * @return string
+ */
 function HandleDate($date)
 {
   $date_formatted = date("F j, Y", strtotime($date));
   return $date_formatted;
 }
+/**
+ * This function checks if an erorr is set and displays it through a toast.
+ * @param mixed $type
+ * @return void
+ */
 function HandleError($type)
 {
   if (isset($type)) {
@@ -887,6 +905,11 @@ function HandleError($type)
   </script>';
   }
 }
+/**
+ * This function checks if a note is set and displays it through a toast.
+ * @param mixed $type
+ * @return void
+ */
 function HandleNote($type)
 {
   if (isset($type)) {

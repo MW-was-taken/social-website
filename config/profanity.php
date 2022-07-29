@@ -52,7 +52,13 @@ function ProfanityFilter($text)
     "e621.net",
     "brick luke deez",
     "brick deez luke nutz",
-    "mentally retarded"
+    "mentally retarded",
+    "mommy milker",
+    // Roblox clones
+    "brickplanet",
+    "bopimo",
+    "worldtobuild",
+    "polytoria",
   );
 
   $filterCount = sizeof($filterWords);

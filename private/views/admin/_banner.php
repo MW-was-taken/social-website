@@ -1,8 +1,58 @@
 <?php
+
+if(isset($_POST['submit'])) {
+  $alert_bool = $_POST['alert_bool'];
+  $alert_text = $_POST['alert_text'];
+  $alert_type = $_POST['alert_type'];
+  $alert_link = $_POST['alert_link'];
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/config/profanity.php';
+
+  // sanitize input
+  $alert_text = PurifyInput($alert_text);
+  $alert_link = PurifyInput($alert_link);
+
+  $alert_text = ProfanityFilter($alert_text);
+  
+  // check if alert bool doesn't equal 0 or 1
+  if($alert_bool != 0 && $alert_bool != 1) {
+    $alert_bool = 0;
+  }
+
+  // check if alert type doesn't equal 1 through 5
+  if($alert_type != 1 && $alert_type != 2 && $alert_type != 3 && $alert_type != 4 && $alert_type != 5) {
+    $alert_type = 1;
+  }
+  session_start();
+  // check if alert text is empty
+  if(empty($alert_text)) {
+    $_SESSION['error'] = "Banner text is empty!";
+    header("Location: /admin/banner");
+    exit();
+  }
+
+  // StaffLog
+  $color = DetermineAlertColor($alert_type);
+  $staff_log_string = "Updated alert to say: " . $alert_text . "<br> Updated alert link: " . $alert_link . "<br> Updated alert color: " . $color;
+  StaffLog($_SESSION['UserID'], $staff_log_string);
+
+  $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_link = :alert_link, alert_type = :alert_type WHERE id = 1";
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':alert_bool', $alert_bool);
+  $stmt->bindParam(':alert_text', $alert_text);
+  $stmt->bindParam(':alert_link', $alert_link);
+  $stmt->bindParam(':alert_type', $alert_type);
+  $stmt->execute();
+  header("Location: /admin/banner");
+  exit();
+}
 // get error from url
-@$error = $_GET["error"];
+@$error = $_SESSION["error"];
 // if error is set
 HandleError($error);
+// unset error
+unset($_SESSION["error"]);
+
+
 ?>
 <div class="admin-card">
   <div class="admin-header">
@@ -19,7 +69,7 @@ HandleError($error);
         <h1>Site Banner</h1>
         <p>A banner that shows for all users on-site.</p>
         <hr>
-        <form action="/config/forms/alert.php" method="post">
+        <form action="/admin/banner/" method="post">
           <div class="form-group">
             <label for="banner">Banner Text (100 characters or less)</label>
             <textarea class="form-control" id="banner" name="alert_text" rows="3"><?php echo GetAlertText(); ?></textarea>
@@ -65,7 +115,7 @@ HandleError($error);
       if (SiteMaintenance()) {
       ?>
         <h1>Site Maintenance</h1>
-        <p>You cannot update the banner if the website is in maintenance. If you need to update it, update it through the database tab.</p>
+        <p>You cannot update the banner if the website is in maintenance.</p>
       <?php
       }
       ?>

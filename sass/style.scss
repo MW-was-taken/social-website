@@ -553,6 +553,7 @@ code {
     .admin-content {
       // do not shrink
       padding: 25px;
+      width: 100%;
       h1, h2, h3, h4, h5, h6 {
         color: var(--white);
       }

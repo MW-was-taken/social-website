@@ -44,8 +44,7 @@ if (isset($_POST['submit'])) {
     exit();
   }
   
-  echo $item_image['tmp_name'];
-  exit();
+
 
 
   UploadMarketItem($item_name, $item_description, $item_price, $item_type);

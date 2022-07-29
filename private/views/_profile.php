@@ -115,7 +115,9 @@ if ($bio != null) {
   <div class="col-4">
     <div class="card no-header">
       <div class="card-body">
-        <h1></h1>
+        <div class="center">
+          W
+        </div>
       </div>
     </div>
   </div>
