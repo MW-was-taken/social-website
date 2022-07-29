@@ -40,6 +40,9 @@ body {
   color: white;
   overflow-x: hidden;
 }
+html,body {
+  height: 100%;
+}
 input, textarea, button {
   font-family: inherit;
 }
@@ -790,4 +793,14 @@ footer {
     bottom: 0;
     // make it stay at the bottom of the container without position: absolute
   }
+}
+
+noscript {
+  position: absolute;
+  bottom: 0;
+  background-color: black;
+  color: var(--grey);
+  font-size: 20px;
+  width: 100%;
+  padding: 25px;
 }

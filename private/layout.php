@@ -53,7 +53,7 @@ Maintenance();
           </a>
         </div>
         <div class="right">
-            <a href='/logout'><i class='fa-solid fa-sign-out-alt'></i>Logout</a>
+          <a href='/logout'><i class='fa-solid fa-sign-out-alt'></i>Logout</a>
         </div>
       </div>
     </div>
@@ -74,12 +74,20 @@ Maintenance();
       <?php
       echo Alert();
       include($child_view);
-      ?>
+?>
     </div>
   </div>
   <footer>
     <a href="/staff">Staff List</a> | Copyright &copy; 2022 Brick-Town. All rights reserved. | <a href="/terms">Terms of Service</a> | <a href="/privacy">Privacy Policy</a>
   </footer>
+  <noscript>
+      <h1 class="center">
+        Hey...
+      </h1>
+      <p class="center">
+        Brick-Town doesn't require JavaScript but it is recommended you enable it to have an improved user experience and to remove this message.
+      </p>
+  </noscript>
   <!-- </body> -->
   <script src="/js/warning.js"></script>
 </body>
