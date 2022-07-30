@@ -20,6 +20,7 @@ if (isset($_POST["submit"])) {
   // insert user_bio into users table
   $statement = $conn->prepare("UPDATE users SET user_bio = :bio WHERE user_id = :user_id");
   $statement->execute(array(':bio' => $Bio, ':user_id' => $_SESSION['UserID']));
+  UserLog($_SESSION['UserID'], "Updated Bio");
   $_SESSION["success"] = "Bio updated successfully!";
   header("location: /settings/");
   exit();

@@ -355,7 +355,7 @@ function CreateUser($pdo, $username, $email, $password)
   $statement = $pdo->prepare("INSERT INTO users (user_name, user_email, user_password, user_signup_ip, user_ip) VALUES (:username, :email, :password, :ip, :ip)");
   // hash password
   $password = password_hash($password, PASSWORD_DEFAULT);
-  $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password, ':ip' => $_SERVER['REMOTE_ADDR']));
+  $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password, ':ip' => md5($_SERVER['REMOTE_ADDR'])));
   session_start();
   // ANCHOR session variables
   $_SESSION["UserAuthenticated"] = "true";
@@ -750,15 +750,6 @@ function ToMarkdown($text)
  */
 function CheckIpAddress($ip)
 {
-  if (filter_var($ip, FILTER_VALIDATE_IP)) {
-    if ($_SESSION['UserIP'] === $ip) {
-      CheckIfIpIsBanned($ip);
-      UpdateIP($ip);
-      return true;
-    } else {
-      return false;
-    }
-  }
   CheckIfIpIsBanned($ip);
   UpdateIP($ip);
 }
@@ -775,7 +766,6 @@ function UpdateIP($ip)
   // update ip address in users table
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip_hash WHERE user_id = :user_id");
   $statement->execute(array(':ip_hash' => $ip_hash, ':user_id' => $_SESSION['UserID']));
-  UserLog($_SESSION['UserID'], "User logged in from a brand new IP address.");
 }
 /**
  * This function checks if the ip address is banned.
