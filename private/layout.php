@@ -6,7 +6,7 @@ session_start();
 ob_start();
 RequireAuthentication();
 UpdateUser($conn);
-if (!isset($_SESSION['last_ip']) || $_SESSION['last_ip'] != $_SERVER['REMOTE_ADDR']) {
+if (!isset($_SESSION['UserIP']) || $_SESSION['UserIP'] != $_SERVER['REMOTE_ADDR']) {
   CheckIpAddress($_SERVER['REMOTE_ADDR']);
 }
 Maintenance();

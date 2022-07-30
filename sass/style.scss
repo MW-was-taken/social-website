@@ -17,7 +17,7 @@ $red: #f00;
   --dark-secondary: #{lighten($dark, 5%)};
   --white: #{$white};
   --grey: #{$grey};
-  --blue:  #{$blue};
+  --blue: #{$blue};
   --dark-blue: #{darken($blue, 10%)};
   --dark-blue-hover: #{darken($blue, 20%)};
   --dark-blue-hover-hover: #{darken($blue, 25%)};
@@ -28,8 +28,9 @@ $red: #f00;
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0; 
+  padding: 0;
 }
+
 body {
   // dark bg
   background-color: var(--dark);
@@ -40,12 +41,18 @@ body {
   color: white;
   overflow-x: hidden;
 }
-html,body {
+
+html,
+body {
   height: 100%;
 }
-input, textarea, button {
+
+input,
+textarea,
+button {
   font-family: inherit;
 }
+
 input[type="checkbox"] {
   width: 1.5rem;
   height: 1.5rem;
@@ -55,7 +62,7 @@ input[type="checkbox"] {
   // change the color of the checkbox
   background-color: var(--dark-secondary);
   border: 1px solid var(--dark-secondary);
-  border-radius: 5px; 
+  border-radius: 5px;
 
 }
 
@@ -68,11 +75,12 @@ input[type="file"] {
   // change the color of the checkbox
   background-color: var(--dark-secondary);
   border: 1px solid var(--dark-secondary);
-  border-radius: 5px; 
+  border-radius: 5px;
 
 }
 
-input, textarea {
+input,
+textarea {
   border: none;
   outline: none;
   border-radius: 2px;
@@ -82,30 +90,42 @@ input, textarea {
   font-size: 1.2rem;
   font-weight: inherit;
   width: 100%;
+
   &:focus {
     outline: none;
   }
+
   margin-top: 5px;
 }
+
 textarea {
   resize: vertical;
   min-height: 100px;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: var(--white);
 }
-h3, h4, h5, h6 {
+
+h3,
+h4,
+h5,
+h6 {
   // gray text
   color: var(--grey);
 }
-label, p {
+
+label,
+p {
   // gray text
   color: var(--grey);
 }
+
 nav {
   margin-bottom: 1em;
 }
+
 .header {
   padding: 5px;
   text-align: center;
@@ -114,9 +134,9 @@ nav {
   color: var(--white);
 }
 
-.navbar {
-  background: var(--dark-blue);
+@mixin navbar() {
   overflow: hidden;
+
   img {
     width: 161.26px;
     height: 25px;
@@ -124,85 +144,81 @@ nav {
     margin-top: -6px;
     display: inline-block;
     vertical-align: middle;
-    @media (max-width: 768px) {
+
+    @media (max-width: 992px) {
       width: 50%;
       height: auto;
       margin-top: 0;
     }
   }
+
   .left {
     float: left;
     text-align: left;
-    @media (max-width: 768px) {
+
+    @media (max-width: 992px) {
       float: none;
       text-align: center;
     }
   }
+
   .right {
     float: right;
     text-align: right;
-    @media (max-width: 768px) {
+
+    @media (max-width: 992px) {
       float: none;
       text-align: center;
     }
   }
+
   a {
-    padding: 8px 12px;
     color: var(--white);
     display: inline-block;
     text-decoration: none;
     font-size: large;
     font-weight: 500;
-    &:hover {
-      background: var(--dark-blue-hover);
-    }
-    margin: 7.5px;
-    border-radius: 5px;
-    @media (max-width: 768px) {
+
+    @media (max-width: 992px) {
       display: block;
       width: 100%;
     }
+
+    margin: 7.5px;
+    border-radius: 5px;
   }
+}
+
+.navbar {
+  background: var(--dark-blue);
+  // include the navbar mixin
+  @include navbar;
+
+  a {
+    padding: 8px 12px;
+    background: var(--dark-blue);
+
+    &:hover {
+      background: var(--dark-blue-hover);
+    }
+  }
+
   // on small screens, the navbar will collapse
 }
 
 // secondary navbar
 .secondary-navbar {
   background: var(--dark-blue-hover);
-  overflow: hidden;
-  .left {
-    float: left;
-    text-align: left;
-    @media (max-width: 768px) {
-      float: none;
-      text-align: center;
-    }
-  }
-  .right {
-    float: right;
-    text-align: right;
-    @media (max-width: 768px) {
-      float: none;
-      text-align: center;
-    }
-  }
+  // include the navbar mixin
+  @include navbar;
+
   a {
     padding: 6px 10px;
-    color: var(--white);
-    display: inline-block;
-    text-decoration: none;
-    font-size: large;
-    font-weight: 500;
+    background: var(--dark-blue-hover);
+
     &:hover {
-      background: var(--dark-blue)
+      background: var(--dark-blue);
     }
-    @media (max-width: 768px) {
-      display: block;
-      width: 100%;
-      text-align: center;
-    }
-    margin: 7.5px;
-    border-radius: 5px;
   }
 }
 
@@ -211,21 +227,29 @@ nav {
   margin: 0 auto;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
 }
+
 .alert {
   background: var(--red);
   color: var(--white);
   padding: 16px;
   border-radius: 5px;
-  margin-bottom: 5px!important;
+  margin-bottom: 5px !important;
   text-align: center;
+
   a {
     color: var(--white);
     margin: 0 5px;
   }
+
   .text {
     // center
     text-align: center;
@@ -238,6 +262,7 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
     margin: 0 auto;
   }
+
   .icon-right {
     float: right;
     margin-left: 10px;
@@ -251,59 +276,69 @@ h1, h2, h3, h4, h5, h6 {
     vertical-align: middle;
     line-height: 18px;
   }
-  
+
   &.green {
     // green color
     background: #47d764;
   }
+
   &.red {
     // red color
     background: var(--red);
   }
+
   &.orange {
     // orange color
     background: #fb9803;
   }
+
   &.purple {
     // purple color
     background: #9b51e0;
   }
+
   &.blue {
     // blue color
     background: #00bcd4;
   }
+
   &.form-alert {
     max-width: 20em;
     margin: auto;
   }
 }
+
 button {
   display: block;
   padding: 14px 16px;
   margin: 5px 0;
   border: none;
-  border-radius: 2px; 
+  border-radius: 2px;
   background: var(--dark-blue-hover);
   color: var(--white);
   font-size: larger;
   font-weight: inherit;
   transition: 200ms;
+
   &:hover {
     background: var(--dark-blue-hover-hover);
     cursor: pointer;
   }
 }
+
 .card {
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-  
+
   &.no-header {
     .card-body {
       border-radius: 5px;
     }
   }
+
   a {
     color: var(--white);
     text-decoration: none;
+
     &:hover {
       text-decoration: underline;
     }
@@ -314,6 +349,7 @@ button {
       a {
         color: var(--white);
         text-decoration: none;
+
         &:hover {
           text-decoration: underline;
         }
@@ -325,68 +361,83 @@ button {
     &.signup {
       max-width: 21.5em;
       margin: 0 auto;
+
       input {
         display: block;
       }
+
       label {
         display: block;
         font-size: larger;
       }
+
       button {
         width: 100%;
       }
     }
+
     &.message {
       max-width: 50em;
       margin: 0 auto;
+
       button {
         width: 100%;
       }
     }
   }
+
   .card-header {
     color: var(--white);
     background: var(--dark-blue);
     padding: 12px;
     border-radius: 5px 5px 0 0;
+
     &.red {
       background: var(--red);
     }
   }
+
   .card-body {
     padding: 5px;
     background: var(--dark-secondary);
     color: var(--white);
     border-radius: 0 0 5px 5px;
+
     &.market {
       a {
         display: block;
-        
+
       }
     }
+
     &.message {
       hr {
         margin: 5px;
       }
     }
+
     label {
       &.status {
         display: block;
         font-size: larger;
       }
     }
+
     .link {
       color: var(--grey);
       text-decoration: none;
+
       &:hover {
         color: var(--white);
         text-decoration: underline;
       }
     }
   }
+
   &.users {
     max-width: 40em;
     margin: 0 auto;
+
     a {
       color: var(--white);
       text-decoration: none;
@@ -400,6 +451,7 @@ button {
   position: absolute;
   bottom: 0;
   right: 0;
+
   .toast {
     width: 380px;
     padding: 20px;
@@ -410,29 +462,37 @@ button {
     grid-template-columns: 1.2fr 6fr 0.5fr;
     transform: translate(400px);
     transition: 1s;
+
     &.error {
       border-left: solid 8px var(--red);
     }
-    .container-1, .container-2{
+
+    .container-1,
+    .container-2 {
       align-self: center;
     }
+
     .container-1 {
       font-size: 40px;
       color: #47d764;
+
       &.error {
         color: var(--red);
       }
     }
+
     .container-2 p:first-child {
       color: var(--white);
       font-weight: 600;
       font-size: 16px;
     }
+
     .container-2 p:last-child {
       font-size: 12px;
       font-weight: 400;
       color: var(--grey);
     }
+
     button {
       align-self: flex-start;
       background: transparent;
@@ -447,7 +507,7 @@ button {
 
 hr {
   border: 1px solid var(--dark);
-  margin: 10px 0;  
+  margin: 10px 0;
 }
 
 code {
@@ -456,25 +516,29 @@ code {
   background-color: var(--dark);
   padding: 2px 5px;
   display: inline-block;
-  border-radius: 2.5px; 
+  border-radius: 2.5px;
   margin: 2px;
   font-size: 105%;
 }
+
 .status-dot {
   float: right;
   background-color: #a2a2a2;
   border-radius: 50%;
   width: 12.5px;
   height: 12.5px;
+
   &.online {
     background-color: #47d764;
   }
+
   &.no-float {
     float: none;
     display: inline-block;
     margin: 0 5px;
   }
 }
+
 .ellipsis {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -505,18 +569,21 @@ code {
   color: #ff0011;
   background-color: #5e151a;
 }
+
 .mod-text {
   // use badge mixin
   @include badge;
   color: #0d71d5;
   background-color: #1a1a5e;
 }
+
 .dev-text {
   // use badge mixin
   @include badge;
   color: #10a5fc;
   background-color: #0a26ae;
 }
+
 .owner-text {
   // use badge mixin
   @include badge;
@@ -525,15 +592,16 @@ code {
 }
 
 .logo {
-  margin: 0 0!important;
+  margin: 0 0 !important;
   // make uppercase
   text-transform: uppercase;
   // letter spacing
   letter-spacing: 1px;
-  font-weight: 800!important;
+  font-weight: 800 !important;
+
   &:hover {
     // don't change background
-    background-color: transparent!important;
+    background-color: transparent !important;
   }
 }
 
@@ -548,53 +616,71 @@ code {
     // box shadow
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
+
   .admin-wrapper {
     display: flex;
     flex-direction: row;
     background-color: $dark-third;
     border-radius: 0 0 5px 5px;
+
     .admin-content {
       // do not shrink
       padding: 25px;
       width: 100%;
-      h1, h2, h3, h4, h5, h6 {
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
         color: var(--white);
       }
+
       p {
         color: var(--grey);
       }
+
       a {
         color: var(--white);
         text-decoration: none;
+
         &:hover {
           color: var(--grey);
         }
       }
     }
+
     .admin-sidebar {
       width: 20%;
       padding: 10px;
       background-color: $dark-fourth;
+
       a {
         color: var(--white);
         text-decoration: none;
         transition: all 0.2s;
         display: block;
         padding: 5px;
+
         i {
           margin-right: 5px;
         }
+
         .caret {
           margin-left: 5px;
         }
+
         &.no-hover {
           &:hover {
             color: #fff;
           }
         }
+
         &:hover {
           color: var(--grey);
         }
+
         &.sublink {
           // margin left for sublink
           margin-left: 20px;
@@ -612,6 +698,7 @@ select {
   font-weight: inherit;
   background-color: var(--dark);
   text-align: center;
+
   &:focus {
     outline: none;
   }
@@ -622,10 +709,12 @@ select {
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
+
   // on small screens col will be 100% width
   @media (max-width: 768px) {
     flex-direction: column;
   }
+
   .col {
     // make col go as wide as content
     flex: 1;
@@ -633,48 +722,73 @@ select {
     flex-wrap: wrap;
     // make cols fill row
     flex-grow: 1;
+
     // make cols fill row on small screens
     @media (max-width: 768px) {
       flex-grow: 0;
       flex-basis: 100%;
     }
   }
-  .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
-    padding : 15px;
+
+  .col-1,
+  .col-2,
+  .col-3,
+  .col-4,
+  .col-5,
+  .col-6,
+  .col-7,
+  .col-8,
+  .col-9,
+  .col-10,
+  .col-11,
+  .col-12 {
+    padding: 15px;
   }
+
   .col-1 {
     flex-basis: 8.33333%;
   }
+
   .col-2 {
     flex-basis: 16.66667%;
   }
+
   .col-3 {
     flex-basis: 25%;
   }
+
   .col-4 {
     flex-basis: 33.33333%;
   }
+
   .col-5 {
     flex-basis: 41.66667%;
   }
+
   .col-6 {
     flex-basis: 50%;
   }
+
   .col-7 {
     flex-basis: 58.33333%;
   }
+
   .col-8 {
     flex-basis: 66.66667%;
   }
+
   .col-9 {
     flex-basis: 75%;
   }
+
   .col-10 {
     flex-basis: 83.33333%;
   }
+
   .col-11 {
     flex-basis: 91.66667%;
   }
+
   .col-12 {
     flex-basis: 100%;
   }
@@ -688,6 +802,7 @@ select {
   background-color: var(--dark-secondary);
   border-radius: 5px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
   &:after {
     // show bubble on bottom
     content: "";
@@ -701,7 +816,7 @@ select {
     border-right: 10px solid transparent;
     border-top: 10px solid var(--dark-secondary);
 
-  
+
   }
 }
 
@@ -713,9 +828,11 @@ footer {
   font-size: 12px;
   font-weight: 400;
   margin-bottom: 45px;
+
   a {
     color: var(--grey);
     text-decoration: none;
+
     &:hover {
       color: var(--white);
     }
@@ -729,6 +846,7 @@ footer {
 
 .category {
   display: block;
+
   .category_desc {
     width: 825px;
     word-break: break-word;
@@ -770,6 +888,7 @@ footer {
   display: block;
   transition: 0.2s ease;
   margin-bottom: 5px;
+
   &:hover {
     background-color: var(--dark-blue);
   }
@@ -780,7 +899,19 @@ footer {
 }
 
 .no-col-padding {
-  &.col-1, &.col-2, &.col-3, &.col-4, &.col-5, &.col-6, &.col-7, &.col-8, &.col-9, &.col-10, &.col-11, &.col-12 {
+
+  &.col-1,
+  &.col-2,
+  &.col-3,
+  &.col-4,
+  &.col-5,
+  &.col-6,
+  &.col-7,
+  &.col-8,
+  &.col-9,
+  &.col-10,
+  &.col-11,
+  &.col-12 {
     padding: 0;
   }
 }
@@ -788,6 +919,7 @@ footer {
 .users-col {
   // make height fixed
   height: 250px;
+
   .profile-link {
     // make it stay at the bottom of the container
     bottom: 0;
@@ -803,4 +935,55 @@ noscript {
   font-size: 20px;
   width: 100%;
   padding: 25px;
+
+  // on small screens, dont show
+  @media (max-width: 992px) {
+    display: none;
+  }
+}
+
+.read_more {
+  // lightish blue color
+  color: #508ae6!important;
+  text-decoration: underline!important;
+}
+
+#read-more {
+  // lightish blue color
+  animation: fadeIn 0.2s linear;
+  -webkit-animation: fadeIn 0.2s linear;
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// custom scrollbar
+body::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+body::-webkit-scrollbar-track {
+  background: var(--dark-secondary);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--dark);
+  border-radius: 20px;
+  border: 2px solid $dark-third;
+  &:hover {
+    background-color: var(--dark-secondary);
+  }
 }

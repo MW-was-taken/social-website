@@ -404,7 +404,6 @@ function LoginUser($conn, $Username, $Password)
       $_SESSION['UserID'] = $result['user_id'];
       $_SESSION['Username'] = $result['user_name'];
       $_SESSION['UserEmail'] = $result['user_email'];
-      $_SESSION['last_ip'] = $result['user_ip'];
       $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
       $_SESSION['Theme'] = $result['user_theme'];
       header("location: ../../dashboard/?note=Successfully logged in!");
@@ -755,13 +754,13 @@ function CheckIpAddress($ip)
     if ($_SESSION['UserIP'] === $ip) {
       CheckIfIpIsBanned($ip);
       UpdateIP($ip);
+      return true;
     } else {
       return false;
     }
-  } else {
-    CheckIfIpIsBanned($ip);
-    UpdateIP($ip);
   }
+  CheckIfIpIsBanned($ip);
+  UpdateIP($ip);
 }
 /**
  * This function updates the ip address in the database.
@@ -776,6 +775,7 @@ function UpdateIP($ip)
   // update ip address in users table
   $statement = $conn->prepare("UPDATE users SET user_ip = :ip_hash WHERE user_id = :user_id");
   $statement->execute(array(':ip_hash' => $ip_hash, ':user_id' => $_SESSION['UserID']));
+  UserLog($_SESSION['UserID'], "User logged in from a brand new IP address.");
 }
 /**
  * This function checks if the ip address is banned.
@@ -1031,18 +1031,6 @@ function ListMessages($result)
 function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurified)
 {
   global $conn;
-  $body_sanitized = PurifyInput($body_unpurified);
-  $body_markdown = ToMarkdown($body_sanitized);
-  // profanity filter
-  include_once '../profanity.php';
-
-  $body_profanity = ProfanityFilter($body_markdown);
-  $title_profanity = ProfanityFilter($title_unpurified);
-  $title = PurifyInput($title_profanity);
-  $body = ToLineBreaks($body_profanity);
-  $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
-  $stmt = $conn->prepare($sql);
-  $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
 }
 function SetAllMessagesAsSeen($user_id)
 {
@@ -1249,6 +1237,26 @@ function GetLogs($page)
   $statement->execute();
   $result = $statement->fetchAll();
   return $result;
+}
+function GetUserLogs($page)
+{
+  global $conn;
+  $limit = 5;
+  $offset = ($page - 1) * $limit;
+  $statement = $conn->prepare("SELECT * FROM logs ORDER BY id DESC LIMIT :limit OFFSET :offset");
+  $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+  $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
+  $statement->execute();
+  $result = $statement->fetchAll();
+  return $result;
+}
+
+function UserLog($user_id, $action)
+{
+  global $conn;
+  $sql = "INSERT INTO logs (user, message, created) VALUES (:user_id, :action, NOW())";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id, ':action' => $action));
 }
 
 function CheckIfUserExists($user_id)

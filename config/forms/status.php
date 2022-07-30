@@ -19,7 +19,8 @@ if (isset($_POST["submit"])) {
       exit();
     }
 
-    if(!empty($status)) {  
+    if(!empty($status)) {
+      UserLog($_SESSION['UserID'], "Updated status to: " . $status);
       UpdateStatus($conn, $status, $_SESSION["UserID"]);
       exit();
     }

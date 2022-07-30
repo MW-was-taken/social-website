@@ -8,7 +8,7 @@
   <br>
   <p>Markdown is only allowed to be used on the forums, in messages, and in your profile blurb. This is a tutorial on how
     to use those features to make new users fear and respect you, as well as ensure that you are the coolet user on the website.
-    Yeah, no. This just teaches you how to use them. If you see someone fail the markdown, you can post a funny <code>markdown fail</code> gif 
+    Yeah, no. This just teaches you how to use them. If you see someone <mark>fail the markdown</mark>, you can post a funny <code>markdown fail</code> gif 
     and make them cry.
   </p>
   <hr>

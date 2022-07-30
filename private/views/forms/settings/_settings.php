@@ -3,17 +3,17 @@ if (isset($_POST["submit"])) {
   $Bio = $_POST["bio"];
   $Bio = nl2br($Bio);
   $Bio = PurifyInput($Bio);
-  $Bio = ToMarkdown($Bio);
 
 
   if (BioTooLong($Bio)) {
-    header("location: ../../settings/?error=Bio too long!");
+    $_SESSION["error"] = "Bio is too long!";
+    header("location: /settings/");
     exit();
   }
 
   if (empty($Bio)) {
     $_SESSION["error"] = "Bio is empty!";
-    header("Location: /settings?test=test");
+    header("Location: /settings");
     exit();
   }
 
@@ -52,7 +52,7 @@ unset($_SESSION["note"]);
       <button type="submit" name="submit" class="btn btn-primary">Submit</button>
     </form>
     <h4>Theme</h4>
-    <form action="../../config/forms/theme.php" method="post">
+    <form action="/settings/theme/index.php" method="post">
       <select name="theme" class="form-control">
         <option value="1" <?php if ($theme == 1) {
                             echo "selected";

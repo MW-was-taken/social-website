@@ -88,7 +88,18 @@ if ($bio != null) {
         if(!empty($bio)) {
           echo "<center><b>BIO</b></center>";
           echo "<center>";
-          echo "<p>" . $bio . "</p>";
+          // only show the first 100 characters of bio, if it is longer than 100 characters then show the "Read More" button
+          if (strlen($bio) > 100) {
+            echo "<span id='read-less'>" . substr($bio, 0, 100) . "</span>";
+            echo "<span id='dots'>...</span>";
+            // remove first 100 characters from bio and show the "Read Less" button
+            $bio = substr($bio, 100);
+            echo "<span id='read-more' style='display: none'>" . $bio . "</span>";
+            echo "<br>";
+            echo "<a href='#' onclick='readMore()' id='btn' class='read_more'>Read More</button>";
+          } else {
+            echo $bio;
+          }
           echo "</center>";
           echo "<hr>";
         }
@@ -122,3 +133,5 @@ if ($bio != null) {
     </div>
   </div>
 </div>
+
+<script src="/js/bio.js"></script>
