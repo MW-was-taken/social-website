@@ -9,10 +9,8 @@ if(isset($_GET['page'])) {
 }
 ?>
 <div class="card users">
-<div class="card-header">
-Users
-</div>
 <div class="card-body">
+  <h1 class="center">Users</h1>
   <?php 
     ListUsers($page);
   ?>

@@ -16,7 +16,6 @@ if(isset($_POST['submit'])) {
   header("Location: /settings");
   exit();
 } else {
-  $_SESSION['error'] = "Theme not updated!";
   header("Location: /settings");
   exit();
 }

@@ -11,7 +11,6 @@ Glavic (https://stackoverflow.com/users/67332/glavi%c4%87)
 */
 
 // TODO: Make headers use $_SERVER['DOCUMENT_ROOT'] instead of doing ../ infinitely
-// TODO: 
 
 
 if (@$_SESSION['UserID'] == null) {
@@ -38,7 +37,7 @@ function HandlePageName($name)
  * 
  * @param string $db_host The hostname of the database.
  * @param string $db_username The username of the database.
- * @param string $db_password The password of the database.
+* @param string $db_password The password of the database
  * @param string $db The name of the database.
  * @return object The connection to the database.
  */
@@ -228,195 +227,6 @@ function Maintenance()
     exit();
   }
 }
-
-// Authentication Functions
-// check if this is needed or not, I'm not entirely sure
-$result;
-/**
- * 
- * This function checks if there are any empty inputs in the signup form.
- * @param mixed $username
- * @param mixed $email
- * @param mixed $password
- * @param mixed $passwordRepeat
- * @return bool
- */
-function EmptyInputSignup($username, $email, $password, $passwordRepeat)
-{
-  if (empty($username) || empty($email) || empty($password) || empty($passwordRepeat)) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-/**
- * This function determines if the username is fit for use, and if not it returns an error.
- * @param mixed $username
- * @return bool
- */
-function InvalidUsername($username)
-{
-  if (!preg_match("/^[a-zA-Z0-9_ ]*$/", $username)) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-/**
- * This function determines if the username is too long or too short.
- * @param mixed $username
- * @return bool
- */
-function InvalidUsernameLength($username)
-{
-  // user name must be atleast 3 characters long but not exceed 20 characters long
-  if (strlen($username) < 3 || strlen($username) > 20) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-/**
- * This function determines if the email is valid.
- * @param mixed $email
- * @return bool
- */
-function InvalidEmail($email)
-{
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-/**
- * This function checks if the password and the password repeat match.
- * @param mixed $password
- * @param mixed $passwordRepeat
- * @return bool
- */
-function InvalidPasswordMatch($password, $passwordRepeat)
-{
-  if ($password !== $passwordRepeat) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-/**
- * This function checks if the password is too short or too long.
- * @param mixed $password
- * @return bool
- */
-function InvalidPasswordLength($password)
-{
-  if (strlen($password) < 8 || strlen($password) > 50) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-/**
- * This function checks if the username is already taken.
- * @param mixed $pdo
- * @param mixed $username
- * @return mixed
- */
-function UsernameExists($pdo, $username)
-{
-  $statement = $pdo->prepare("SELECT * FROM users WHERE user_name = :username");
-  $statement->execute(array(':username' => $username));
-  $result = $statement->fetch();
-  // if result is not empty, username exists
-  if (!empty($result)) {
-    return true;
-  } else {
-    return $result;
-  }
-}
-/**
- * This function creates the user and signs them in.
- * @param mixed $pdo
- * @param mixed $username
- * @param mixed $email
- * @param mixed $password
- * @return void
- */
-
-function CreateUser($pdo, $username, $email, $password)
-{
-  $statement = $pdo->prepare("INSERT INTO users (user_name, user_email, user_password, user_signup_ip, user_ip) VALUES (:username, :email, :password, :ip, :ip)");
-  // hash password
-  $password = password_hash($password, PASSWORD_DEFAULT);
-  $statement->execute(array(':username' => $username, ':email' => $email, ':password' => $password, ':ip' => md5($_SERVER['REMOTE_ADDR'])));
-  session_start();
-  // ANCHOR session variables
-  $_SESSION["UserAuthenticated"] = "true";
-  $_SESSION['UserID'] = $pdo->lastInsertId();
-  $_SESSION['Username'] = $username;
-  $_SESSION['UserEmail'] = $email;
-  $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
-  $_SESSION['Theme'] = 0;
-  UserLog($_SESSION['UserID'], "User created account.");
-  header("location: ../../dashboard/?note=Successfully signed up!");
-  exit();
-}
-/**
- * This function checks if any inputs on the login form are empty.
- * @param mixed $username
- * @param mixed $password
- * @return bool
- */
-function EmptyInputLogin($username, $password)
-{
-  if (empty($username) || empty($password)) {
-    $result = true;
-  } else {
-    $result = false;
-  }
-  return $result;
-}
-// ANCHOR login functions
-/**
- * This function checks if the username and password are correct and if so logs the user in.
- * @param mixed $conn
- * @param mixed $Username
- * @param mixed $Password
- * @return void
- */
-function LoginUser($conn, $Username, $Password)
-{
-  $statement = $conn->prepare("SELECT * FROM users WHERE user_name = :username");
-  $statement->execute(array(':username' => $Username));
-  $result = $statement->fetch();
-  if (!empty($result)) {
-    // check password
-    if (password_verify($Password, $result['user_password'])) {
-      session_start();
-      // ANCHOR session variables
-      $_SESSION["UserAuthenticated"] = "true";
-      $_SESSION['UserID'] = $result['user_id'];
-      $_SESSION['Username'] = $result['user_name'];
-      $_SESSION['UserEmail'] = $result['user_email'];
-      $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
-      $_SESSION['Theme'] = $result['user_theme'];
-      header("location: /dashboard/?note=Successfully logged in!");
-      exit();
-    } else {
-      header("location: /login/?error=Invalid password!");
-      exit();
-    }
-  } else {
-    header("location: /login/?error=Invalid username!");
-    exit();
-  }
-}
 /**
  * This function takes in a date and time and gets how long ago it was.
  * @author Glavic
@@ -474,7 +284,9 @@ function UserIsAuthenticated()
 function RequireAuthentication()
 {
   if (UserIsAuthenticated() === false) {
-    header("location: ../login/?error=You must be logged in to do this!");
+    session_start();
+    $_SESSION['Error'] = "You must be logged in to access this page.";
+    header("location: /login/");
     exit();
   }
 }
@@ -485,7 +297,7 @@ function RequireAuthentication()
 function RequireGuest()
 {
   if (UserIsAuthenticated() === true) {
-    header("location: ../../dashboard");
+    header("location: /dashboard");
     exit();
   }
 }
@@ -536,7 +348,9 @@ function UpdateStatus($conn, $status_raw, $user_id)
   // insert user_status into users table
   $statement = $conn->prepare("UPDATE users SET user_status = :status WHERE user_id = :user_id");
   $statement->execute(array(':status' => $status, ':user_id' => $user_id));
-  header("location: ../../dashboard/?note=Status updated!");
+  session_start();
+  $_SESSION['note'] = "Status updated successfully.";
+  header("location: /dashboard/");
 }
 /**
  * Gets and returns the status.
@@ -569,7 +383,11 @@ function GetBio($conn, $user_id)
   $statement->execute(array(':user_id' => $user_id));
   $result = $statement->fetch();
   $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
-  $bio = str_ireplace($breaks, "", $result['user_bio']);
+  if(!empty($result['user_bio'])) {
+    $bio = str_replace($breaks, "\n", $result['user_bio']);
+  } else {
+    $bio = "";
+  }
   return $bio;
 }
 /**
@@ -597,7 +415,7 @@ function BioTooLong($bio)
 function GetUsers($page)
 {
   global $conn;
-  $limit = 12;
+  $limit = 8;
   $offset = ($page - 1) * $limit;
   $statement = $conn->prepare("SELECT * FROM users ORDER BY user_id ASC LIMIT :limit OFFSET :offset");
   $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -624,13 +442,18 @@ function GetStaff($page)
   return $result;
 }
 /**
- * Lists all users within the page limit.
+ * This page lists all users, and if staff is true it lists all staff members instead.
  * @param mixed $page
+ * @param mixed $staff
  * @return void
  */
-function ListUsers($page)
+function ListUsers($page, $staff = false)
 {
-  $users = GetUsers($page);
+  if($staff === false) {
+    $users = GetUsers($page);
+  } else {
+    $users = GetStaff($page);
+  }
   $usercount = count($users);
   if ($usercount > 0) {
     echo "<div class='row'>";
@@ -639,39 +462,10 @@ function ListUsers($page)
       <div class="col-3 no-col-padding users-col">
         <div class="center">
           <a href="/profile/?id=<?php echo $user['user_id']; ?>">
-            <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
+            <img src="/Avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
           </a>
           <br>
-          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
-        </div>
-      </div>
-    <?php
-    }
-    echo "</div>";
-  } else {
-    echo "No users found!";
-  }
-}
-/**
- * Lists all staff members within the page limit.
- * @param mixed $page
- * @return void
- */
-function ListStaff($page)
-{
-  $users = GetStaff($page);
-  $usercount = count($users);
-  if ($usercount > 0) {
-    echo "<div class='row'>";
-    foreach ($users as $user) {
-    ?>
-      <div class="col-3 no-col-padding users-col">
-        <div class="center">
-          <a href="/profile/?id=<?php echo $user['user_id']; ?>">
-            <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
-          </a>
-          <br>
-          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
+          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; OnlineDot($user['user_updated']) ?></a>
         </div>
       </div>
     <?php
@@ -788,7 +582,7 @@ function CheckIfIpIsBanned($ip)
  */
 function IpBanRedirect()
 {
-  header("location: ../../bans/ip");
+  header("location: /bans/ip");
   exit();
 }
 /**
@@ -1016,10 +810,6 @@ function ListMessages($result)
   } else {
     echo "<p>No Messages</p>";
   }
-}
-function SendMessage($sender_id, $receiver_id, $title_unpurified, $body_unpurified)
-{
-  global $conn;
 }
 function SetAllMessagesAsSeen($user_id)
 {
@@ -1471,4 +1261,14 @@ function ListItems()
 <?php
   }
   echo "</div>";
+}
+
+function GetWallPostAmount($user_id)
+{
+  global $conn;
+  $sql = "SELECT * FROM wall WHERE wall_creator = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  return count($result);
 }

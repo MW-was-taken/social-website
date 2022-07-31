@@ -13,7 +13,7 @@ Users
 </div>
 <div class="card-body">
   <?php 
-    ListStaff($page);
+    ListUsers($page, true);
   ?>
   <div class="ellipsis">
   <?php

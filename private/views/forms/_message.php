@@ -37,6 +37,11 @@ if (isset($_POST["submit"])) {
 }
 // TODO: check for exploits here
 $User = GetUserByID($conn, $_GET['id']);
+if(!$User) {
+  $_SESSION["error"] = "User not found!";
+  header("location: /messages/");
+  exit();
+}
 ?>
 <div class="card form-card message">
   <div class="card-header">

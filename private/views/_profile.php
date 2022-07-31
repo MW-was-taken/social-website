@@ -34,42 +34,6 @@ if ($bio != null) {
 
 
 ?>
-<!--
-<div class="card users">
-  <div class="card-header">
-    <?php echo $user_name;
-    ?>
-
-    <?php
-    if (!IfIsOnline($user['user_updated'])) {
-      echo '<span class="status-dot users"></span>';
-    } else {
-      echo '<span class="status-dot users online"></span>';
-    }
-    ?>
-
-  </div>
-  <div class="card-body">
-    <?php
-    echo "<label>Status: " . $status . "</label>";
-    echo "<br>";
-    if (!empty($bio)) {
-      echo "<label>Bio</label>";
-      echo "<p>" . $bio . "</p>";
-    }
-    echo "<label>Join Date: " . HandleDate($user['user_created']) . "</label>";
-    echo "<br>";
-    echo "<label>Last Online: " . time_elapsed_string($user['user_updated']) . "</label>";
-    ?>
-    <br>
-    <?php
-    if (isset($_GET['id'])) {
-      echo "<a href='../../messages/send?id=" . $user['user_id'] . "'>Message</a>";
-    }
-    ?>
-  </div>
-</div>
-  -->
 <div class="row">
   <div class="col-2">
     <div class="speech-bubble">
@@ -96,7 +60,7 @@ if ($bio != null) {
             $bio = substr($bio, 100);
             echo "<span id='read-more' style='display: none'>" . $bio . "</span>";
             echo "<br>";
-            echo "<a href='#' onclick='readMore()' id='btn' class='read_more'>Read More</button>";
+            echo "<a href='#' onclick='readMore()' id='btn' class='read_more'>Read More</button></a>";
           } else {
             echo $bio;
           }
@@ -120,15 +84,6 @@ if ($bio != null) {
           <?php
           echo HandleDate($user['user_created']);
           ?>
-      </div>
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="card no-header">
-      <div class="card-body">
-        <div class="center">
-          W
-        </div>
       </div>
     </div>
   </div>
