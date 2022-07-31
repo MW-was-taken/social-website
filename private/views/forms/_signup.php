@@ -5,23 +5,31 @@
 HandleError($error);
 ?>
 <div class="content">
-  <div class="card form-card signup">
-    <div class="card-header">
-      Sign Up
-    </div>
-    <div class="card-body">
-      <form action="/config/forms/signup.php" method="POST">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" placeholder="Username..." required>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Email..." required>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Password..." required>
-        <label for="passwordRPT">Password Repeat</label>
-        <input type="password" name="passwordRepeat" id="passwordRPT" placeholder="Password Repeat..." required>
-        <button type="submit" name="submit" value="submit">Sign Up</button>
+  <div class="center">
+    <div class="card">
+      <h1>Signup</h1>
+      <form action="/config/forms/signup.php" method="post">
+        <label for="email">
+          Email
+        </label>
+        <input type="email" id="email" name="email" placeholder="Email">
+        <label for="username">
+          Username
+        </label>
+        <input type="text" id="username" name="username" placeholder="Username">
+        <label for="password">
+          Password
+        </label>
+        <input type="password" id="password" name="password" placeholder="Password">
+        <label for="passwordRepeat">
+          Repeat Password
+        </label>
+        <input type="password" id="passwordRepeat" name="passwordRepeat" placeholder="Password">
+        <button type="submit" name="submit">
+          Signup
+        </button>
         <hr>
-        <div style="display: block; color: #fff; text-align: center; font-size: 1.3em"><a href="/login/" style="text-decoration: none; color: #067aef;">Login</a>Already have an account?</div>
+        <a href="/login">Login</a>
       </form>
     </div>
   </div>

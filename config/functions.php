@@ -245,8 +245,7 @@ function EmptyInputSignup($username, $email, $password, $passwordRepeat)
 {
   if (empty($username) || empty($email) || empty($password) || empty($passwordRepeat)) {
     $result = true;
-  }
-  else {
+  } else {
     $result = false;
   }
   return $result;
@@ -341,14 +340,14 @@ function UsernameExists($pdo, $username)
     return $result;
   }
 }
-  /**
-   * This function creates the user and signs them in.
-   * @param mixed $pdo
-   * @param mixed $username
-   * @param mixed $email
-   * @param mixed $password
-   * @return void
-   */
+/**
+ * This function creates the user and signs them in.
+ * @param mixed $pdo
+ * @param mixed $username
+ * @param mixed $email
+ * @param mixed $password
+ * @return void
+ */
 
 function CreateUser($pdo, $username, $email, $password)
 {
@@ -364,6 +363,7 @@ function CreateUser($pdo, $username, $email, $password)
   $_SESSION['UserEmail'] = $email;
   $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
   $_SESSION['Theme'] = 0;
+  UserLog($_SESSION['UserID'], "User created account.");
   header("location: ../../dashboard/?note=Successfully signed up!");
   exit();
 }
@@ -406,14 +406,14 @@ function LoginUser($conn, $Username, $Password)
       $_SESSION['UserEmail'] = $result['user_email'];
       $_SESSION['UserIP'] = $_SERVER['REMOTE_ADDR'];
       $_SESSION['Theme'] = $result['user_theme'];
-      header("location: ../../dashboard/?note=Successfully logged in!");
+      header("location: /dashboard/?note=Successfully logged in!");
       exit();
     } else {
-      header("location: ../../login/?error=Invalid password!");
+      header("location: /login/?error=Invalid password!");
       exit();
     }
   } else {
-    header("location: ../../login/?error=Invalid username!");
+    header("location: /login/?error=Invalid username!");
     exit();
   }
 }
@@ -520,13 +520,13 @@ function StatusTooLong($status)
   }
   return $result;
 }
-  /**
-   * Updates the status.
-   * @param mixed $conn
-   * @param mixed $status_raw
-   * @param mixed $user_id
-   * @return void
-   */
+/**
+ * Updates the status.
+ * @param mixed $conn
+ * @param mixed $status_raw
+ * @param mixed $user_id
+ * @return void
+ */
 
 function UpdateStatus($conn, $status_raw, $user_id)
 {
@@ -538,12 +538,12 @@ function UpdateStatus($conn, $status_raw, $user_id)
   $statement->execute(array(':status' => $status, ':user_id' => $user_id));
   header("location: ../../dashboard/?note=Status updated!");
 }
-  /**
-   * Gets and returns the status.
-   * @param mixed $conn
-   * @param mixed $user_id
-   * @return mixed
-   */
+/**
+ * Gets and returns the status.
+ * @param mixed $conn
+ * @param mixed $user_id
+ * @return mixed
+ */
 
 function GetStatus($conn, $user_id)
 {
@@ -572,11 +572,11 @@ function GetBio($conn, $user_id)
   $bio = str_ireplace($breaks, "", $result['user_bio']);
   return $bio;
 }
-  /**
-   * Checks if the bio is too long. 
-   * @param mixed $bio
-   * @return bool
-   */
+/**
+ * Checks if the bio is too long. 
+ * @param mixed $bio
+ * @return bool
+ */
 
 function BioTooLong($bio)
 {
@@ -638,17 +638,16 @@ function ListUsers($page)
 ?>
       <div class="col-3 no-col-padding users-col">
         <div class="center">
-        <a href="/profile/?id=<?php echo $user['user_id']; ?>">
-        <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
-        </a>
-        <br>
-        <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
+          <a href="/profile/?id=<?php echo $user['user_id']; ?>">
+            <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
+          </a>
+          <br>
+          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
         </div>
       </div>
     <?php
     }
     echo "</div>";
-
   } else {
     echo "No users found!";
   }
@@ -665,14 +664,14 @@ function ListStaff($page)
   if ($usercount > 0) {
     echo "<div class='row'>";
     foreach ($users as $user) {
-?>
+    ?>
       <div class="col-3 no-col-padding users-col">
         <div class="center">
-        <a href="/profile/?id=<?php echo $user['user_id']; ?>">
-        <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
-        </a>
-        <br>
-        <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
+          <a href="/profile/?id=<?php echo $user['user_id']; ?>">
+            <img src="/avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
+          </a>
+          <br>
+          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; ?></a>
         </div>
       </div>
     <?php
@@ -1035,7 +1034,7 @@ function ViewMessage($msg_id, $user_id)
   // i do not know how this works
 
   // check if message exists
-  global $conn; 
+  global $conn;
   // limit 
   $sql = "SELECT * FROM messages WHERE msg_id = :msg_id";
   $stmt = $conn->prepare($sql);
@@ -1268,64 +1267,52 @@ function CheckIfUserExists($user_id)
 function ProfileLink()
 {
   global $conn;
-  if (UserIsAuthenticated()) {
-    $user_id = $_SESSION['UserID'];
-    $user = GetUserByID($conn, $user_id);
-    return '<a href="/profile"><i class="fas fa-user"></i>' . $user['user_name'] . '</a>';
-  }
+  $user_id = $_SESSION['UserID'];
+  $user = GetUserByID($conn, $user_id);
+  return '<a href="/profile"><i class="fas fa-user"></i>' . $user['user_name'] . '</a>';
 }
 
 function HomeLink()
 {
-  if (UserIsAuthenticated()) {
-    return '<a href="/dashboard">
-    <i class="fas fa-home"></i>Dashboard
-    </a>';
-  } else {
-    return '<a href="/">Home</a>';
-  }
+  return '<a href="/dashboard">
+  <i class="fas fa-home"></i>Dashboard
+  </a>';
 }
 
 function MessageLink()
 {
-  if (UserIsAuthenticated()) {
-    // get user_id from session
-    $user_id = $_SESSION['UserID'];
-    // get number of unread messages
-    $messages = UnseenMessages($user_id);
-    if ($messages > 0) {
-      return '<a href="/messages">
+  // get user_id from session
+  $user_id = $_SESSION['UserID'];
+  // get number of unread messages
+  $messages = UnseenMessages($user_id);
+  if ($messages > 0) {
+    return '<a href="/messages">
       <i class="fas fa-envelope"></i>Messages <span class="badge">' . $messages . '</span></a>';
-    } else {
-      return '<a href="/messages"><i class="fas fa-envelope"></i>Messages</a>';
-    }
+  } else {
+    return '<a href="/messages"><i class="fas fa-envelope"></i>Messages</a>';
   }
 }
 
 function AdminLink()
 {
-  if (UserIsAuthenticated()) {
-    $user_id = $_SESSION['UserID'];
-    if (IfAdmin($user_id)) {
-      return '<a href="/admin">
+  $user_id = $_SESSION['UserID'];
+  if (IfAdmin($user_id)) {
+    return '<a href="/admin">
       <i class="fa fa-cogs" aria-hidden="true"></i>Admin
       </a>';
-    }
   }
 }
 
 function GetTheme()
 {
   global $conn;
-  if (UserIsAuthenticated()) {
-    session_start();
-    if (isset($_SESSION['Theme'])) {
-      return $_SESSION['Theme'];
-    } else {
-      $user_id = $_SESSION['UserID'];
-      $user = GetUserByID($conn, $user_id);
-      $_SESSION['Theme'] = $user['user_theme'];
-    }
+  session_start();
+  if (isset($_SESSION['Theme'])) {
+    return $_SESSION['Theme'];
+  } else {
+    $user_id = $_SESSION['UserID'];
+    $user = GetUserByID($conn, $user_id);
+    $_SESSION['Theme'] = $user['user_theme'];
   }
 }
 
@@ -1472,12 +1459,12 @@ function ListItems()
             </a>
           </div>
           <hr>
-            <a href="/market/item?id=<?php echo $item['item_id']; ?>">
-              <h3 style="color: white;"><?php echo $item['item_name']; ?></h3>
-            </a>
-            <a href="/profile/<?php echo $item['item_creator']; ?>">
-              <h5><?php echo GetUserByID($conn, $item['item_creator'])['user_name']; ?></h5>
-            </a>
+          <a href="/market/item?id=<?php echo $item['item_id']; ?>">
+            <h3 style="color: white;"><?php echo $item['item_name']; ?></h3>
+          </a>
+          <a href="/profile/<?php echo $item['item_creator']; ?>">
+            <h5><?php echo GetUserByID($conn, $item['item_creator'])['user_name']; ?></h5>
+          </a>
         </div>
       </div>
     </div>

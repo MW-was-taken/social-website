@@ -6,3 +6,4 @@ temp
 /README.md
 /cdn/Store/*.png
 !/cdn/Store/default_face.png
+/.vscode

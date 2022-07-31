@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0px;
-  background: #003366;
+  background: #1d2731;
   overflow: hidden;
   font-family: "Montserrat";
   font-size: 14px;
@@ -10,83 +10,57 @@ body {
   font-weight: 500;
 }
 
-.content {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -70%);
-}
-
-.card-header {
-  color: #fff;
-  background: #034484 !important;
-  padding: 12px;
-  border-radius: 5px 5px 0 0;
-  font-size: 1.4em;
-  font-weight: 600;
-  text-align: center;
-}
-
-button {
-  width: 100%;
-  background: #034484 !important;
-  border-radius: 5px;
-  font-weight: inherit;
-}
-
-.card.form-card.signup {
-  max-width: 60em !important;
-}
-
-.card .card-body {
-  padding: 25px;
-  background: #2a2a2a;
-  color: #fff;
-  border-radius: 0 0 5px 5px;
-}
-
-input {
-  font-weight: inherit;
-  margin-top: 0;
-}
-
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 500;
   padding: 0;
   margin: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card {
+  background: #334757;
+  width: 600px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 2px solid #425b6f;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-family: inherit;
+}
+
+button {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 2px solid #59ba5c;
+  font-family: inherit;
+}
+button:hover {
+  background: #45a049;
+}
+
 a {
-  transition: all 0.2s ease;
-  color: #067aef;
-  display: inline-block !important;
+  color: #fff;
   text-decoration: none;
-  display: block;
-  margin: 0 15px;
 }
 a:hover {
-  transform: scale(1.2);
-}
-
-.container {
-  max-width: 800px !important;
-  margin: 0 auto;
-}
-
-.header {
-  background: #022950;
-  color: #fff;
-  padding: 10px;
-  border-radius: 5px 5px 0 0;
-  font-weight: 700;
-  text-align: center;
-  margin: 5px;
-}
-.header .main {
-  font-size: 3em;
-}
-.header .sub {
-  font-weight: 500;
-  font-size: 1.2em;
+  text-decoration: underline;
 }
