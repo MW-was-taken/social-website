@@ -8,8 +8,36 @@
     ?>
     <div class="admin-content">
       <h1>Admin Dashboard</h1>
-      <h4>Known Site Bugs</h4>
-      <p>Bio displaying line breaks incorrectly.</p>
+      <h2 class="small">
+        Time
+      </h2>
+      <!-- javascript time -->
+      <h3 id="time"></h3>
+      <script>
+        // update time and get in local timezone
+        function updateTime() {
+          var d = new Date();
+          var time = d.toLocaleTimeString();
+          document.getElementById("time").innerHTML = time;
+        }
+        setInterval(updateTime, 1000);
+      </script>
+      <!-- end javascript time -->
+      <h2 class="small">
+        Users
+      </h2>
+      <h3>
+        <?php
+          echo GetNumberOfUsers($conn);
+        ?>
+        users
+      </h3>
+      <h2 class="small">
+        Crime Rate <span class="small">(percentage of banned users)</span>
+      </h2>
+      <h3>
+        0%
+      </h3>
     </div>
   </div>
 </div>
