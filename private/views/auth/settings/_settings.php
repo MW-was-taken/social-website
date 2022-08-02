@@ -4,6 +4,12 @@ if (isset($_POST["submit"])) {
   $Bio = nl2br($Bio);
   $Bio = PurifyInput($Bio);
 
+  if (Flood($_SESSION['UserID'], 30)) {
+    $_SESSION['error'] = "Try again in 30 seconds!";
+    header("Location: /dashboard");
+    exit();
+  }
+
 
   if (BioTooLong($Bio)) {
     $_SESSION["error"] = "Bio is too long!";
@@ -21,6 +27,7 @@ if (isset($_POST["submit"])) {
   $statement = $conn->prepare("UPDATE users SET user_bio = :bio WHERE user_id = :user_id");
   $statement->execute(array(':bio' => $Bio, ':user_id' => $_SESSION['UserID']));
   UserLog($_SESSION['UserID'], "Updated Bio");
+  SetUserFlood($_SESSION['UserID']);
   $_SESSION["success"] = "Bio updated successfully!";
   header("location: /settings/");
   exit();
@@ -67,6 +74,9 @@ unset($_SESSION["note"]);
         <option value="4" <?php if ($theme == 4) {
                             echo "selected";
                           } ?>>eifo's cool blue theme</option>
+        <option value="5" <?php if ($theme == 5) {
+                            echo "selected";
+                          } ?>>Grey Theme</option>
       </select>
       <br>
       <button type="submit" name="submit" class="btn btn-primary">Submit</button>

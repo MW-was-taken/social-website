@@ -12,6 +12,15 @@ if(isset($_POST['submit'])) {
   $alert_link = PurifyInput($alert_link);
 
   $alert_text = ProfanityFilter($alert_text);
+
+  RequireAuthentication();
+
+  // flood check
+  if(Flood($_SESSION['UserID'], 60)) {
+    $_SESSION['error'] = "Try again in 60 seconds!";
+    header("Location: /admin/banner");
+    exit();
+  }
   
   // check if alert bool doesn't equal 0 or 1
   if($alert_bool != 0 && $alert_bool != 1) {
@@ -34,6 +43,7 @@ if(isset($_POST['submit'])) {
   $color = DetermineAlertColor($alert_type);
   $staff_log_string = "Updated alert to say: " . $alert_text . "<br> Updated alert link: " . $alert_link . "<br> Updated alert color: " . $color;
   StaffLog($_SESSION['UserID'], $staff_log_string);
+  SetUserFlood($_SESSION['UserID']);
 
   $sql = "UPDATE site_settings SET alert = :alert_bool, alert_text = :alert_text, alert_link = :alert_link, alert_type = :alert_type WHERE id = 1";
   $stmt = $conn->prepare($sql);

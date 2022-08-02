@@ -5,7 +5,7 @@ if(isset($_POST['submit'])) {
   require_once $_SERVER['DOCUMENT_ROOT'] . '/config/functions.php';
   require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
 
-  if($theme != 1 && $theme != 2 && $theme != 3 && $theme != 4) {
+  if($theme != 1 && $theme != 2 && $theme != 3 && $theme != 4 && $theme != 5) {
     $theme = 1;
   }
 

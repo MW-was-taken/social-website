@@ -1,9 +1,0 @@
-site_dumps
-temp
-/css.bat
-/css.index.bat
-/forum.sql
-/README.md
-/cdn/Store/*.png
-!/cdn/Store/default_face.png
-/.vscode

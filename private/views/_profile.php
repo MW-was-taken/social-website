@@ -26,12 +26,14 @@ if (isset($_GET['id'])) {
   $user_admin = $user['user_admin'];
   $online = $user['user_updated'];
 }
+
+// get wall posts
+
 if ($bio != null) {
   $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
   $bio = str_ireplace($breaks, "", $bio);
   $bio = ToLineBreaks($bio);
 }
-
 
 ?>
 <div class="row">
@@ -84,6 +86,16 @@ if ($bio != null) {
           <?php
           echo HandleDate($user['user_created']);
           ?>
+      </div>
+    </div>
+  </div>
+  <div class="col-5">
+    <div class="card">
+      <div class="card-header red">
+        <h2><?php echo $name; ?>'s wall</h2>
+      </div>
+      <div class="card-body">
+
       </div>
     </div>
   </div>

@@ -5,8 +5,17 @@ if (isset($_POST["submit"])) {
 
   include $_SERVER['DOCUMENT_ROOT'] . "/config/profanity.php";
 
+  RequireAuthentication();
+
   $status = ProfanityFilter($status);
   $status = PurifyInput($status);
+
+  if(Flood($_SESSION['UserID'], 15)) {
+    $_SESSION['error'] = "Try again in 15 seconds!";
+    header("Location: /dashboard");
+    exit();
+  }
+
   if (!preg_match("/^[ a-zA-Z0-9_',.|*&^%$#@!()?]*$/", $status)) {
     $_SESSION["error"] = "Status can only contain letters, numbers, and punctuation.";
     header("location: /dashboard");
@@ -25,6 +34,7 @@ if (isset($_POST["submit"])) {
   }
 
   UserLog($_SESSION['UserID'], "Updated status to: " . $status);
+  SetUserFlood($_SESSION['UserID']);
 
   // insert user_status into users table
   $statement = $conn->prepare("UPDATE users SET user_status = :status WHERE user_id = :user_id");
@@ -46,13 +56,13 @@ $statement = $conn->prepare("SELECT COUNT(*) AS count FROM wall");
 $statement->execute();
 $count = $statement->fetch(PDO::FETCH_ASSOC);
 $count = $count['count'];
-if($count > 6) {
+if ($count > 6) {
   $offset = $count - 6;
 } else {
   $offset = 0;
 }
 // Get all wall posts, limit to 6, and order by newest first and offset by the number of posts already shown.
-$statement = $conn->prepare("SELECT * FROM wall ORDER BY wall_id DESC LIMIT 6 OFFSET :offset");
+$statement = $conn->prepare("SELECT * FROM wall ORDER BY wall_id ASC LIMIT 6 OFFSET :offset");
 // Set offset to the number of posts already shown.
 $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
 $statement->execute();
@@ -63,13 +73,13 @@ $statement = $conn->prepare("SELECT COUNT(*) AS count FROM blog");
 $statement->execute();
 $count = $statement->fetch(PDO::FETCH_ASSOC);
 $count = $count['count'];
-if($count > 6) {
+if ($count > 6) {
   $offset = $count - 6;
 } else {
   $offset = 0;
 }
 
-$statement = $conn->prepare("SELECT * FROM blog ORDER BY blog_id DESC LIMIT 6 OFFSET :offset");
+$statement = $conn->prepare("SELECT * FROM blog ORDER BY blog_id ASC LIMIT 6 OFFSET :offset");
 $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
 $statement->execute();
 $blog = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -101,7 +111,7 @@ $user = GetUserByID($conn, $_SESSION['UserID']);
         <h2 class="center">
           User Info
         </h2>
-        <hr>  
+        <hr>
         <label>
           Created On: <span class="small" style="float: right;"><?php echo HandleDate($user['user_created']) ?></span>
         </label>
@@ -117,12 +127,13 @@ $user = GetUserByID($conn, $_SESSION['UserID']);
     </div>
   </div>
   <div class="col-4">
-    <div class="card no-header">
-      <div class="card-body">
-        <h2 class="center">
+    <div class="card">
+      <div class="card-header">
+        <h2>
           Dashboard
         </h2>
-        <hr>
+      </div>
+      <div class="card-body">
         <form action="/dashboard/" method="post">
           <label for="status">Status</label>
           <input type="text" name="status" placeholder="How are you?">
@@ -131,29 +142,30 @@ $user = GetUserByID($conn, $_SESSION['UserID']);
       </div>
     </div>
     <br>
-    <div class="card no-header">
-      <div class="card-body">
-        <h2 class="center">
+    <div class="card">
+      <div class="card-header red">
+        <h2>
           Blog
         </h2>
-        <hr>
+      </div>
+      <div class="card-body">
         <?php
         foreach ($blog as $post) {
-          ?>
-            <a href="/blog?id=<?php echo $post['blog_id']; ?>">
-              <h2><?php echo $post['blog_title']; ?></h2>
-            </a>
-            <p class="small" style="margin: 5px 0;">
-              <?php echo HandleDate($post['blog_created']); ?>
-              <?php
-                // if blog post was created in last 24 hours, show "new" badge
-                if (strtotime($post['blog_created']) > strtotime("-1 day")) {
-                  echo "<span class='badge admin-text'>New</span>";
-                }
-              ?>
-            </p>
-            <hr>
-          <?php
+        ?>
+          <a href="/blog?id=<?php echo $post['blog_id']; ?>">
+            <h2><?php echo $post['blog_title']; ?></h2>
+          </a>
+          <p class="small" style="margin: 5px 0;">
+            <?php echo HandleDate($post['blog_created']); ?>
+            <?php
+            // if blog post was created in last 24 hours, show "new" badge
+            if (strtotime($post['blog_created']) > strtotime("-120 seconds")) {
+              echo "<span class='badge admin-text'>New</span>";
+            }
+            ?>
+          </p>
+          <hr>
+        <?php
         }
         ?>
 
@@ -161,12 +173,13 @@ $user = GetUserByID($conn, $_SESSION['UserID']);
     </div>
   </div>
   <div class="col-6">
-    <div class="card no-header">
-      <div class="card-body">
-        <h2 class="center">
+    <div class="card">
+      <div class="card-header green">
+        <h2>
           Website Wall
         </h2>
-        <hr>
+      </div>
+      <div class="card-body">
         <?php
         // get count of wall posts
         $count = count($wall);
@@ -196,7 +209,7 @@ $user = GetUserByID($conn, $_SESSION['UserID']);
           }
         }
         ?>
-        <form action="/dashboard/wall/" method="post">
+        <form action="/dashboard/wall/" method="POST">
           <input type="text" name="message" placeholder="Your wall message here...">
           <button type="submit" name="submit">Post</button>
         </form>

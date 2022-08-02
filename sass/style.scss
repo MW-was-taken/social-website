@@ -1,19 +1,23 @@
 // convert all css variables to sass variables
 $dark: #141313;
+$dark-halfway : lighten($dark, 1%);
 $dark-secondary: lighten($dark, 5%);
 $dark-third: lighten($dark, 10%);
 $dark-fourth: lighten($dark, 12.5%);
 $white: #fff;
 $grey: #aaa;
-$blue: rgb(13, 13, 169);
+$blue: #005fd1;
 $dark-blue: darken($blue, 10%);
 $dark-blue-hover: darken($blue, 20%);
 $dark-blue-hover-hover: darken($blue, 25%);
 $red: #f00;
+$red-dark: darken($red, 10%);
+$green: #59ba5c;
 
 
 :root {
   --dark: #{$dark};
+  --dark-halfway: #{$dark-halfway};
   --dark-secondary: #{lighten($dark, 5%)};
   --white: #{$white};
   --grey: #{$grey};
@@ -22,6 +26,8 @@ $red: #f00;
   --dark-blue-hover: #{darken($blue, 20%)};
   --dark-blue-hover-hover: #{darken($blue, 25%)};
   --red: #{$red};
+  --red-dark: #{darken($red, 10%)};
+  --green: #{$green};
 }
 
 
@@ -53,18 +59,6 @@ button {
   font-family: inherit;
 }
 
-input[type="checkbox"] {
-  width: 1.5rem;
-  height: 1.5rem;
-  display: block;
-  margin: 0;
-  padding: 0;
-  // change the color of the checkbox
-  background-color: var(--dark-secondary);
-  border: 1px solid var(--dark-secondary);
-  border-radius: 5px;
-
-}
 
 input[type="file"] {
   width: 100%;
@@ -83,15 +77,21 @@ input,
 textarea {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid var(--dark-secondary);
+  margin-bottom: 2.5px;
+  border: 2px solid var(--dark-halfway);
   border-radius: 3px;
   font-family: inherit;
   background: var(--dark);
   color: white;
+  transition: border 0.2s ease-in-out;
 
   &:focus {
     outline: none;
+  }
+
+  // blue border when focused
+  &:focus {
+    border: 2px solid #005fd1;
   }
 
   margin-top: 5px;
@@ -189,16 +189,16 @@ nav {
 }
 
 .navbar {
-  background: var(--dark-blue);
+  background: var(--blue);
   // include the navbar mixin
   @include navbar;
 
   a {
     padding: 8px 12px;
-    background: var(--dark-blue);
+    background: var(--blue);
 
     &:hover {
-      background: var(--dark-blue-hover);
+      background: var(--dark-blue);
     }
   }
 
@@ -207,16 +207,16 @@ nav {
 
 // secondary navbar
 .secondary-navbar {
-  background: var(--dark-blue-hover);
+  background: var(--dark-blue);
   // include the navbar mixin
   @include navbar;
 
   a {
     padding: 6px 10px;
-    background: var(--dark-blue-hover);
+    background: var(--dark-blue);
 
     &:hover {
-      background: var(--dark-blue);
+      background: var(--dark-blue-hover);
     }
   }
 }
@@ -311,7 +311,7 @@ button {
   background: #4CAF50;
   color: #fff;
   border: none;
-  padding: 10px;
+  padding: 10px 24px;
   border-radius: 3px;
   display: block;
   cursor: pointer;
@@ -320,7 +320,25 @@ button {
   &:hover {
     background: #59ba5c;
   }
-  margin: 5px 0;
+  margin: 2.5px 0;
+  &.sidebyside {
+    display: inline-block;
+    margin: 0 5px;
+  }
+  &.btn-danger {
+    background: var(--red);
+    border: 2px solid var(--red);
+    &:hover {
+      background: var(--red-dark);
+    }
+  }
+  &.btn-primary {
+    background: var(--blue);
+    border: 2px solid var(--blue);
+    &:hover {
+      background: var(--dark-blue);
+    }
+  } 
 }
 
 .card {
@@ -385,12 +403,15 @@ button {
 
   .card-header {
     color: var(--white);
-    background: var(--dark-blue);
+    background: var(--blue);
     padding: 12px;
     border-radius: 5px 5px 0 0;
 
     &.red {
       background: var(--red);
+    }
+    &.green {
+      background: var(--green);
     }
   }
 
@@ -503,7 +524,7 @@ button {
 }
 
 hr {
-  border: 1px solid var(--dark);
+  border: 1px solid var(--dark-halfway);
   margin: 10px 0;
 }
 
@@ -993,4 +1014,30 @@ body::-webkit-scrollbar-thumb {
 
 .small {
   font-size: 12px;
+}
+
+#preview {
+  border: 1px solid var(--dark-secondary);
+  background: var(--dark);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.inline-block {
+  display: inline-block;
+  button {
+    display: inline-block;
+  }
+  form {
+    display: inline-block;
+  }
+}
+
+.wall-card {
+  background-color: var(--dark);
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin: 10px;
+  margin-bottom: 10px;
 }

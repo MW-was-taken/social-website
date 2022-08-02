@@ -1,0 +1,23 @@
+<?php
+date_default_timezone_set('America/New_York');
+
+require('env.php');
+try {
+    $conn = OpenConnection($DATABASE_HOST, $DATABASE_USERNAME, $DATABASE_PASSWORD, $DATABASE);
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
+
+// remove error if debug is false
+if ($DEBUG == true) {
+  // show php errors
+  ini_set('display_errors', 1);
+  error_reporting(E_ALL);
+} else {
+  // hide php errors
+  ini_set('display_errors', 0);
+  error_reporting(0);
+}
+
+// hide notices
+error_reporting(E_ALL & ~E_NOTICE);

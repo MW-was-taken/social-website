@@ -1129,6 +1129,9 @@ function HandleTheme($theme_id)
   if ($theme_id == 4) {
     return '<link rel="stylesheet" href="/css/cool_theme.css">';
   }
+  if($theme_id == 5) {
+    return '<link rel="stylesheet" href="/css/grey_theme.css">';
+  }
 }
 
 //  forum functions
@@ -1271,4 +1274,28 @@ function GetWallPostAmount($user_id)
   $stmt->execute(array(':user_id' => $user_id));
   $result = $stmt->fetchAll();
   return count($result);
+}
+
+function SetUserFlood($user_id)
+{
+  global $conn;
+  $sql = "UPDATE users SET user_flood = NOW() WHERE user_id = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+}
+
+function Flood($user_id, $seconds)
+{
+  global $conn;
+  $sql = "SELECT user_flood FROM users WHERE user_id = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':user_id' => $user_id));
+  $result = $stmt->fetchAll();
+  $last_flood = $result[0]['user_flood'];
+  $diff = strtotime(date("Y-m-d H:i:s")) - strtotime($last_flood);
+  if ($diff < $seconds) {
+    return true;
+  } else {
+    return false;
+  }
 }

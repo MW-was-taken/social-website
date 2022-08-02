@@ -1,0 +1,7 @@
+{
+  "inlineSQL.dbDriver": "mysql",
+  "inlineSQL.dbUser": "root",
+  "inlineSQL.dbPassword": "DatabasePass",
+  "inlineSQL.enableDBIntegration": true,
+  "inlineSQL.dbPort": 3306
+}

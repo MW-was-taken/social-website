@@ -1,3 +1,16 @@
+<?php
+// Get number of users
+$statement = $conn->prepare("SELECT COUNT(*) AS count FROM users");
+$statement->execute();
+$count = $statement->fetch(PDO::FETCH_ASSOC);
+$count = $count['count'];
+// get number of users created in the last 24 hours
+$statement = $conn->prepare("SELECT COUNT(*) AS count FROM users WHERE user_created >= date_sub(now(), interval 1 day) AND user_created <= now()");
+$statement->execute();
+$count24 = $statement->fetch(PDO::FETCH_ASSOC);
+$count24 = $count24['count']; 
+?>
+
 <div class="admin-card">
   <div class="admin-header">
     <h1>Admin</h1>
@@ -28,9 +41,9 @@
       </h2>
       <h3>
         <?php
-          echo GetNumberOfUsers($conn);
+          echo $count;
         ?>
-        users
+        users (<?php echo $count24; ?> in the last 24 hours)
       </h3>
       <h2 class="small">
         Crime Rate <span class="small">(percentage of banned users)</span>

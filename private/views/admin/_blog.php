@@ -4,13 +4,24 @@ if(isset($_POST['submit'])) {
   $title = $_POST['title'];
   $body = $_POST['body'];
 
-  $body = nl2br($body);
+  // flood check
+  if(Flood($_SESSION['UserID'], 60)) {
+    $_SESSION['error'] = "Try again in 60 seconds!";
+    header("Location: /dashboard");
+    exit();
+  }
+
 
   if(empty($title) || empty($body)) {
     $_SESSION['error'] = 'Title or body is empty!';
     header('location: /admin/blog');
     exit();
   }
+
+  $staffLog = "Created a new blog post titled: " . $title . " on " . date("Y-m-d H:i:s");
+  StaffLog($conn, $staffLog);
+
+  SetUserFlood($_SESSION['UserID']);
 
   $statement = $conn->prepare("INSERT INTO blog (blog_title, blog_body, blog_created, blog_creator) VALUES (:title, :body, NOW(), :creator)");
   $statement->execute(array(':title' => $title, ':body' => $body, ':creator' => $_SESSION['UserID']));
@@ -53,8 +64,17 @@ unset($_SESSION['note']);
           <label for="content">Body</label>
           <textarea class="form-control" id="content" name="body" rows="3" placeholder="Body..."></textarea>
         </div>
+        <div id="preview">
+          <p>Start typing and it will show up here...</p>
+        </div>
         <button type="submit" name="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
   </div>
 </div>
+<script>
+  // after every keypress, preview the content
+  $('#content').keyup(function() {
+    $('#preview').html($('#content').val());
+  });
+</script>

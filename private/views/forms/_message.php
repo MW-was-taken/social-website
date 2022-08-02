@@ -22,6 +22,13 @@ if (isset($_POST["submit"])) {
     header("location: /messages/");
     exit();
   }
+
+  if(Flood($sender_id, 60)) {
+    $_SESSION['error'] = "Try again in 60 seconds!";
+    header("Location: /dashboard");
+    exit();
+  }
+
   $body = PurifyInput($body);
   $body = ToMarkdown($body);
   $title = ProfanityFilter($body);
@@ -31,6 +38,7 @@ if (isset($_POST["submit"])) {
   $sql = "INSERT INTO messages (msg_sender, msg_receiver, msg_title, msg_body, msg_created) VALUES (:sender_id, :receiver_id, :title, :body, NOW())";
   $stmt = $conn->prepare($sql);
   $stmt->execute(array(':sender_id' => $sender_id, ':receiver_id' => $receiver_id, ':title' => $title, ':body' => $body));
+  SetUserFlood($sender_id);
   $_SESSION['note'] = "Message sent!";
   header("location: /messages/");
   exit();
