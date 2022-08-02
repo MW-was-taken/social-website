@@ -64,11 +64,10 @@ $cubes = $cubes['cubes'];
         </div>
         <div class="right">
           <a href='/logout'><i class='fa fa-sign-out-alt'></i>Logout</a>
-          <!-- cubes amount -->
-          <span class="cubes">
+          <a class="cubes">
             <i class="far fa-cube"></i>
             <?php echo $cubes; ?>
-          </span>
+          </a>
         </div>
       </div>
     </div>

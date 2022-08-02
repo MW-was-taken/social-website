@@ -150,6 +150,10 @@ $user = GetUserByID($conn, $_SESSION['UserID']);
       </div>
       <div class="card-body">
         <?php
+        if(!$blog) {
+          echo "No blog posts...";
+        }
+
         foreach ($blog as $post) {
         ?>
           <a href="/blog?id=<?php echo $post['blog_id']; ?>">

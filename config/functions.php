@@ -70,12 +70,15 @@ function Alert()
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
   $row = $result->fetch();
+  if(!$row) {
+    return;
+  }
   if ($row['alert'] == 1) {
     // if alert link
     if ($row['alert_link'] != "") {
-      echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa-solid fa-circle-exclamation icon-left"></i>' . $row['alert_text'] . ' <a href="' . $row['alert_link'] . '" class="alert-link">Click here to learn more.</a><i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
+      echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa fa-exclamation-circle icon-left"></i>' . $row['alert_text'] . ' <a href="' . $row['alert_link'] . '" class="alert-link">Click here to learn more.</a><i class="fa fa-exclamation-circle icon-right"></i></div>';
     } else {
-      echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa-solid fa-circle-exclamation icon-left"></i>' . $row['alert_text'] . '<i class="fa-solid fa-circle-exclamation icon-right"></i></div>';
+      echo '<div class="alert alert ' . DetermineAlertColor($row['alert_type']) . '"><i class="fa fa-exclamation-circle icon-left"></i>' . $row['alert_text'] . '<i class="fa fa-exclamation-circle icon-right"></i></div>';
     }
   }
   return "";

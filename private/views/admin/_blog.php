@@ -7,10 +7,9 @@ if(isset($_POST['submit'])) {
   // flood check
   if(Flood($_SESSION['UserID'], 60)) {
     $_SESSION['error'] = "Try again in 60 seconds!";
-    header("Location: /dashboard");
+    header("Location: /admin/blog");
     exit();
   }
-
 
   if(empty($title) || empty($body)) {
     $_SESSION['error'] = 'Title or body is empty!';
@@ -19,7 +18,7 @@ if(isset($_POST['submit'])) {
   }
 
   $staffLog = "Created a new blog post titled: " . $title . " on " . date("Y-m-d H:i:s");
-  StaffLog($conn, $staffLog);
+  StaffLog($_SESSION['UserID'], $staffLog);
 
   SetUserFlood($_SESSION['UserID']);
 
