@@ -674,7 +674,7 @@ function HandleError($type)
     echo '<div class="toast-wrapper">
     <div class="toast error" id="toast">
       <div class="container-1 error">
-        <i class="fa-solid fa-square-xmark"></i>
+        <i class="fas fa-times-square"></i>
       </div>
       <div class="container-2">
         <p>Error</p>
@@ -702,7 +702,7 @@ function HandleNote($type)
     echo '<div class="toast-wrapper">
     <div class="toast" id="toast">
       <div class="container-1">
-        <i class="fa-solid fa-square-xmark"></i>
+        <i class="fas fa-check-square"></i>
       </div>
       <div class="container-2">
         <p>Success</p>
