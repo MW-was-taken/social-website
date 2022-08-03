@@ -10,6 +10,10 @@ if (isset($_GET['id'])) {
   }
   $user_id = $_GET['id'];
   $user = GetUserByID($conn, $user_id);
+  if(!$user) {
+    header('location: /profile/');
+    exit();
+  }
   $user_name = $user['user_name'];
   $status = $user['user_status'];
   $bio = $user['user_bio'];
@@ -28,6 +32,8 @@ if (isset($_GET['id'])) {
 }
 
 // get wall posts
+
+//
 
 if ($bio != null) {
   $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
