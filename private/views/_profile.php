@@ -1,6 +1,32 @@
 <?php
 // if $_GET['id'] is set, then this is not the logged in user's profile
 
+if(isset($_POST['submit'])) {
+  $profile_id = $_POST['wall_profile'];
+  $creator = $_SESSION['UserID'];
+  $message = $_POST['wall_message'];
+
+  include $_SERVER['DOCUMENT_ROOT'] . '/config/profanity.php';
+
+  RequireAuthentication();
+
+  ProfanityFilter($message);
+
+  if(empty($message)) {
+    $_SESSION['error'] = "You cannot post an empty message.";
+    header("location: /profile?id=$profile_id");
+    exit();
+  }
+
+  if(!CheckIfUserExists($profile_id)) {
+    $_SESSION['error'] = "User does not exist.";
+    header("location: /profile?id=$profile_id");
+    exit();
+  }
+
+  
+}
+
 
 
 if (isset($_GET['id'])) {
@@ -30,8 +56,18 @@ if (isset($_GET['id'])) {
   $user_admin = $user['user_admin'];
   $online = $user['user_updated'];
 }
+// get wall page
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$limit = 10;
+$offset = ($page - 1) * $limit;
 
-// get wall posts
+// get wall posts with offset and limit
+$statement = $conn->prepare("SELECT * FROM profile_wall WHERE wall_profile = :user_id ORDER BY wall_id ASC LIMIT :limit OFFSET :offset");
+$statement->bindParam(':user_id', $user_id);
+$statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+$statement->bindParam(':offset', $offset, PDO::PARAM_INT);
+$statement->execute();
+$wall = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 //
 
@@ -101,7 +137,17 @@ if ($bio != null) {
         <h2><?php echo $name; ?>'s wall</h2>
       </div>
       <div class="card-body">
+        <?php
 
+        if(!$wall) {
+          echo "<center>No posts yet!</center>";
+        }
+        
+        foreach($wall as $post) {
+
+        }
+
+        ?>
       </div>
     </div>
   </div>
