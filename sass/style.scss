@@ -13,6 +13,7 @@ $dark-blue-hover-hover: darken($blue, 25%);
 $red: #f00;
 $red-dark: darken($red, 10%);
 $green: #59ba5c;
+$small-screen-threshold: 1024px;
 
 
 :root {
@@ -144,7 +145,7 @@ nav {
     display: inline-block;
     vertical-align: middle;
 
-    @media (max-width: 992px) {
+    @media (max-width: $small-screen-threshold) {
       display: block;
       width: 100%;
       height: auto;
@@ -154,13 +155,18 @@ nav {
   .left {
     float: left;
     text-align: left;
+    @media (max-width: $small-screen-threshold) {
+      float: none;
+      text-align: center;
+    }
   }
 
   .right {
     float: right;
     text-align: right;
-    @media (max-width: 992px) {
-      display: none;
+    @media (max-width: $small-screen-threshold) {
+      float: none;
+      text-align: center;
     }
   }
 
@@ -172,9 +178,9 @@ nav {
     font-weight: 500;
     
 
-    @media (max-width: 992px) {
+    @media (max-width: $small-screen-threshold) {
       display: block;
-      width: 100%;
+      width: 100%!important;
       float: none;
       text-align: center;
     }
