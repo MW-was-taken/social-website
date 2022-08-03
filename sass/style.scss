@@ -729,7 +729,7 @@ select {
   width: 100%;
 
   // on small screens col will be 100% width
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     flex-direction: column;
   }
 
@@ -761,6 +761,10 @@ select {
   .col-11,
   .col-12 {
     padding: 15px;
+    // on medium screens remove padding
+    @media (max-width: 1200px) {
+      padding: 5px;
+    }
   }
 
   .col-1 {
