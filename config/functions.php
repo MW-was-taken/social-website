@@ -37,7 +37,7 @@ function HandlePageName($name)
  * 
  * @param string $db_host The hostname of the database.
  * @param string $db_username The username of the database.
-* @param string $db_password The password of the database
+ * @param string $db_password The password of the database
  * @param string $db The name of the database.
  * @return object The connection to the database.
  */
@@ -70,7 +70,7 @@ function Alert()
   $sql = "SELECT * FROM site_settings WHERE id = 1";
   $result = $conn->query($sql);
   $row = $result->fetch();
-  if(!$row) {
+  if (!$row) {
     return;
   }
   if ($row['alert'] == 1) {
@@ -386,7 +386,7 @@ function GetBio($conn, $user_id)
   $statement->execute(array(':user_id' => $user_id));
   $result = $statement->fetch();
   $breaks =  array("<br />", "<br>", "<br/>", "<br />", "&lt;br /&gt;", "&lt;br/&gt;", "&lt;br&gt;");
-  if(!empty($result['user_bio'])) {
+  if (!empty($result['user_bio'])) {
     $bio = str_replace($breaks, "\n", $result['user_bio']);
   } else {
     $bio = "";
@@ -452,7 +452,7 @@ function GetStaff($page)
  */
 function ListUsers($page, $staff = false)
 {
-  if($staff === false) {
+  if ($staff === false) {
     $users = GetUsers($page);
   } else {
     $users = GetStaff($page);
@@ -468,7 +468,8 @@ function ListUsers($page, $staff = false)
             <img src="/Avatar?id=<?php echo $user['user_id']; ?>" class="avatar" width="150">
           </a>
           <br>
-          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name']; OnlineDot($user['user_updated']) ?></a>
+          <a class="profile-link" href="/profile?id=<?php echo $user['user_id']; ?>"><?php echo $user['user_name'];
+                                                                                      OnlineDot($user['user_updated']) ?></a>
         </div>
       </div>
     <?php
@@ -604,25 +605,11 @@ function UpdateUser($pdo)
  * @return bool
  */
 function IfIsOnline($updated_at_timestamp)
-{
-  if ($updated_at_timestamp == null) {
-    return false;
-  }
-  $now = date_create(date('Y-m-d H:i:s'));
-  $updated = date_create($updated_at_timestamp);
-
-  $now_format = date_format($now, 'Y-m-d H:i:s');
-  $updated_format =  date_format($updated, 'Y-m-d H:i:s');
-
-  $test1 = strtotime($now_format);
-  $test2 = strtotime($updated_format);
-  $hour = abs($test1 - $test2) / (1 * 1);
-
-  if ($hour < 180) {
+{ 
+  if (strtotime($updated_at_timestamp) > time() - 300) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 /**
  * This function gets the number of users.
@@ -1112,13 +1099,11 @@ function GetTheme()
 function UpdateTheme($theme, $user_id)
 {
   global $conn;
-  if (UserIsAuthenticated()) {
-    $sql = "UPDATE users SET user_theme = :theme WHERE user_id = :user_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':theme' => $theme, ':user_id' => $user_id));
-    session_start();
-    $_SESSION['Theme'] = $theme;
-  }
+  $sql = "UPDATE users SET user_theme = :theme WHERE user_id = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->execute(array(':theme' => $theme, ':user_id' => $user_id));
+  session_start();
+  $_SESSION['Theme'] = $theme;
 }
 
 function HandleTheme($theme_id)
@@ -1132,7 +1117,7 @@ function HandleTheme($theme_id)
   if ($theme_id == 4) {
     return '<link rel="stylesheet" href="/css/cool_theme.css">';
   }
-  if($theme_id == 5) {
+  if ($theme_id == 5) {
     return '<link rel="stylesheet" href="/css/grey_theme.css">';
   }
 }
