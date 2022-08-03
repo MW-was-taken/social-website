@@ -32,7 +32,7 @@ $green: #59ba5c;
 
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box!important;
   margin: 0;
   padding: 0;
 }
@@ -145,29 +145,22 @@ nav {
     vertical-align: middle;
 
     @media (max-width: 992px) {
-      width: 50%;
+      display: block;
+      width: 100%;
       height: auto;
-      margin-top: 0;
     }
   }
 
   .left {
     float: left;
     text-align: left;
-
-    @media (max-width: 992px) {
-      float: none;
-      text-align: center;
-    }
   }
 
   .right {
     float: right;
     text-align: right;
-
     @media (max-width: 992px) {
-      float: none;
-      text-align: center;
+      display: none;
     }
   }
 
@@ -177,10 +170,13 @@ nav {
     text-decoration: none;
     font-size: large;
     font-weight: 500;
+    
 
     @media (max-width: 992px) {
       display: block;
       width: 100%;
+      float: none;
+      text-align: center;
     }
 
     margin: 7.5px;
@@ -201,8 +197,6 @@ nav {
       background: var(--dark-blue);
     }
   }
-
-  // on small screens, the navbar will collapse
 }
 
 // secondary navbar
